@@ -1,5 +1,6 @@
 # coding:utf-8
 from enum import Enum
+import datetime
 
 from PyQt5.QtCore import Qt, QLocale
 from PyQt5.QtGui import QGuiApplication, QFont
@@ -113,13 +114,12 @@ class Config(QConfig):
         self.deskLyricFontSize.value = max(15, int(font.pointSize()*dpi/72))
         self.save()
 
-
-YEAR = 2023
-AUTHOR = "zhiyiYo"
-VERSION = __version__
-HELP_URL = "https://pyqt-fluent-widgets.readthedocs.io"
-FEEDBACK_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/issues"
-RELEASE_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/releases/latest"
+YEAR = int(datetime.date.today().year)
+AUTHOR = "AZ Studio"
+VERSION = "2.1.0 Update 2"
+HELP_URL = "https://azstudio.net.cn/"
+FEEDBACK_URL = "https://azstudio.net.cn/"
+RELEASE_URL = "https://azstudio.net.cn/"
 
 
 cfg = Config()

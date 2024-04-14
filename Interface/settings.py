@@ -17,13 +17,9 @@ from PyQt5.QtWidgets import QWidget, QLabel, QFontDialog, QFileDialog
 from json import loads
 import webbrowser
 import datetime
+from helper.config import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL
 
-YEAR = int(datetime.date.today().year)
-AUTHOR = "AZ Studio"
-VERSION = "2.1.0 Update 2"
-HELP_URL = "https://azstudio.net.cn/"
-FEEDBACK_URL = "https://azstudio.net.cn/"
-RELEASE_URL = "https://azstudio.net.cn/"
+
 
 def getad():
     url = "https://json.zenglingkun.cn/ad/music/setting.json"
