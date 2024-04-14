@@ -10,13 +10,9 @@ import os
 from qfluentwidgets import TableWidget, isDarkTheme, setTheme, Theme, TableView, TableItemDelegate, SearchLineEdit, PrimaryPushButton, SpinBox, InfoBar, InfoBarPosition, InfoBarManager, InfoBarIcon,PushButton
 import subprocess
 import shlex
-from helper.resource import _init
-_init()
-from helper.resource import musicpath
+import helper.resource
 
-#musicpath = os.path.join(os.path.expanduser('~'), 'Music')
-_init()
-
+musicpath = helper.resource.musicpath
 path = "{}\\AZMusicDownload".format(musicpath)
 if not os.path.exists(path):
     os.makedirs(path)

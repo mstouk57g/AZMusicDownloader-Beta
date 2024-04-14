@@ -19,10 +19,9 @@ import os
 import requests
 from json import loads
 from mutagen.easyid3 import EasyID3
-from helper.resource import _init
-_init()
-from helper.resource import musicpath
+import helper.resource
 
+musicpath = helper.resource.musicpath
 try:
     if os.path.exists("api.json"):
         u = open("api.json", "r")

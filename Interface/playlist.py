@@ -7,13 +7,11 @@ from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 from PyQt5 import QtCore, QtWidgets
 import win32api, win32con
 import os
-from helper.resource import _init
-_init()
-from helper.resource import musicpath
 import requests
 from mutagen.easyid3 import EasyID3
+import helper.resource
 
-
+musicpath = helper.resource.musicpath
 try:
     u = open("api.json", "r")
     data = json.loads(u.read())
