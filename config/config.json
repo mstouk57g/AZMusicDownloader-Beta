@@ -1,7 +1,7 @@
 {
     "MainWindow": {
         "adcard": true,
-        "MinimizeToTray": true,
+        "beta": true,
         "DpiScale": "Auto",
         "EnableAcrylicBackground": false,
         "hotcard": false,

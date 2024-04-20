@@ -67,7 +67,7 @@ class Config(QConfig):
     enableAcrylicBackground = ConfigItem(
         "MainWindow", "EnableAcrylicBackground", False, BoolValidator())
     beta = ConfigItem(
-        "MainWindow", "MinimizeToTray", False, BoolValidator())
+        "MainWindow", "beta", False, BoolValidator())
     adcard = ConfigItem(
         "MainWindow", "adcard", False, BoolValidator())
     twitcard = ConfigItem(
