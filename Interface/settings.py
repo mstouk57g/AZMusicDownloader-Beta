@@ -16,10 +16,13 @@ from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFontDialog, QFileDialog
 from json import loads
 import webbrowser
-import datetime
+import datetime, winreg
 from helper.config import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL
 
-
+reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
+documents_path_value = winreg.QueryValueEx(reg_key, "My Music")
+personalmusicpath = documents_path_value[0]
+autopath = "{}\\AZMusicDownload".format(personalmusicpath)
 
 def getad():
     url = "https://json.zenglingkun.cn/ad/music/setting.json"
@@ -88,7 +91,21 @@ class SettingInterface(ScrollArea):
             self.personalGroup
         )
 
-        
+        self.DownloadSettings = SettingCardGroup(self.tr("下载设置"), self.scrollWidget)
+        self.downloadFolderCard = PushSettingCard(
+            self.tr('选择目录'),
+            FIF.DOWNLOAD,
+            self.tr("下载目录"),
+            cfg.get(cfg.downloadFolder),
+            self.DownloadSettings
+        )
+        self.FolderAuto = PushSettingCard(
+            self.tr('恢复默认'),
+            FIF.DOWNLOAD,
+            self.tr("恢复下载目录默认值"),
+            self.tr('下载目录默认值为：') + autopath + self.tr('（即在用户音乐文件夹内）'),
+            self.DownloadSettings
+        )
 
         self.appGroup = SettingCardGroup(self.tr('应用程序设置'), self.scrollWidget)
         self.beta = SwitchSettingCard(
@@ -173,7 +190,8 @@ class SettingInterface(ScrollArea):
         self.settingLabel.move(60, 63)
         
         # add cards to group
-        
+        self.DownloadSettings.addSettingCard(self.downloadFolderCard)
+        self.DownloadSettings.addSettingCard(self.FolderAuto)
 
         self.personalGroup.addSettingCard(self.themeCard)
         self.personalGroup.addSettingCard(self.themeColorCard)
@@ -192,6 +210,7 @@ class SettingInterface(ScrollArea):
         self.expandLayout.setSpacing(28)
         self.expandLayout.setContentsMargins(60, 10, 60, 0)
         self.expandLayout.addWidget(self.personalGroup)
+        self.expandLayout.addWidget(self.DownloadSettings)
         self.expandLayout.addWidget(self.appGroup)
         self.expandLayout.addWidget(self.searchGroup)
         self.expandLayout.addWidget(self.aboutGroup)
@@ -213,22 +232,18 @@ class SettingInterface(ScrollArea):
             parent=self.window()
         )
 
-    def __onDeskLyricFontCardClicked(self):
-        """ desktop lyric font button clicked slot """
-        font, isOk = QFontDialog.getFont(
-            cfg.desktopLyricFont, self.window(), self.tr("Choose font"))
-        if isOk:
-            cfg.desktopLyricFont = font
-
     def __onDownloadFolderCardClicked(self):
         """ download folder card clicked slot """
         folder = QFileDialog.getExistingDirectory(
             self, self.tr("Choose folder"), "./")
         if not folder or cfg.get(cfg.downloadFolder) == folder:
             return
-
         cfg.set(cfg.downloadFolder, folder)
         self.downloadFolderCard.setContent(folder)
+        
+    def __FolederAutoCardClicked(self):
+        cfg.set(cfg.downloadFolder, autopath)
+        self.downloadFolderCard.setContent(cfg.get(cfg.downloadFolder))
 
     def __onThemeChanged(self, theme: Theme):
         """ theme changed slot """
@@ -243,12 +258,8 @@ class SettingInterface(ScrollArea):
         cfg.appRestartSig.connect(self.__showRestartTooltip)
         cfg.themeChanged.connect(self.__onThemeChanged)
 
-        # music in the pc
-        
-
-        # personalization
-
-        # playing interface
+        self.downloadFolderCard.clicked.connect(self.__onDownloadFolderCardClicked)
+        self.FolderAuto.clicked.connect(self.__FolederAutoCardClicked)
         
 
         # main panel
