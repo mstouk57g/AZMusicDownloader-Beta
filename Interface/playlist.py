@@ -9,9 +9,9 @@ import win32api, win32con
 import os
 import requests
 from mutagen.easyid3 import EasyID3
-import helper.resource
+from helper.config import cfg
 
-musicpath = helper.resource.musicpath
+musicpath = cfg.get(cfg.downloadFolder)
 try:
     u = open("api.json", "r")
     data = json.loads(u.read())
@@ -47,7 +47,7 @@ class downloading(QThread):
         response = requests.get(url, stream=True)
         file_size = int(response.headers.get('content-length', 0))
         chunk_size = file_size // 100
-        path = "{}\\AZMusicDownload\\{} - {}.mp3".format(musicpath, singer, song)
+        path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
         with open(path, 'wb') as f:
             for chunk in response.iter_content(chunk_size=chunk_size):
                 f.write(chunk)
@@ -272,8 +272,8 @@ class playlist(QWidget):
             singer = str(self.TableWidget_2.item(row, 2).text())
             album = str(self.TableWidget_2.item(row, 3).text())
             try:
-                if os.path.exists(musicpath + "\\AZMusicDownload") == False:
-                    os.mkdir(musicpath + "\\AZMusicDownload")
+                if os.path.exists(cfg.get(cfg.downloadFolder)) == False:
+                    os.mkdir(cfg.get(cfg.downloadFolder))
             except:
                 win32api.MessageBox(0, '音乐下载路径无法读取\创建失败', '错误', win32con.MB_ICONWARNING)
                 return 0
@@ -299,7 +299,7 @@ class playlist(QWidget):
             song = data["song"]
             singer = data["singer"]
             album = data["album"]
-            path = "{}\\AZMusicDownload\\{} - {}.mp3".format(musicpath, singer, song)
+            path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
             path = os.path.abspath(path)
             audio = EasyID3(path)
             audio['title'] = song
