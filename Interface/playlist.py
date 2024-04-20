@@ -11,7 +11,6 @@ import requests
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
 
-musicpath = cfg.get(cfg.downloadFolder)
 try:
     u = open("api.json", "r")
     data = json.loads(u.read())
@@ -29,6 +28,7 @@ class downloading(QThread):
 
     @pyqtSlot()
     def run(self):
+        musicpath = cfg.get(cfg.downloadFolder)
         u = open("log\\list_download.json", "r")
         data = json.loads(u.read())
         u.close()
@@ -291,6 +291,7 @@ class playlist(QWidget):
             win32api.MessageBox(0, '您选中的行无数据', '错误', win32con.MB_ICONWARNING)
 
     def download(self, pro):
+        musicpath = cfg.get(cfg.downloadFolder)
         if pro == "200":
             self.pro_bar.setValue(100)
             u = open("log\\list_download.json", "r")

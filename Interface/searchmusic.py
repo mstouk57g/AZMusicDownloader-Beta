@@ -21,7 +21,6 @@ from json import loads
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
 
-musicpath = cfg.get(cfg.downloadFolder)
 try:
     if os.path.exists("api.json"):
         u = open("api.json", "r")
@@ -66,6 +65,7 @@ class downloading(QThread):
 
     @pyqtSlot()
     def run(self):
+        musicpath = cfg.get(cfg.downloadFolder)
         u = open("log\\download.json", "r")
         data = json.loads(u.read())
         u.close()
@@ -350,6 +350,7 @@ class searchmusic(QWidget, QObject):
 
     @pyqtSlot()
     def rundownload(self):
+        musicpath = cfg.get(cfg.downloadFolder)
         self.primaryButton1.setEnabled(False)
         self.ProgressBar.setHidden(False)
         self.ProgressBar.setValue(0)
@@ -423,6 +424,7 @@ class searchmusic(QWidget, QObject):
         self.lworker.quit()
 
     def download(self, progress):
+        musicpath = cfg.get(cfg.downloadFolder)
         if progress == "200":
             self.ProgressBar.setValue(100)
             row = self.tableView.currentIndex().row()
