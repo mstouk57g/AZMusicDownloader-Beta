@@ -1,12 +1,28 @@
-import helper.resource
-helper.resource._init()
 from PyQt5.QtWidgets import QApplication, QSplashScreen
 from window.main import Window
 from sys import argv
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
+from os import path, remove
+import winreg
+from helper.config import cfg
+
+def initapp():
+    condition_file = "./requirements.txt" #判断的文件
+    if path.exists(condition_file) is True: #判断是否要初始化
+        #设置音乐下载路径
+        reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
+        documents_path_value = winreg.QueryValueEx(reg_key, "My Music")
+        personalmusicpath = documents_path_value[0]
+        autopath = "{}\\AZMusicDownload".format(personalmusicpath)
+        cfg.set(cfg.downloadFolder, autopath) #将路径设置为默认路径
+        
+        #删除判断文件，以后不再初始化
+        remove(condition_file) 
+
 
 if __name__ == '__main__':
+    initapp()
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
