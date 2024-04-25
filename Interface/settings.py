@@ -1,8 +1,8 @@
 # coding:utf-8
 import json
 import random
-
 import requests
+from helper.initapp import initapp
 
 from helper.config import cfg, HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, FolderListSettingCard, InfoBarPosition,
@@ -122,6 +122,13 @@ class SettingInterface(ScrollArea):
             configItem=cfg.adcard,
             parent=self.appGroup
         )
+        self.backtoinit = PushSettingCard(
+            self.tr('重置'),
+            FIF.DOWNLOAD,
+            self.tr("重置应用"),
+            self.tr('这是我们目前唯一的收入来源，求求别关闭qwq，如果真的要关闭的话，得重启后才能生效'),
+            self.appGroup
+        )
 
         self.searchGroup = SettingCardGroup(self.tr('搜索设置'), self.scrollWidget)
         self.twitCard = SwitchSettingCard(
@@ -198,6 +205,7 @@ class SettingInterface(ScrollArea):
 
         self.appGroup.addSettingCard(self.beta)
         self.appGroup.addSettingCard(self.adCard)
+        self.appGroup.addSettingCard(self.backtoinit)
 
         self.aboutGroup.addSettingCard(self.helpCard)
         self.aboutGroup.addSettingCard(self.feedbackCard)
@@ -244,6 +252,9 @@ class SettingInterface(ScrollArea):
     def __FolederAutoCardClicked(self):
         cfg.set(cfg.downloadFolder, autopath)
         self.downloadFolderCard.setContent(cfg.get(cfg.downloadFolder))
+        
+    def __backtoinitClicked(self):
+        initapp(todo = "settings")
 
     def __onThemeChanged(self, theme: Theme):
         """ theme changed slot """
@@ -260,6 +271,7 @@ class SettingInterface(ScrollArea):
 
         self.downloadFolderCard.clicked.connect(self.__onDownloadFolderCardClicked)
         self.FolderAuto.clicked.connect(self.__FolederAutoCardClicked)
+        self.backtoinit.clicked.connect(self.__backtoinitClicked)
         
 
         # main panel
