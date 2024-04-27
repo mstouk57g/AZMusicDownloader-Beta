@@ -254,7 +254,16 @@ class SettingInterface(ScrollArea):
         self.downloadFolderCard.setContent(cfg.get(cfg.downloadFolder))
         
     def __backtoinitClicked(self):
-        remove("config/config.json")
+        try:
+            remove("config/config.json")
+            self.__showRestartTooltip()
+            self.backtoinit.setEnabled(False)
+        except:
+            InfoBar.error(
+            '',
+            self.tr('Nothing should be changed.'),
+            parent=self.window()
+        )
 
     def __onThemeChanged(self, theme: Theme):
         """ theme changed slot """

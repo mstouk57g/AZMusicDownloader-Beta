@@ -60,13 +60,13 @@ class Config(QConfig):
 
     # main window
     beta = ConfigItem(
-        "MainWindow", "beta", False, BoolValidator())
+        "MainWindow", "beta", False, BoolValidator(), restart=True)
     adcard = ConfigItem(
-        "MainWindow", "adcard", False, BoolValidator())
+        "MainWindow", "adcard", False, BoolValidator(), restart=True)
     twitcard = ConfigItem(
-        "MainWindow", "twitcard", False, BoolValidator())
+        "MainWindow", "twitcard", False, BoolValidator(), restart=True)
     hotcard = ConfigItem(
-        "MainWindow", "hotcard", False, BoolValidator())
+        "MainWindow", "hotcard", False, BoolValidator(), restart=True)
     playBarColor = ColorConfigItem("MainWindow", "PlayBarColor", "#225C7F")
     recentPlaysNumber = RangeConfigItem(
         "MainWindow", "RecentPlayNumbers", 300, RangeValidator(10, 300))
