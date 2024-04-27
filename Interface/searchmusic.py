@@ -8,7 +8,7 @@ from PyQt5.QtCore import QModelIndex, Qt
 from PyQt5.QtCore import QTimer, QThread
 from PyQt5.QtGui import QPalette, QMouseEvent
 from PyQt5.QtWidgets import QApplication, QStyleOptionViewItem, QTableWidget, QTableWidgetItem, QWidget, QHBoxLayout, \
-    QVBoxLayout, QLabel, QCompleter
+    QVBoxLayout, QLabel, QCompleter, QHeaderView
 from qfluentwidgets import TableWidget, isDarkTheme, setTheme, Theme, TableView, TableItemDelegate, SearchLineEdit, \
     PrimaryPushButton, SpinBox, InfoBar, InfoBarPosition, InfoBarManager, InfoBarIcon, PushButton, \
     ProgressBar
@@ -269,7 +269,7 @@ class searchmusic(QWidget, QObject):
         self.tableView.setHorizontalHeaderLabels(['ID', '歌曲名', '艺术家', '专辑'])
         self.tableView.resizeColumnsToContents()
         self.tableView.itemSelectionChanged.connect(self.openbutton)
-        # self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         # self.tableView.setSortingEnabled(True)
         # self.tableView.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         # self.tableView.selectionChanged(self.nm)
