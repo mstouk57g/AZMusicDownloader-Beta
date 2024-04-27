@@ -10,18 +10,18 @@ import os
 from qfluentwidgets import ToolButton, PrimaryToolButton
 from qfluentwidgets import FluentIcon as FIF
 import subprocess
-import shlex
 from helper.config import cfg
 
 path = cfg.get(cfg.downloadFolder)
 if not os.path.exists(path):
     os.makedirs(path)
-def getallmusic():
-    allmusic=[]
-    path=cfg.get(cfg.downloadFolder)
+def get_all_music():
+    all_music = []
+    path = cfg.get(cfg.downloadFolder)
     for file_name in os.listdir(path):
-        allmusic.append(file_name)
-    return allmusic
+        if file_name.endswith(".mp3"):
+            all_music.append(file_name)
+    return all_music
 
 class Demo(QWidget):
 
@@ -34,7 +34,7 @@ class Demo(QWidget):
         self.listWidget = ListWidget(self)
 
         # self.listWidget.setAlternatingRowColors(True)
-        self.data = getallmusic()
+        self.data = get_all_music()
         stands = self.data
         for stand in stands:
             item = QListWidgetItem(stand)
@@ -49,19 +49,19 @@ class Demo(QWidget):
         self.openmusic = PrimaryToolButton(FIF.EMBED,self)
         self.openmusic.setEnabled(False)
         self.openmusic.released.connect(self.openthemusic)
-        self.refmusics = ToolButton(FIF.MUSIC_FOLDER, self)
+        # self.open_dir = ToolButton(FIF.MUSIC_FOLDER, self)
+        # self.open_dir.setEnabled(True)
+        # self.open_dir.clicked.connect(self.openfolder)
+        self.refmusics = ToolButton(FIF.SYNC, self)
         self.refmusics.setEnabled(True)
-        self.refmusics.released.connect(self.__refmusics)
-        self.opendir = ToolButton(FIF.SYNC, self)
-        self.opendir.setEnabled(True)
-        self.opendir.released.connect(self.__opendir)
+        self.refmusics.clicked.connect(self.ref)
         
         self.vBoxLayout.addStretch(1)  
         self.vBoxLayout.addWidget(self.openmusic)
         self.vBoxLayout.addStretch(1) 
+        # self.vBoxLayout.addWidget(self.open_dir)
+        # self.vBoxLayout.addStretch(1)
         self.vBoxLayout.addWidget(self.refmusics)
-        self.vBoxLayout.addStretch(1) 
-        self.vBoxLayout.addWidget(self.opendir)
         self.vBoxLayout.addStretch(20) 
         self.hBoxLayout.addWidget(self.listWidget)
         self.hBoxLayout.addStretch(20)  
@@ -78,14 +78,21 @@ class Demo(QWidget):
         file_path = os.path.join(cfg.get(cfg.downloadFolder), name)
         cmd = f'start "" "{file_path}"'
         subprocess.Popen(cmd, shell=True)
-        
-    def __refmusics(self):
-        #刷新列表
-        pass
-    
-    def __opendir(self):
-        #打开音乐文件夹
-        pass
+
+    # def openfolder(self):
+    #     f_path = cfg.get(cfg.downloadFolder)
+    #     cmd = f'start {f_path}'
+    #     print(cmd)
+    #     subprocess.Popen(cmd, shell=True)
+
+    def ref(self):
+        self.listWidget.clear()
+        self.data = get_all_music()
+        stands = self.data
+        for stand in stands:
+            item = QListWidgetItem(stand)
+            self.listWidget.addItem(item)
+
         
 if __name__ == "__main__":
     # enable dpi scale

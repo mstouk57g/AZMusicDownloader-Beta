@@ -103,7 +103,7 @@ class SettingInterface(ScrollArea):
             self.tr('恢复默认'),
             FIF.DOWNLOAD,
             self.tr("恢复下载目录默认值"),
-            self.tr('下载目录默认值为：') + autopath + self.tr('（即在用户音乐文件夹内）'),
+            self.tr('下载目录默认值为：') + autopath + self.tr('（即用户音乐文件夹）'),
             self.DownloadSettings
         )
 
@@ -124,9 +124,9 @@ class SettingInterface(ScrollArea):
         )
         self.backtoinit = PushSettingCard(
             self.tr('重置'),
-            FIF.DOWNLOAD,
+            FIF.CANCEL,
             self.tr("重置应用"),
-            self.tr('点击后请重启，重启生效'),
+            self.tr('重置操作重启后生效'),
             self.appGroup
         )
 

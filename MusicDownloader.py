@@ -3,8 +3,7 @@ from window.main import Window
 from sys import argv
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from helper.config import cfg
-    
+
 if __name__ == '__main__':
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)

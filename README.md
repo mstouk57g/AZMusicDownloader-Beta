@@ -26,6 +26,12 @@ _✨ 优雅地下载音乐✨_
 
 > 若您需要二次分发本程序，需经过开发者书面同意，并需在您的项目中注明该项目地址
 
+### 赞助
+
+> 程序维护需要巨大的时间和精力，如果您觉得本程序对您有帮助，欢迎赞助以支持开发者
+
+<a href="https://afdian.net/a/chen_mo">爱发电</a>
+
 ### 使用
 
 - 使用源代码运行
@@ -65,22 +71,19 @@ _✨ 优雅地下载音乐✨_
 
 2.Q:为什么我没有歌单功能？
 
-  A:请在设置中开启Beta实验功[README.md](README.md)能
+  A:请在设置中开启Beta实验功能
 
 3.Q:为什么我下载不了歌曲？
 
   A:请检查您是否更改了默认音乐下载目录（V2.1.0 Update 1及之前）
 
-~~4.Q:如何使用我自己的API？~~
+  4.Q:如何使用我自己的API？
 
-~~A:在软件目录下找到```api.json```文件，将其中的api项修改为你自己的（格式：``` https://example.com/ ```）~~
+  A:在软件目录下找到```api.json```文件，将其中的api项修改为你自己的（格式：``` https://example.com/ ```）
 
 5.Q:为什么导入的歌单不完整？
 
   A:由于技术限制，我们暂时只能获取到歌单内的前50首
 
-### 赞助
-
-<a href="https://afdian.net/a/chen_mo">爱发电</a>
 
 ![Star History Chart](https://api.star-history.com/svg?repos=AZ-Studio-2023/AZMusicDownloader&type=Date)
