@@ -1,12 +1,11 @@
 from PyQt5.QtWidgets import QApplication, QSplashScreen
 from window.main import Window
-from sys import argv, executable
+from sys import argv
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from helper.initapp import initapp
-
+from helper.config import cfg
+    
 if __name__ == '__main__':
-    initapp(todo = "start")
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)

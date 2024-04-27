@@ -1,7 +1,7 @@
 {
     "MainWindow": {
-        "adcard": false,
-        "beta": false,
+        "adcard": true,
+        "beta": true,
         "DpiScale": "Auto",
         "EnableAcrylicBackground": false,
         "hotcard": false,
@@ -22,7 +22,7 @@
         "StrokeSize": 5
     },
     "Folders": {
-        "Download": "D:/KissL/Music/AZMusicDownload",
+        "Download": "F:/AzMusic/AZMusicDownloader-Beta/servers",
         "LocalMusic": []
     },
     "Online": {
@@ -32,6 +32,6 @@
     },
     "QFluentWidgets": {
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Auto"
+        "ThemeMode": "Light"
     }
 }

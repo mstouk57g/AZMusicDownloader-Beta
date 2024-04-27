@@ -2,7 +2,6 @@
 import json
 import random
 import requests
-from helper.initapp import initapp
 
 from helper.config import cfg, HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, FolderListSettingCard, InfoBarPosition,
@@ -18,6 +17,7 @@ from json import loads
 import webbrowser
 import datetime, winreg
 from helper.config import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL
+from os import remove
 
 reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
 documents_path_value = winreg.QueryValueEx(reg_key, "My Music")
@@ -254,7 +254,7 @@ class SettingInterface(ScrollArea):
         self.downloadFolderCard.setContent(cfg.get(cfg.downloadFolder))
         
     def __backtoinitClicked(self):
-        initapp(todo = "settings")
+        remove("config/config.json")
 
     def __onThemeChanged(self, theme: Theme):
         """ theme changed slot """
