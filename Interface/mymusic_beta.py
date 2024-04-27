@@ -3,11 +3,12 @@ import sys
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QListWidgetItem, QListWidget, QWidget, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QApplication, QListWidgetItem, QListWidget, QWidget, QHBoxLayout, QLabel, QVBoxLayout
 
 from qfluentwidgets import ListView, setTheme, Theme, ListWidget
 import os
-from qfluentwidgets import TableWidget, isDarkTheme, setTheme, Theme, TableView, TableItemDelegate, SearchLineEdit, PrimaryPushButton, SpinBox, InfoBar, InfoBarPosition, InfoBarManager, InfoBarIcon,PushButton
+from qfluentwidgets import ToolButton, PrimaryToolButton
+from qfluentwidgets import FluentIcon as FIF
 import subprocess
 import shlex
 from helper.config import cfg
@@ -29,6 +30,7 @@ class Demo(QWidget):
         # setTheme(Theme.DARK)
         self.setObjectName("Demo")
         self.hBoxLayout = QHBoxLayout(self)
+        self.vBoxLayout = QVBoxLayout(self)
         self.listWidget = ListWidget(self)
 
         # self.listWidget.setAlternatingRowColors(True)
@@ -39,56 +41,52 @@ class Demo(QWidget):
             # item.setIcon(QIcon(':/qfluentwidgets/images/logo.png'))
             # item.setCheckState(Qt.Unchecked)
             self.listWidget.addItem(item)
-        self.empty1 = QLabel('', self)
-        self.empty2 = QLabel('', self)
-        self.empty3 = QLabel('', self)
-        self.empty4 = QLabel('', self)
-        self.empty5 = QLabel('', self)
-        self.empty6 = QLabel('', self)
-        self.empty7 = QLabel('', self)
-        self.empty8 = QLabel('', self)
-        self.empty9 = QLabel('', self)
-        self.empty10 = QLabel('', self)
-        self.empty11 = QLabel('', self)
-        self.empty12 = QLabel('', self)
-        self.empty13 = QLabel('', self)
-        self.empty14 = QLabel('', self)
-        self.empty15 = QLabel('', self)
-        self.empty16 = QLabel('', self)
-        self.empty17 = QLabel('', self)
-        self.empty18 = QLabel('', self)
-        self.empty19 = QLabel('', self)
-        self.empty20 = QLabel('', self)
-        self.empty21 = QLabel('', self)
-        self.empty22 = QLabel('', self)
-        self.empty23 = QLabel('', self)
-        self.empty24 = QLabel('', self)
-        self.hBoxLayout.addWidget(self.empty19)
-        self.hBoxLayout.addWidget(self.empty20)
-        self.hBoxLayout.addWidget(self.empty21)
-        self.hBoxLayout.addWidget(self.empty22)
-        self.hBoxLayout.addWidget(self.empty23)
-        self.hBoxLayout.addWidget(self.empty24)
-        self.hBoxLayout.addWidget(self.empty13)
-        self.hBoxLayout.addWidget(self.empty14)
-        self.hBoxLayout.addWidget(self.empty15)
+            
         self.setStyleSheet("Demo{background: rgb(249, 249, 249)} ")
         self.hBoxLayout.setContentsMargins(0, 0, 0, 0)
-        self.hBoxLayout.addWidget(self.listWidget)
         self.listWidget.clicked.connect(self.openbutton)
         self.resize(300, 400)
-        self.openmusic = PrimaryPushButton("打开",self)
+        self.openmusic = PrimaryToolButton(FIF.EMBED,self)
         self.openmusic.setEnabled(False)
         self.openmusic.released.connect(self.openthemusic)
-        self.hBoxLayout.addChildWidget(self.openmusic)
+        self.refmusics = ToolButton(FIF.MUSIC_FOLDER, self)
+        self.refmusics.setEnabled(True)
+        self.refmusics.released.connect(self.__refmusics)
+        self.opendir = ToolButton(FIF.SYNC, self)
+        self.opendir.setEnabled(True)
+        self.opendir.released.connect(self.__opendir)
+        
+        self.vBoxLayout.addStretch(1)  
+        self.vBoxLayout.addWidget(self.openmusic)
+        self.vBoxLayout.addStretch(1) 
+        self.vBoxLayout.addWidget(self.refmusics)
+        self.vBoxLayout.addStretch(1) 
+        self.vBoxLayout.addWidget(self.opendir)
+        self.vBoxLayout.addStretch(20) 
+        self.hBoxLayout.addWidget(self.listWidget)
+        self.hBoxLayout.addStretch(20)  
+        self.hBoxLayout.addLayout(self.vBoxLayout)
+        self.hBoxLayout.addStretch(1)  
+        
+        
     def openbutton(self):
         self.openmusic.setEnabled(True)
+        
     def openthemusic(self):
         row = self.listWidget.currentIndex().row() 
         name = self.data[row]
         file_path = os.path.join(cfg.get(cfg.downloadFolder), name)
         cmd = f'start "" "{file_path}"'
         subprocess.Popen(cmd, shell=True)
+        
+    def __refmusics(self):
+        #刷新列表
+        pass
+    
+    def __opendir(self):
+        #打开音乐文件夹
+        pass
+        
 if __name__ == "__main__":
     # enable dpi scale
     QApplication.setHighDpiScaleFactorRoundingPolicy(
