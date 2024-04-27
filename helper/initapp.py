@@ -1,12 +1,10 @@
 from helper.config import cfg
-from os import path, remove, execl, open
 import winreg
-from sys import argv, executable
 
 def initapp(todo):
-    condition_file = "./requirements.txt" #判断的文件
+    setter = cfg.get(cfg.ifinitapp) #判断条件
     if todo == "start":
-        if path.exists(condition_file) is True: #判断是否要初始化
+        if setter is True: #判断是否要初始化
             #设置音乐下载路径
             reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
             documents_path_value = winreg.QueryValueEx(reg_key, "My Music")
@@ -14,9 +12,17 @@ def initapp(todo):
             autopath = "{}\\AZMusicDownload".format(personalmusicpath)
             cfg.set(cfg.downloadFolder, autopath) #将路径设置为默认路径
         
-            #删除判断文件，以后不再初始化
-            remove(condition_file) 
+            #将广告改为开启
+            cfg.set(cfg.adcard, False)
+            
+            #关闭beta功能
+            cfg.set(cfg.beta, False)
+            
+            #关闭预选项
+            cfg.set(cfg.twitcard, False)
+            cfg.set(cfg.hotcard, False)
+            
+            #将判断改为False
+            cfg.set(cfg.ifinitapp, False)
     if todo == "settings":
-        w = open(condition_file)  
-        w.close() #添加判断文件
-        execl(executable, executable, * argv) #重启
+        cfg.set(cfg.ifinitapp, True)

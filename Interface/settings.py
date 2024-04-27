@@ -126,7 +126,7 @@ class SettingInterface(ScrollArea):
             self.tr('重置'),
             FIF.DOWNLOAD,
             self.tr("重置应用"),
-            self.tr('这是我们目前唯一的收入来源，求求别关闭qwq，如果真的要关闭的话，得重启后才能生效'),
+            self.tr('点击后请重启，重启生效'),
             self.appGroup
         )
 

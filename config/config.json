@@ -1,10 +1,11 @@
 {
     "MainWindow": {
-        "adcard": true,
-        "beta": true,
+        "adcard": false,
+        "beta": false,
         "DpiScale": "Auto",
         "EnableAcrylicBackground": false,
         "hotcard": false,
+        "ifinitapp": false,
         "PlayBarColor": "#ff225c7f",
         "RecentPlayNumbers": 300,
         "twitcard": false

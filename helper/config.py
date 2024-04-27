@@ -81,7 +81,9 @@ class Config(QConfig):
         "MainWindow", "DpiScale", "Auto", OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]), restart=True)
     # language = OptionsConfigItem(
     #     "MainWindow", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
-
+    ifinitapp = ConfigItem(
+        "MainWindow", "ifinitapp", False, BoolValidator())
+    
     # desktop lyric
     deskLyricHighlightColor = ColorConfigItem(
         "DesktopLyric", "HighlightColor", "#0099BC")
