@@ -28,23 +28,23 @@ class MvQuality(Enum):
     LD = "LD"
 
 
-# class Language(Enum):
-#     """ Language enumeration """
+class Language(Enum):
+    """ Language enumeration """
 
-#     CHINESE_SIMPLIFIED = QLocale(QLocale.Chinese, QLocale.China)
-#     CHINESE_TRADITIONAL = QLocale(QLocale.Chinese, QLocale.HongKong)
-#     ENGLISH = QLocale(QLocale.English)
-#     AUTO = QLocale()
+    CHINESE_SIMPLIFIED = QLocale(QLocale.Chinese, QLocale.China)
+    CHINESE_TRADITIONAL = QLocale(QLocale.Chinese, QLocale.HongKong)
+    ENGLISH = QLocale(QLocale.English)
+    AUTO = QLocale()
 
 
-# class LanguageSerializer(ConfigSerializer):
-#     """ Language serializer """
+class LanguageSerializer(ConfigSerializer):
+    """ Language serializer """
 
-#     def serialize(self, language):
-#         return language.value.name() if language != Language.AUTO else "Auto"
+    def serialize(self, language):
+        return language.value.name() if language != Language.AUTO else "Auto"
 
-#     def deserialize(self, value: str):
-#         return Language(QLocale(value)) if value != "Auto" else Language.AUTO
+    def deserialize(self, value: str):
+        return Language(QLocale(value)) if value != "Auto" else Language.AUTO
 
 
 class Config(QConfig):
@@ -70,8 +70,8 @@ class Config(QConfig):
     playBarColor = ColorConfigItem("MainWindow", "PlayBarColor", "#225C7F")
     recentPlaysNumber = RangeConfigItem(
         "MainWindow", "RecentPlayNumbers", 300, RangeValidator(10, 300))
-    # language = OptionsConfigItem(
-    #     "MainWindow", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
+    language = OptionsConfigItem(
+        "MainWindow", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
     
     @property
     def desktopLyricFont(self):

@@ -71,7 +71,7 @@ class SettingInterface(ScrollArea):
         self.settingLabel = QLabel(self.tr("设置"), self)
         # music folders
 
-        self.personalGroup = SettingCardGroup(self.tr('主题'), self.scrollWidget)
+        self.personalGroup = SettingCardGroup(self.tr('个性化'), self.scrollWidget)
         self.themeCard = OptionsSettingCard(
             cfg.themeMode,
             FIF.BRUSH,
@@ -89,6 +89,14 @@ class SettingInterface(ScrollArea):
             self.tr('主题颜色'),
             self.tr('更改应用程序的主题颜色'),
             self.personalGroup
+        )
+        self.languageCard = ComboBoxSettingCard(
+            cfg.language,
+            FIF.LANGUAGE,
+            self.tr('Language'),
+            self.tr('Set your preferred language for UI'),
+            texts=['简体中文', '繁體中文', 'English', self.tr('Use system setting')],
+            parent=self.personalGroup
         )
 
         self.DownloadSettings = SettingCardGroup(self.tr("下载设置"), self.scrollWidget)
@@ -202,6 +210,7 @@ class SettingInterface(ScrollArea):
 
         self.personalGroup.addSettingCard(self.themeCard)
         self.personalGroup.addSettingCard(self.themeColorCard)
+        self.personalGroup.addSettingCard(self.languageCard)
 
         self.appGroup.addSettingCard(self.beta)
         self.appGroup.addSettingCard(self.adCard)

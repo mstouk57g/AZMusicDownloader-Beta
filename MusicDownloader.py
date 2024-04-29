@@ -1,7 +1,9 @@
 from PyQt5.QtWidgets import QApplication, QSplashScreen
+from qfluentwidgets import isDarkTheme, FluentTranslator
+from helper.config import cfg, Language
 from window.main import Window
 from sys import argv
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTranslator
 from PyQt5.QtGui import QPixmap
 
 if __name__ == '__main__':
@@ -20,6 +22,13 @@ if __name__ == '__main__':
     #splash_height = 736
     #splash.setFixedSize(splash_width, splash_height)
     #splash.move((screen_width - splash_width) // 2, (screen_height - splash_height) // 2)
+    locale = cfg.get(cfg.language).value
+    fluentTranslator = FluentTranslator(locale)
+    settingTranslator = QTranslator()
+    settingTranslator.load(locale, "settings", ".", "resource/i18n")
+
+    app.installTranslator(fluentTranslator)
+    app.installTranslator(settingTranslator)
     app.processEvents()
     w = Window()
     w.show()

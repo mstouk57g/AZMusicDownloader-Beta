@@ -1,0 +1,18 @@
+{
+    "MainWindow": {
+        "adcard": false,
+        "beta": false,
+        "hotcard": false,
+        "Language": "Auto",
+        "PlayBarColor": "#ff225c7f",
+        "RecentPlayNumbers": 300,
+        "twitcard": false
+    },
+    "Folders": {
+        "Download": "D:/KissL/Music/AZMusicDownload"
+    },
+    "QFluentWidgets": {
+        "ThemeColor": "#ff009faa",
+        "ThemeMode": "Light"
+    }
+}
