@@ -167,7 +167,8 @@ class searchmusic(QWidget, QObject):
     def __init__(self):
         super().__init__()
         # setTheme(Theme.DARK)
-
+        self.setObjectName("searchmusic")
+        
         self.hBoxLayout = QHBoxLayout(self)
         self.layout1 = QVBoxLayout(self)
 
