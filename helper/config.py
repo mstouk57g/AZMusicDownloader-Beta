@@ -48,9 +48,7 @@ class LanguageSerializer(ConfigSerializer):
 
 
 class Config(QConfig):
-    """ Config of application """
-
-    # folders
+    # Folders
     reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
     music_path_value = winreg.QueryValueEx(reg_key, "My Music")
     personalmusicpath = music_path_value[0]
@@ -58,20 +56,21 @@ class Config(QConfig):
     downloadFolder = ConfigItem(
         "Folders", "Download", autopath, FolderValidator())
 
-    # main window
+    # Application
     beta = ConfigItem(
-        "MainWindow", "beta", False, BoolValidator(), restart=True)
+        "Application", "beta", False, BoolValidator(), restart=True)
     adcard = ConfigItem(
-        "MainWindow", "adcard", False, BoolValidator(), restart=True)
+        "Application", "adcard", False, BoolValidator(), restart=True)
+    
+    #Search
     twitcard = ConfigItem(
-        "MainWindow", "twitcard", False, BoolValidator(), restart=True)
+        "Search", "twitcard", False, BoolValidator(), restart=True)
     hotcard = ConfigItem(
-        "MainWindow", "hotcard", False, BoolValidator(), restart=True)
-    playBarColor = ColorConfigItem("MainWindow", "PlayBarColor", "#225C7F")
-    recentPlaysNumber = RangeConfigItem(
-        "MainWindow", "RecentPlayNumbers", 300, RangeValidator(10, 300))
+        "Search", "hotcard", False, BoolValidator(), restart=True)
+    
+    #Personalize
     language = OptionsConfigItem(
-        "MainWindow", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
+        "Personalize", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
     
 
 YEAR = int(datetime.date.today().year)
