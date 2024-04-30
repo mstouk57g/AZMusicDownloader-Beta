@@ -13,7 +13,6 @@ from qfluentwidgets import FluentIcon as FIF
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths, QThread, pyqtSlot
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFontDialog, QFileDialog
-from json import loads
 import webbrowser
 import datetime, winreg
 from helper.config import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL
@@ -24,32 +23,6 @@ documents_path_value = winreg.QueryValueEx(reg_key, "My Music")
 personalmusicpath = documents_path_value[0]
 autopath = "{}\\AZMusicDownload".format(personalmusicpath)
 
-def getad():
-    url = "https://json.zenglingkun.cn/ad/music/setting.json"
-    try:
-        ad = requests.get(url).text
-        data = loads(ad)
-        msg = data
-    except:
-        try:
-            o = open("resource/hitokoto.json", "r")
-            hit_data = json.loads(o.read())["hitokoto"]
-            o.close()
-            poem = hit_data[random.randint(0, len(hit_data) - 1)]
-        except:
-            poem = "海内存知己，天涯若比邻"
-        ad = {"title": "(⊙o⊙)？", "text": "呀！找不到广告了 ＞﹏＜ 请检查您的网络连接\n{}".format(poem), "time": 30000,
-              "button": "（；´д｀）ゞ", "url": "https://azstudio.net.cn"}
-        msg = ad
-    return msg
-
-class get_ad(QThread):
-    finished = pyqtSignal(dict)
-
-    @pyqtSlot()
-    def run(self):
-        data = getad()
-        self.finished.emit(data)
 
 class SettingInterface(ScrollArea):
     """ Setting interface """
@@ -173,17 +146,13 @@ class SettingInterface(ScrollArea):
             self.aboutGroup
         )
         self.aboutCard = PrimaryPushSettingCard(
-            self.tr('AZ Studio'),
+            self.tr('Changelog'),
             FIF.INFO,
             self.tr('关于'),
             '© ' + self.tr(' ') + f" {YEAR}, {AUTHOR}. " +
             self.tr('Version') + f" {VERSION}",
             self.aboutGroup
         )
-        self.adw = get_ad()
-        if cfg.adcard.value == False:
-            self.adw.start()
-        self.adw.finished.connect(self.show_ad)
         self.__initWidget()
 
 
@@ -300,20 +269,3 @@ class SettingInterface(ScrollArea):
         self.aboutCard.clicked.connect(self.checkUpdateSig)
         self.feedbackCard.clicked.connect(
             lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
-    def show_ad(self, ad_v):
-        self.ad_list = ad_v
-        self.ad = InfoBar(
-            icon=InfoBarIcon.INFORMATION,
-            title=self.ad_list["title"],
-            content=self.ad_list["text"],
-            orient=Qt.Vertical,  # vertical layout
-            isClosable=True,
-            position=InfoBarPosition.BOTTOM_RIGHT,
-            duration=self.ad_list["time"],
-            parent=self
-        )
-        self.s = PushButton(self.ad_list["button"])
-        self.s.clicked.connect(self.openlk)
-        self.ad.addWidget(self.s)
-        self.ad.show()
-        self.adw.quit()
