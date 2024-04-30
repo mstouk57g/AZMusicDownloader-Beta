@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt, QLocale
 from PyQt5.QtGui import QGuiApplication, QFont
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
                             ColorConfigItem, OptionsValidator, RangeConfigItem, RangeValidator,
-                            FolderListValidator, EnumSerializer, FolderValidator, ConfigSerializer, __version__)
+                            FolderListValidator, EnumSerializer, FolderValidator, ConfigSerializer)
 
 
 class SongQuality(Enum):
@@ -52,8 +52,8 @@ class Config(QConfig):
 
     # folders
     reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
-    documents_path_value = winreg.QueryValueEx(reg_key, "My Music")
-    personalmusicpath = documents_path_value[0]
+    music_path_value = winreg.QueryValueEx(reg_key, "My Music")
+    personalmusicpath = music_path_value[0]
     autopath = "{}\\AZMusicDownload".format(personalmusicpath)
     downloadFolder = ConfigItem(
         "Folders", "Download", autopath, FolderValidator())
@@ -73,19 +73,6 @@ class Config(QConfig):
     language = OptionsConfigItem(
         "MainWindow", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
     
-    @property
-    def desktopLyricFont(self):
-        """ get the desktop lyric font """
-        font = QFont(self.deskLyricFontFamily.value)
-        font.setPixelSize(self.deskLyricFontSize.value)
-        return font
-
-    @desktopLyricFont.setter
-    def desktopLyricFont(self, font: QFont):
-        dpi = QGuiApplication.primaryScreen().logicalDotsPerInch()
-        self.deskLyricFontFamily.value = font.family()
-        self.deskLyricFontSize.value = max(15, int(font.pointSize()*dpi/72))
-        self.save()
 
 YEAR = int(datetime.date.today().year)
 AUTHOR = "AZ Studio"
@@ -96,4 +83,8 @@ RELEASE_URL = "https://azstudio.net.cn/"
 
 
 cfg = Config()
-qconfig.load('config/config.json', cfg)
+reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
+config_path_value = winreg.QueryValueEx(reg_key, "AppData")
+DataPath = config_path_value[0]
+configpath = "{}\\AZMusicDownload\\config.json".format(DataPath)
+qconfig.load(configpath, cfg)
