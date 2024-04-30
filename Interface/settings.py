@@ -25,9 +25,6 @@ autopath = "{}\\AZMusicDownload".format(personalmusicpath)
 
 
 class SettingInterface(ScrollArea):
-    """ Setting interface """
-    def openlk(self):
-        webbrowser.open_new_tab(self.ad_list("url"))
     checkUpdateSig = pyqtSignal()
     musicFoldersChanged = pyqtSignal(list)
     acrylicEnableChanged = pyqtSignal(bool)
@@ -148,7 +145,7 @@ class SettingInterface(ScrollArea):
         self.aboutCard = PrimaryPushSettingCard(
             self.tr('Changelog'),
             FIF.INFO,
-            self.tr('关于'),
+            self.tr('更新日志'),
             '© ' + self.tr(' ') + f" {YEAR}, {AUTHOR}. " +
             self.tr('Version') + f" {VERSION}",
             self.aboutGroup
@@ -250,6 +247,9 @@ class SettingInterface(ScrollArea):
 
         # chang the theme of setting interface
         self.__setQss()
+        
+    def __changelog(self):
+        QDesktopServices.openUrl(QUrl("https://github.com/AZ-Studio-2023/AZMusicDownloader/releases/tag/v2.2.0"))
 
     def __connectSignalToSlot(self):
         """ connect signal to slot """
@@ -259,13 +259,6 @@ class SettingInterface(ScrollArea):
         self.downloadFolderCard.clicked.connect(self.__onDownloadFolderCardClicked)
         self.FolderAuto.clicked.connect(self.__FolederAutoCardClicked)
         self.backtoinit.clicked.connect(self.__backtoinitClicked)
-        
-
-        # main panel
-        self.beta.checkedChanged.connect(
-            self.minimizeToTrayChanged)
-
-        # about
-        self.aboutCard.clicked.connect(self.checkUpdateSig)
-        self.feedbackCard.clicked.connect(
-            lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
+        self.beta.checkedChanged.connect(self.minimizeToTrayChanged)
+        self.aboutCard.clicked.connect(self.__changelog)
+        self.feedbackCard.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))

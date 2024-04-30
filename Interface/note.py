@@ -39,14 +39,3 @@ ConiMite  辰墨
         w.show()
 
         self.resize(800, 800)
-
-if __name__ == '__main__':
-    # enable dpi scale
-    QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-    app = QApplication(sys.argv)
-    w2 = start()
-    w2.show()
-    app.exec_()
