@@ -1,7 +1,7 @@
 {
     "MainWindow": {
-        "adcard": false,
-        "beta": false,
+        "adcard": true,
+        "beta": true,
         "hotcard": false,
         "Language": "Auto",
         "PlayBarColor": "#ff225c7f",
@@ -12,7 +12,7 @@
         "Download": "D:/KissL/Music/AZMusicDownload"
     },
     "QFluentWidgets": {
-        "ThemeColor": "#ff009faa",
+        "ThemeColor": "#ffa86234",
         "ThemeMode": "Light"
     }
 }

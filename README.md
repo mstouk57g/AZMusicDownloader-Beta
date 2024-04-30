@@ -85,5 +85,11 @@ _✨ 优雅地下载音乐✨_
 
   A:由于技术限制，我们暂时只能获取到歌单内的前50首
 
+### 当前等待任务：
+1、支持多语言
+2、支持自动获取Windows主题
+3、区分操作系统，以支持Linux
+4、重构所有页面的Layout
+
 
 ![Star History Chart](https://api.star-history.com/svg?repos=AZ-Studio-2023/AZMusicDownloader&type=Date)
