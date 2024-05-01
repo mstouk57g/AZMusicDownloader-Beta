@@ -452,15 +452,3 @@ class searchmusic(QWidget, QObject):
         else:
             self.ProgressBar.setValue(int(progress))
 
-
-if __name__ == "__main__":
-    # enable dpi scale
-    QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-
-    app = QApplication(sys.argv)
-    w = searchmusic()
-    w.show()
-    app.exec()

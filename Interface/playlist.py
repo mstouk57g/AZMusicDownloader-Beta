@@ -10,17 +10,18 @@ import os
 import requests
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
+from helper.getvalue import playlist_search_log, apipath, playlist_download_log
 
 try:
-    u = open("api.json", "r")
+    u = open(apipath, "r")
     data = json.loads(u.read())
     api = data["api"]
     u.close()
 except:
     api = "https://ncma.zenglingkun.cn/"
 
-if not os.path.isdir("playlist"):
-    os.mkdir("playlist")
+##if not os.path.isdir("playlist"):
+##    os.mkdir("playlist")
 
 
 class downloading(QThread):
