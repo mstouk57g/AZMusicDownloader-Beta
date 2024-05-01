@@ -55,7 +55,7 @@ _✨ 优雅地下载音乐✨_
 
 ### 使用条款
 
-[使用条款](https://github.com/AZ-Studio-2023/AZMusicDownloader/blob/main/rule.html)
+[使用条款](https://github.com/AZ-Studio-2023/AZMusicDownloader/wiki/%22AZ%E9%9F%B3%E4%B9%90%E4%B8%8B%E8%BD%BD%E5%99%A8%22%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8%E6%9D%A1%E6%AC%BE)
 
 若您不同意本条款，请退出本页面。您使用本软件即代表您同意本条款。
 
@@ -86,10 +86,12 @@ _✨ 优雅地下载音乐✨_
   A:由于技术限制，我们暂时只能获取到歌单内的前50首
 
 ### 当前等待任务：
+
 1、支持多语言
 2、支持自动获取Windows主题
 3、区分操作系统，以支持Linux
 4、重构所有页面的Layout
 
-
 ![Star History Chart](https://api.star-history.com/svg?repos=AZ-Studio-2023/AZMusicDownloader&type=Date)
+
+
