@@ -10,7 +10,7 @@ from qfluentwidgets import NavigationItemPosition, MSFluentWindow, NavigationIte
 from qfluentwidgets import FluentIcon as FIF
 from Interface.mymusic_beta import Demo
 from Interface.playlist import playlist
-import helper.config
+from helper.config import Config
 
 class Window(MSFluentWindow):
 
@@ -23,7 +23,7 @@ class Window(MSFluentWindow):
     def initNavigation(self):
         self.addSubInterface(searchmusic(), FIF.CARE_RIGHT_SOLID, '搜索下载')
         self.addSubInterface(Demo(), FIF.MUSIC_FOLDER, '我的音乐库')
-        if helper.config.Config.beta.value == True:
+        if Config.beta.value == True:
             self.addSubInterface(playlist(), FIF.EXPRESSIVE_INPUT_ENTRY, '歌单')
         self.addSubInterface(SettingInterface(), FIF.SETTING, '设置', position=NavigationItemPosition.BOTTOM)
 

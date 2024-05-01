@@ -1,8 +1,4 @@
 # coding:utf-8
-import json
-import random
-import requests
-
 from helper.config import cfg, HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, FolderListSettingCard, InfoBarPosition,
                             OptionsSettingCard, RangeSettingCard, PushSettingCard, InfoBarIcon, PushButton,
@@ -13,8 +9,7 @@ from qfluentwidgets import FluentIcon as FIF
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths, QThread, pyqtSlot
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFontDialog, QFileDialog
-import webbrowser
-import datetime, winreg
+import winreg
 from helper.config import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL
 from os import remove
 
@@ -25,11 +20,11 @@ autopath = "{}\\AZMusicDownload".format(personalmusicpath)
 
 
 class SettingInterface(ScrollArea):
-    checkUpdateSig = pyqtSignal()
     musicFoldersChanged = pyqtSignal(list)
     acrylicEnableChanged = pyqtSignal(bool)
     downloadFolderChanged = pyqtSignal(str)
     minimizeToTrayChanged = pyqtSignal(bool)
+    micaEnableChanged = pyqtSignal(bool)
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
