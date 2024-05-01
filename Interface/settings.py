@@ -1,15 +1,15 @@
 # coding:utf-8
 from helper.config import cfg, HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
-from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, FolderListSettingCard, InfoBarPosition,
-                            OptionsSettingCard, RangeSettingCard, PushSettingCard, InfoBarIcon, PushButton,
-                            ColorSettingCard, HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
-                            ComboBoxSettingCard, ExpandLayout, Theme, InfoBar, CustomColorSettingCard,
-                            setTheme, setThemeColor, isDarkTheme)
+from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
+                            OptionsSettingCard, PushSettingCard, setTheme, isDarkTheme,
+                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
+                            ComboBoxSettingCard, ExpandLayout, Theme, InfoBar)
 from qfluentwidgets import FluentIcon as FIF
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths, QThread, pyqtSlot
+from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QDesktopServices
-from PyQt5.QtWidgets import QWidget, QLabel, QFontDialog, QFileDialog
+from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 import winreg
+from sys import platform, getwindowsversion
 from helper.config import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL
 from os import remove
 
@@ -31,11 +31,9 @@ class SettingInterface(ScrollArea):
         self.scrollWidget = QWidget()
         self.expandLayout = ExpandLayout(self.scrollWidget)
         self.setObjectName('settings')
-        # setting label
-
         self.settingLabel = QLabel(self.tr("设置"), self)
-        # music folders
-
+        
+        # Personalize
         self.personalGroup = SettingCardGroup(self.tr('个性化'), self.scrollWidget)
         self.themeCard = OptionsSettingCard(
             cfg.themeMode,
@@ -63,7 +61,15 @@ class SettingInterface(ScrollArea):
             texts=['简体中文', '繁體中文', 'English', self.tr('Use system setting')],
             parent=self.personalGroup
         )
+        self.micaCard = SwitchSettingCard(
+            FIF.TRANSPARENT,
+            self.tr('Mica effect'),
+            self.tr('Apply semi transparent to windows and surfaces'),
+            cfg.micaEnabled,
+            self.personalGroup
+        )
 
+        # Folders
         self.DownloadSettings = SettingCardGroup(self.tr("下载设置"), self.scrollWidget)
         self.downloadFolderCard = PushSettingCard(
             self.tr('选择目录'),
@@ -80,6 +86,7 @@ class SettingInterface(ScrollArea):
             self.DownloadSettings
         )
 
+        # Application
         self.appGroup = SettingCardGroup(self.tr('应用程序设置'), self.scrollWidget)
         self.beta = SwitchSettingCard(
             FIF.DEVELOPER_TOOLS,
@@ -103,6 +110,7 @@ class SettingInterface(ScrollArea):
             self.appGroup
         )
 
+        # Search
         self.searchGroup = SettingCardGroup(self.tr('搜索设置'), self.scrollWidget)
         self.twitCard = SwitchSettingCard(
             FIF.TAG,
@@ -120,7 +128,7 @@ class SettingInterface(ScrollArea):
             parent=self.searchGroup
         )
 
-        # application
+        # About
         self.aboutGroup = SettingCardGroup(self.tr('关于'), self.scrollWidget)
         self.helpCard = HyperlinkCard(
             HELP_URL,
@@ -145,6 +153,8 @@ class SettingInterface(ScrollArea):
             self.tr('Version') + f" {VERSION}",
             self.aboutGroup
         )
+        
+        self.micaCard.setEnabled(platform == 'win32' and getwindowsversion().build >= 22000)
         self.__initWidget()
 
 
@@ -172,6 +182,7 @@ class SettingInterface(ScrollArea):
         self.personalGroup.addSettingCard(self.themeCard)
         self.personalGroup.addSettingCard(self.themeColorCard)
         self.personalGroup.addSettingCard(self.languageCard)
+        self.personalGroup.addSettingCard(self.micaCard)
 
         self.appGroup.addSettingCard(self.beta)
         self.appGroup.addSettingCard(self.adCard)
@@ -187,10 +198,10 @@ class SettingInterface(ScrollArea):
         # add setting card group to layout
         self.expandLayout.setSpacing(28)
         self.expandLayout.setContentsMargins(60, 10, 60, 0)
-        self.expandLayout.addWidget(self.personalGroup)
         self.expandLayout.addWidget(self.DownloadSettings)
-        self.expandLayout.addWidget(self.appGroup)
         self.expandLayout.addWidget(self.searchGroup)
+        self.expandLayout.addWidget(self.personalGroup)
+        self.expandLayout.addWidget(self.appGroup)
         self.expandLayout.addWidget(self.aboutGroup)
 
     def __setQss(self):
@@ -248,12 +259,13 @@ class SettingInterface(ScrollArea):
         self.__setQss()
         
     def __changelog(self):
-        QDesktopServices.openUrl(QUrl("https://github.com/AZ-Studio-2023/AZMusicDownloader/releases/tag/v2.2.0"))
+        QDesktopServices.openUrl(QUrl(RELEASE_URL))
 
     def __connectSignalToSlot(self):
         """ connect signal to slot """
         cfg.appRestartSig.connect(self.__showRestartTooltip)
         cfg.themeChanged.connect(self.__onThemeChanged)
+        self.micaCard.checkedChanged.connect(self.micaEnableChanged)
 
         self.downloadFolderCard.clicked.connect(self.__onDownloadFolderCardClicked)
         self.FolderAuto.clicked.connect(self.__FolederAutoCardClicked)

@@ -2,12 +2,11 @@
 from enum import Enum
 import datetime
 import winreg
+from sys import platform, getwindowsversion
 
-from PyQt5.QtCore import Qt, QLocale
-from PyQt5.QtGui import QGuiApplication, QFont
+from PyQt5.QtCore import QLocale
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
-                            ColorConfigItem, OptionsValidator, RangeConfigItem, RangeValidator,
-                            FolderListValidator, EnumSerializer, FolderValidator, ConfigSerializer)
+                            OptionsValidator,  FolderValidator, ConfigSerializer)
 
 
 class SongQuality(Enum):
@@ -62,15 +61,16 @@ class Config(QConfig):
     adcard = ConfigItem(
         "Application", "adcard", False, BoolValidator(), restart=True)
     
-    #Search
+    # Search
     twitcard = ConfigItem(
         "Search", "twitcard", False, BoolValidator(), restart=True)
     hotcard = ConfigItem(
         "Search", "hotcard", False, BoolValidator(), restart=True)
     
-    #Personalize
+    # Personalize
     language = OptionsConfigItem(
         "Personalize", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
+    micaEnabled = ConfigItem("Personalize", "MicaEnabled", platform == 'win32' and getwindowsversion().build >= 22000, BoolValidator())
     
 
 YEAR = int(datetime.date.today().year)
@@ -78,7 +78,7 @@ AUTHOR = "AZ Studio"
 VERSION = "2.2.0"
 HELP_URL = "https://azstudio.net.cn/"
 FEEDBACK_URL = "https://azstudio.net.cn/"
-RELEASE_URL = "https://azstudio.net.cn/"
+RELEASE_URL = "https://github.com/AZ-Studio-2023/AZMusicDownloader/releases/tag/v2.2.0"
 
 
 cfg = Config()
