@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QSplashScreen
 from qfluentwidgets import isDarkTheme, FluentTranslator
-from helper.config import cfg, Language
+from helper.config import cfg
 from window.main import Window
 from sys import argv
 from PyQt5.QtCore import Qt, QTranslator

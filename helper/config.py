@@ -1,9 +1,8 @@
 # coding:utf-8
 from enum import Enum
 import datetime
-import winreg
 from sys import platform, getwindowsversion
-
+from helper.getvalue import configpath, autopath
 from PyQt5.QtCore import QLocale
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
                             OptionsValidator,  FolderValidator, ConfigSerializer)
@@ -48,10 +47,6 @@ class LanguageSerializer(ConfigSerializer):
 
 class Config(QConfig):
     # Folders
-    reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
-    music_path_value = winreg.QueryValueEx(reg_key, "My Music")
-    personalmusicpath = music_path_value[0]
-    autopath = "{}\\AZMusicDownload".format(personalmusicpath)
     downloadFolder = ConfigItem(
         "Folders", "Download", autopath, FolderValidator())
 
@@ -82,8 +77,4 @@ RELEASE_URL = "https://github.com/AZ-Studio-2023/AZMusicDownloader/releases/tag/
 
 
 cfg = Config()
-reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
-config_path_value = winreg.QueryValueEx(reg_key, "AppData")
-DataPath = config_path_value[0]
-configpath = "{}\\AZMusicDownload\\config.json".format(DataPath)
 qconfig.load(configpath, cfg)

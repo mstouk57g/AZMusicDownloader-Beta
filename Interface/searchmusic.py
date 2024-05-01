@@ -5,13 +5,12 @@ import sys
 import AZMusicAPI
 import webbrowser
 from PyQt5.QtCore import QModelIndex, Qt
-from PyQt5.QtCore import QTimer, QThread
-from PyQt5.QtGui import QPalette, QMouseEvent
-from PyQt5.QtWidgets import QApplication, QStyleOptionViewItem, QTableWidget, QTableWidgetItem, QWidget, QHBoxLayout, \
+from PyQt5.QtCore import QThread
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QApplication, QStyleOptionViewItem, QTableWidgetItem, QWidget, QHBoxLayout, \
     QVBoxLayout, QLabel, QCompleter, QHeaderView
-from qfluentwidgets import TableWidget, isDarkTheme, setTheme, Theme, TableView, TableItemDelegate, SearchLineEdit, \
-    PrimaryPushButton, SpinBox, InfoBar, InfoBarPosition, InfoBarManager, InfoBarIcon, PushButton, \
-    ProgressBar
+from qfluentwidgets import TableWidget, isDarkTheme, TableItemDelegate, SearchLineEdit, \
+    PrimaryPushButton, SpinBox, InfoBar, InfoBarPosition, InfoBarIcon, PushButton, ProgressBar
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 import helper.config
 import win32api, win32con
@@ -20,18 +19,27 @@ import requests
 from json import loads
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
+from helper.getvalue import apipath, download_log, search_log
 
 try:
-    if os.path.exists("api.json"):
-        u = open("api.json", "r")
+    if os.path.exists(apipath):
+        u = open(apipath, "r")
         data = json.loads(u.read())
         api = data["api"]
         u.close()
     else:
-        u = open("api.json", "w")
+        u = open(apipath, "w")
         u.write(json.dumps({"api": "https://ncma.zenglingkun.cn/"}))
         u.close()
         api = "https://ncma.zenglingkun.cn/"
+    
+    if not os.path.exists(download_log):
+        d = open(download_log, "r")
+        d.close()
+        
+    if not os.path.exists(search_log):
+        d = open(search_log, "r")
+        d.close()
 except:
     api = "https://ncma.zenglingkun.cn/"
 
@@ -39,17 +47,12 @@ except:
 def is_english_and_characters(input_string):
     return all(char.isalpha() or not char.isspace() for char in input_string)
 
-
-if not os.path.exists("log"):
-    os.makedirs("log")
-
-
 class getlist(QThread):
     finished = pyqtSignal()
 
     @pyqtSlot()
     def run(self):
-        u = open("log\\search.json", "r")
+        u = open(search_log, "r")
         data = json.loads(u.read())
         u.close()
         text = data["text"]
@@ -66,7 +69,7 @@ class downloading(QThread):
     @pyqtSlot()
     def run(self):
         musicpath = cfg.get(cfg.downloadFolder)
-        u = open("log\\download.json", "r")
+        u = open(download_log, "r")
         data = json.loads(u.read())
         u.close()
         id = data["id"]
@@ -335,11 +338,9 @@ class searchmusic(QWidget, QObject):
 
     @pyqtSlot()
     def searchstart(self):
-        if not os.path.exists("log"):
-            os.mkdir("log")
         # self.lworker.started.connect(
         #     lambda: self.lworker.run(text=self.lineEdit.text(), value=self.spinBox.value(), api_value=api))
-        u = open("log\\search.json", "w")
+        u = open(search_log, "w")
         u.write(json.dumps({"text": self.lineEdit.text(), "api_value": api, "value": self.spinBox.value()}))
         u.close()
         self.lworker.start()
@@ -371,9 +372,7 @@ class searchmusic(QWidget, QObject):
             win32api.MessageBox(0, '音乐下载路径无法读取\创建失败', '错误', win32con.MB_ICONWARNING)
             return 0
         # self.dworker.started.connect(lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
-        if not os.path.exists("log"):
-            os.mkdir("log")
-        u = open("log\\download.json", 'w')
+        u = open(download_log, 'w')
         u.write(json.dumps({"id": song_id, "api": api, "song": song, "singer": singer}))
         u.close()
         self.dworker.start()
