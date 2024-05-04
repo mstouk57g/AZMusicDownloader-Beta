@@ -93,5 +93,5 @@ _✨ 优雅地下载音乐✨_
 4、重构所有页面的Layout
 
 ![Star History Chart](https://api.star-history.com/svg?repos=AZ-Studio-2023/AZMusicDownloader&type=Date)
-
+![Alt](https://repobeats.axiom.co/api/embed/c3811b9d467134f4fe12b9dd9e1c3f72030e2e7f.svg "Repobeats analytics image")
 

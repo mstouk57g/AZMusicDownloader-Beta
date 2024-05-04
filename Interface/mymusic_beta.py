@@ -2,10 +2,9 @@
 import sys
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QListWidgetItem, QListWidget, QWidget, QHBoxLayout, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QListWidgetItem, QWidget, QHBoxLayout, QVBoxLayout
 
-from qfluentwidgets import ListView, setTheme, Theme, ListWidget
+from qfluentwidgets import ListWidget
 import os
 from qfluentwidgets import ToolButton, PrimaryToolButton
 from qfluentwidgets import FluentIcon as FIF

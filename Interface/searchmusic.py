@@ -1,13 +1,12 @@
 # coding: utf-8
 import json
 import random
-import sys
 import AZMusicAPI
 import webbrowser
 from PyQt5.QtCore import QModelIndex, Qt
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QPalette
-from PyQt5.QtWidgets import QApplication, QStyleOptionViewItem, QTableWidgetItem, QWidget, QHBoxLayout, \
+from PyQt5.QtWidgets import QStyleOptionViewItem, QTableWidgetItem, QWidget, QHBoxLayout, \
     QVBoxLayout, QLabel, QCompleter, QHeaderView
 from qfluentwidgets import TableWidget, isDarkTheme, TableItemDelegate, SearchLineEdit, \
     PrimaryPushButton, SpinBox, InfoBar, InfoBarPosition, InfoBarIcon, PushButton, ProgressBar
@@ -19,7 +18,7 @@ import requests
 from json import loads
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
-from helper.getvalue import apipath, download_log, search_log
+from helper.getvalue import apipath, download_log, search_log, autoapi
 
 try:
     if os.path.exists(apipath):
@@ -29,9 +28,9 @@ try:
         u.close()
     else:
         u = open(apipath, "w")
-        u.write(json.dumps({"api": "https://ncma.zenglingkun.cn/"}))
+        u.write(json.dumps({"api": autoapi}))
         u.close()
-        api = "https://ncma.zenglingkun.cn/"
+        api = autoapi
     
     if not os.path.exists(download_log):
         d = open(download_log, "r")
@@ -41,7 +40,7 @@ try:
         d = open(search_log, "r")
         d.close()
 except:
-    api = "https://ncma.zenglingkun.cn/"
+    api = autoapi
 
 
 def is_english_and_characters(input_string):
