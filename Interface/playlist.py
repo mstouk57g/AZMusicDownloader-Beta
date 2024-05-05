@@ -1,10 +1,9 @@
 import json
 import AZMusicAPI
-from PyQt5.QtCore import QModelIndex, Qt
-from PyQt5.QtCore import QTimer, QThread
-from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QWidget, QAbstractItemView, QHBoxLayout
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
-from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import QThread
+from PyQt5.QtWidgets import QTableWidgetItem, QWidget, QAbstractItemView
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5 import QtCore
 import win32api, win32con
 import os
 import requests
@@ -30,7 +29,7 @@ class downloading(QThread):
     @pyqtSlot()
     def run(self):
         musicpath = cfg.get(cfg.downloadFolder)
-        u = open("log\\list_download.json", "r")
+        u = open(playlist_download_log, "r")
         data = json.loads(u.read())
         u.close()
         id = data["id"]
@@ -65,7 +64,7 @@ class getlist(QThread):
 
     @pyqtSlot()
     def run(self):
-        u = open("log\\list_search.json", "r")
+        u = open(playlist_search_log, "r")
         data = json.loads(u.read())
         u.close()
         type_value = data["type_value"]
@@ -215,7 +214,7 @@ class playlist(QWidget):
         self.PushButton.setEnabled(False)
         # self.getlist_worker.started.connect(
         #     lambda: self.lworker.run(type_value=self.ComboBox.text(), value=self.LineEdit.text(), api_value=api))
-        u = open("log\\list_search.json", "w")
+        u = open(playlist_search_log, "w")
         u.write(json.dumps({"type_value": self.ComboBox.text(), "value": self.LineEdit.text(), "api_value": api}))
         u.close()
         self.lworker.start()
@@ -280,9 +279,7 @@ class playlist(QWidget):
                 return 0
             # self.download_worker.started.connect(
             #     lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
-            if not os.path.exists("log"):
-                os.mkdir("log")
-            u = open("log\\list_download.json", 'w')
+            u = open(playlist_download_log, 'w')
             u.write(json.dumps({"id": song_id, "api": api, "song": song, "singer": singer, "album": album}))
             u.close()
             self.dworker.start()
@@ -295,7 +292,7 @@ class playlist(QWidget):
         musicpath = cfg.get(cfg.downloadFolder)
         if pro == "200":
             self.pro_bar.setValue(100)
-            u = open("log\\list_download.json", "r")
+            u = open(playlist_download_log, "r")
             data = json.loads(u.read())
             u.close()
             song = data["song"]
@@ -338,18 +335,3 @@ def get_folders(folder_path):
             folders.append(item)
 
     return folders
-
-
-if __name__ == "__main__":
-    import sys
-
-    QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-    app = QtWidgets.QApplication(sys.argv)
-    Form = QtWidgets.QWidget()
-    ui = playlist()
-    ui.__init__()
-    Form.show()
-    sys.exit(app.exec_())
