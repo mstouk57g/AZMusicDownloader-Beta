@@ -7,25 +7,6 @@ from PyQt5.QtCore import QLocale
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
                             OptionsValidator,  FolderValidator, ConfigSerializer)
 
-
-class SongQuality(Enum):
-    """ Online song quality enumeration class """
-
-    STANDARD = "Standard quality"
-    HIGH = "High quality"
-    SUPER = "Super quality"
-    LOSSLESS = "Lossless quality"
-
-
-class MvQuality(Enum):
-    """ MV quality enumeration class """
-
-    FULL_HD = "Full HD"
-    HD = "HD"
-    SD = "SD"
-    LD = "LD"
-
-
 class Language(Enum):
     """ Language enumeration """
 
@@ -66,15 +47,6 @@ class Config(QConfig):
     language = OptionsConfigItem(
         "Personalize", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
     micaEnabled = ConfigItem("Personalize", "MicaEnabled", platform == 'win32' and getwindowsversion().build >= 22000, BoolValidator())
-    
-
-YEAR = int(datetime.date.today().year)
-AUTHOR = "AZ Studio"
-VERSION = "2.2.0"
-HELP_URL = "https://azstudio.net.cn/"
-FEEDBACK_URL = "https://azstudio.net.cn/"
-RELEASE_URL = "https://github.com/AZ-Studio-2023/AZMusicDownloader/releases/tag/v2.2.0"
-
 
 cfg = Config()
 qconfig.load(configpath, cfg)

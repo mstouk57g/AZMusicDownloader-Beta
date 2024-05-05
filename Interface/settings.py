@@ -1,5 +1,5 @@
 # coding:utf-8
-from helper.config import cfg, HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
+from helper.config import cfg
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
                             OptionsSettingCard, PushSettingCard, setTheme, isDarkTheme,
                             HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
@@ -10,14 +10,10 @@ from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 import winreg
 from sys import platform, getwindowsversion
-from helper.config import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL
-from os import remove
-
-reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
-documents_path_value = winreg.QueryValueEx(reg_key, "My Music")
-personalmusicpath = documents_path_value[0]
-autopath = "{}\\AZMusicDownload".format(personalmusicpath)
-
+from helper.getvalue import (YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, 
+                             autopath, playlist_download_log, playlist_search_log, 
+                             search_log, download_log, apipath, configpath)   
+from os import remove, path
 
 class SettingInterface(ScrollArea):
     musicFoldersChanged = pyqtSignal(list)
@@ -235,20 +231,20 @@ class SettingInterface(ScrollArea):
         self.downloadFolderCard.setContent(cfg.get(cfg.downloadFolder))
         
     def __backtoinitClicked(self):
-        try:
-            reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
-            config_path_value = winreg.QueryValueEx(reg_key, "AppData")
-            DataPath = config_path_value[0]
-            configpath = "{}\\AZMusicDownload\\config.json".format(DataPath)
+        if path.exists(configpath):
             remove(configpath)
-            self.__showRestartTooltip()
-            self.backtoinit.setEnabled(False)
-        except:
-            InfoBar.error(
-            '',
-            self.tr('Nothing should be changed.'),
-            parent=self.window()
-        )
+        if path.exists(playlist_download_log):
+            remove(playlist_download_log)
+        if path.exists(playlist_search_log):
+            remove(playlist_search_log)
+        if path.exists(download_log):
+            remove(download_log)
+        if path.exists(apipath):
+            remove(apipath)
+        if path.exists(search_log):
+            remove(search_log)
+        self.__showRestartTooltip()
+        self.backtoinit.setEnabled(False)
 
     def __onThemeChanged(self, theme: Theme):
         """ theme changed slot """
