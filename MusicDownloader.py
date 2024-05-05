@@ -14,7 +14,7 @@ def global_exception_handler(exc_type, exc_value, exc_traceback):
     MessageBox(0, msesg, "请将这个错误反馈给我们", MB_ICONHAND)
 sys.excepthook = global_exception_handler
 
-if __name__ == '__main__':
+if __name__ == '__main__' and sys.platform == 'win32' and sys.getwindowsversion().build >= 7601:
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
@@ -46,3 +46,6 @@ if __name__ == '__main__':
     w.show()
     splash.finish(w)
     app.exec_()
+else:
+    text = "不支持的操作系统：" + sys.platform()
+    MessageBox(0, text, "软件启动错误", MB_ICONHAND)

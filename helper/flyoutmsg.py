@@ -4,7 +4,7 @@ from qfluentwidgets import InfoBar, InfoBarPosition
 def dlsuc(content, parent):
     # convenient class mothod
     InfoBar.success(
-        title="音乐下载完成！",
+        title="",
         content=content,
         orient=Qt.Horizontal,
         isClosable=True,

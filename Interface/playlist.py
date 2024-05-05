@@ -10,7 +10,7 @@ import requests
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
 from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoapi, playlistpath
-from helper.flyoutmsg import dlerr, dlsuc,dlwar
+from helper.flyoutmsg import dlerr, dlsuc
 
 try:
     u = open(apipath, "r")
