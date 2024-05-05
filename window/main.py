@@ -27,8 +27,6 @@ class Window(MSFluentWindow):
             self.addSubInterface(playlist(), FIF.EXPRESSIVE_INPUT_ENTRY, '歌单')
         self.addSubInterface(SettingInterface(), FIF.SETTING, '设置', position=NavigationItemPosition.BOTTOM)
 
-        self.navigationInterface.setCurrentItem(searchmusic().objectName())
-
     def initWindow(self):
         self.resize(900, 700)
         self.setWindowIcon(QIcon('resource/logo.png'))

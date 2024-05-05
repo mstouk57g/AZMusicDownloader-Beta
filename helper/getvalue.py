@@ -15,4 +15,4 @@ music_path_value = winreg.QueryValueEx(reg_key, "My Music")
 personalmusicpath = music_path_value[0]
 autopath = "{}\\AZMusicDownload".format(personalmusicpath)
 
-autoapi = "ncma.azprod.cn" #API为ncma的克隆项目
+autoapi = "https://ncma.azprod.cn/" #API为ncma的克隆项目
