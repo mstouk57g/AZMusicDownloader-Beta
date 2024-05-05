@@ -19,7 +19,7 @@ _✨ 优雅地下载音乐✨_
   </a>
   <a href="https://qm.qq.com/cgi-bin/qm/qr?k=dC63QHGh-kNApdDtxISAg3Adpg84gWCd&jump_from=webapi&authKey=xuvI2AhU2s5dLFtxjHjbg8Hu2y9NKDy3lFpjaYscDWtxeSDIXVUYWw0QN/+hgAUI">
     <img src="https://img.shields.io/badge/AZ_Studio%E4%BA%A4%E6%B5%81%E7%BE%A4-808738069-yellow" alt="qq group">
-  <img src="https://img.shields.io/badge/Windows-Only-pink" alt="WinOnly">
+  <img src="https://img.shields.io/badge/Windows-Only-pink?logo=windows" alt="WinOnly">
 </p>
 
 </div>
@@ -64,28 +64,6 @@ _✨ 优雅地下载音乐✨_
 ### 免责声明
 
 > 本项目部分功能使用了网易云音乐的第三方 API 服务，仅供个人学习研究使用，禁止用于商业及非法用途。同时，本项目开发者承诺：严格遵守相关法律法规和网易云音乐 API 使用协议，不会利用本项目进行任何违法活动。 如因使用本项目而引起的任何纠纷或责任，均由使用者自行承担。本项目开发者不承担任何因使用本项目而导致的任何直接或间接责任，并保留追究使用者违法行为的权利。请使用者在使用本项目时遵守相关法律法规，请勿将本项目用于任何商业及非法用途。如有违反，一切后果由使用者自负。 同时，使用者应该自行承担因使用本项目而带来的风险和责任。本项目开发者不对本项目所提供的服务和内容做出任何保证，感谢您的理解。
-
-### Q&A
-
-1.Q:为什么我无法导入歌单？
-
-  A:需要使用网易云音乐的用户id或歌单id，请检查是否正确
-
-2.Q:为什么我没有歌单功能？
-
-  A:请在设置中开启Beta实验功能
-
-3.Q:为什么我下载不了歌曲？
-
-  A:请检查您是否更改了默认音乐下载目录（V2.1.0 Update 1及之前）
-
-  4.Q:如何使用我自己的API？
-
-  A:在```用户文件夹\AppData\Roming\AZMusicDownload```找到```api.json```文件，将其中的api项修改为你自己的（格式：``` https://example.com/ ```）
-
-5.Q:为什么导入的歌单不完整？
-
-  A:由于技术限制，我们暂时只能获取到歌单内的前50首
 
 ### 当前等待任务：
 
