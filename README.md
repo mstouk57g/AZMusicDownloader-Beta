@@ -48,7 +48,9 @@ _✨ 优雅地下载音乐✨_
 - 使用 [发行版](https://github.com/AZ-Studio-2023/AZMusicDownloader/releases)
 
 > 您可以选择使用安装版(exe程序) 或 绿色版(zip压缩包)
+> 
 > 因为需要调用win32和读取Windows注册表，所以本程序当前仅面对Windows用户开发，其他系统启动将会报错
+> 
 > ⚠️注意：若您将本程序安装/放置在需要管理员权限的目录，则需要以**管理员方式运行**,否则将会无法正常运行。
 
 
@@ -79,7 +81,7 @@ _✨ 优雅地下载音乐✨_
 
   4.Q:如何使用我自己的API？
 
-  A:在软件目录下找到```api.json```文件，将其中的api项修改为你自己的（格式：``` https://example.com/ ```）
+  A:在```用户文件夹\AppData\Roming\AZMusicDownload```找到```api.json```文件，将其中的api项修改为你自己的（格式：``` https://example.com/ ```）
 
 5.Q:为什么导入的歌单不完整？
 
@@ -88,9 +90,8 @@ _✨ 优雅地下载音乐✨_
 ### 当前等待任务：
 
 1、支持多语言
-2、支持自动获取Windows主题
-3、区分操作系统，以支持Linux
-4、重构所有页面的Layout
+2、支持自动获取Windows主题颜色
+3、重构所有页面的Layout
 
 ![Star History Chart](https://api.star-history.com/svg?repos=AZ-Studio-2023/AZMusicDownloader&type=Date)
 ![Alt](https://repobeats.axiom.co/api/embed/c3811b9d467134f4fe12b9dd9e1c3f72030e2e7f.svg "Repobeats analytics image")
