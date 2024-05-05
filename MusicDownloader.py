@@ -5,12 +5,13 @@ from window.main import Window
 import sys
 from PyQt5.QtCore import Qt, QTranslator
 from PyQt5.QtGui import QPixmap
-import win32api, win32con
+from win32api import MessageBox
+from win32con import MB_ICONHAND
 from helper.inital import mkf
 
 def global_exception_handler(exc_type, exc_value, exc_traceback):
     msesg = str(exc_type) + str(exc_value) + str(exc_traceback)
-    win32api.MessageBox(0, msesg, "请将这个错误反馈给我们", win32con.MB_ICONHAND)
+    MessageBox(0, msesg, "请将这个错误反馈给我们", MB_ICONHAND)
 sys.excepthook = global_exception_handler
 
 if __name__ == '__main__':

@@ -5,12 +5,12 @@ from PyQt5.QtWidgets import QTableWidgetItem, QWidget, QAbstractItemView
 from qfluentwidgets import ComboBox, LineEdit, PushButton, SubtitleLabel, TableWidget, ProgressBar
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5 import QtCore
-import win32api, win32con
 import os
 import requests
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
 from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoapi, playlistpath
+from helper.flyoutmsg import dlerr, dlsuc,dlwar
 
 try:
     u = open(apipath, "r")
@@ -19,9 +19,6 @@ try:
     u.close()
 except:
     api = autoapi
-
-##if not os.path.isdir("playlist"):
-##    os.mkdir("playlist")
 
 
 class downloading(QThread):
@@ -39,11 +36,10 @@ class downloading(QThread):
         singer = data["singer"]
         url = AZMusicAPI.geturl(id=id, api=api)
         if url == "Error 3":
-            win32api.MessageBox(0, '这首歌曲无版权，暂不支持下载', '错误', win32con.MB_ICONWARNING)
+            dlerr(content='这首歌曲无版权，暂不支持下载', parent=self)
             return 0
         elif url == "NetworkError":
-            win32api.MessageBox(0, '您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', '错误',
-                                win32con.MB_ICONWARNING)
+            dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent = self)
             return 0
         response = requests.get(url, stream=True)
         file_size = int(response.headers.get('content-length', 0))
@@ -243,8 +239,7 @@ class playlist(QWidget):
             self.TableWidget_2.resizeColumnsToContents()
             self.TableWidget_2.setRowCount(len(data))
         except:
-            win32api.MessageBox(0, '您双击的行无数据', '错误', win32con.MB_ICONWARNING)
-
+            dlerr(content='您双击的行无数据', parent=self)
     @pyqtSlot()
     def search(self):
         data = get_folders(playlistpath)
@@ -271,7 +266,7 @@ class playlist(QWidget):
         except AttributeError:
             self.TableWidget_2.clearSelection()
             self.PushButton_2.setEnabled(False)
-            win32api.MessageBox(0, '您选中的行无数据', '错误', win32con.MB_ICONWARNING)
+            dlerr(content='您选中的行无数据', parent=self)
             return 0
         if id_v != "":
             song_id = id_v
@@ -282,7 +277,7 @@ class playlist(QWidget):
                 if os.path.exists(cfg.get(cfg.downloadFolder)) == False:
                     os.mkdir(cfg.get(cfg.downloadFolder))
             except:
-                win32api.MessageBox(0, '音乐下载路径无法读取\创建失败', '错误', win32con.MB_ICONWARNING)
+                dlerr(content='音乐下载路径无法读取\创建失败', parent=self)
                 return 0
             # self.download_worker.started.connect(
             #     lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
@@ -293,7 +288,7 @@ class playlist(QWidget):
         else:
             self.TableWidget_2.clearSelection()
             self.PushButton_2.setEnabled(False)
-            win32api.MessageBox(0, '您选中的行无数据', '错误', win32con.MB_ICONWARNING)
+            dlerr(content='您选中的行无数据', parent=self)
 
     def download(self, pro):
         musicpath = cfg.get(cfg.downloadFolder)
@@ -313,7 +308,7 @@ class playlist(QWidget):
             audio["artist"] = singer
             audio.save()
             text = '音乐下载完成！\n歌曲名：{}\n艺术家：{}\n保存路径：{}'.format(song, singer, path)
-            win32api.MessageBox(0, text, '音乐下载完成', win32con.MB_OK)
+            dlsuc(content=text, parent=self)
             self.TableWidget_2.clearSelection()
             self.PushButton_2.setEnabled(False)
             self.pro_bar.setHidden(True)

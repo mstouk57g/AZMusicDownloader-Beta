@@ -9,12 +9,13 @@ from qfluentwidgets import TableWidget, isDarkTheme, TableItemDelegate, SearchLi
     PrimaryPushButton, SpinBox, InfoBar, InfoBarPosition, InfoBarIcon, PushButton, ProgressBar
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 import helper.config
-import win32api, win32con, requests, os
+import requests, os
 from json import loads
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
 from helper.getvalue import apipath, download_log, search_log, autoapi, adurl
 from helper.inital import mkf
+from helper.flyoutmsg import dlsuc, dlerr, dlwar
 
 try:
     u = open(apipath, "r")
@@ -59,11 +60,10 @@ class downloading(QThread):
         singer = data["singer"]
         url = AZMusicAPI.geturl(id=id, api=api)
         if url == "Error 3":
-            win32api.MessageBox(0, '这首歌曲无版权，暂不支持下载', '错误', win32con.MB_ICONWARNING)
+            dlerr(content='这首歌曲无版权，暂不支持下载', parent=self)
             return 0
         elif url == "NetworkError":
-            win32api.MessageBox(0, '您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', '错误',
-                                win32con.MB_ICONWARNING)
+            dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent = self)
             return 0
 
         response = requests.get(url, stream=True)
@@ -341,7 +341,7 @@ class searchmusic(QWidget, QObject):
         try:
             data = self.songdata[row]
         except:
-            win32api.MessageBox(0, '您选中的行无数据', '错误', win32con.MB_ICONWARNING)
+            dlerr(content='您选中的行无数据', parent=self)
             return 0
         song_id = data["id"]
         song = data["name"]
@@ -350,7 +350,7 @@ class searchmusic(QWidget, QObject):
             if os.path.exists(musicpath) == False:
                 os.mkdir(musicpath)
         except:
-            win32api.MessageBox(0, '音乐下载路径无法读取\创建失败', '错误', win32con.MB_ICONWARNING)
+            dlerr(content='音乐下载路径无法读取\创建失败', parent=self)
             return 0
         # self.dworker.started.connect(lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
         u = open(download_log, 'w')
@@ -369,14 +369,13 @@ class searchmusic(QWidget, QObject):
     def search(self):
         songInfos = self.lworker.songInfos
         if songInfos == "Error 0":
-            win32api.MessageBox(0, '未搜索到相关的歌曲，换个关键词试试吧', '错误', win32con.MB_ICONWARNING)
+            dlwar(content='未搜索到相关的歌曲，换个关键词试试吧', parent=self)
             return 0
         elif songInfos == "Error 1":
-            win32api.MessageBox(0, '你还没有输入噢', '错误', win32con.MB_ICONWARNING)
+            dlwar(content='你还没有输入噢', parent=self)
             return 0
         elif songInfos == "NetworkError":
-            win32api.MessageBox(0, '您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', '错误',
-                                win32con.MB_ICONWARNING)
+            dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent = self)
             return 0
         self.songdata = songInfos
         self.tableView.setRowCount(self.spinBox.value())
@@ -412,7 +411,7 @@ class searchmusic(QWidget, QObject):
             try:
                 data = self.songdata[row]
             except:
-                win32api.MessageBox(0, '您选中的行无数据', '错误', win32con.MB_ICONWARNING)
+                dlerr(content='您选中的行无数据', parent=self)
             song_id = data["id"]
             song = data["name"]
             singer = data["artists"]
@@ -428,8 +427,7 @@ class searchmusic(QWidget, QObject):
             audio["artist"] = singer
             audio.save()
             text = '音乐下载完成！\n歌曲名：{}\n艺术家：{}\n保存路径：{}'.format(song, singer, path)
-            win32api.MessageBox(0, text, '音乐下载完成', win32con.MB_OK)
+            dlsuc(content=text, parent=self)
             self.ProgressBar.setHidden(True)
         else:
             self.ProgressBar.setValue(int(progress))
-

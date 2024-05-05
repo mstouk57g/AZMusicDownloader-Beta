@@ -1,6 +1,5 @@
 # coding:utf-8
 from enum import Enum
-import datetime
 from sys import platform, getwindowsversion
 from helper.getvalue import configpath, autopath
 from PyQt5.QtCore import QLocale
