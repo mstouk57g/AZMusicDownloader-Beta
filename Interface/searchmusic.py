@@ -1,8 +1,5 @@
 # coding: utf-8
-import json
-import random
-import AZMusicAPI
-import webbrowser
+import json, random, AZMusicAPI, webbrowser
 from PyQt5.QtCore import QModelIndex, Qt
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QPalette
@@ -12,36 +9,21 @@ from qfluentwidgets import TableWidget, isDarkTheme, TableItemDelegate, SearchLi
     PrimaryPushButton, SpinBox, InfoBar, InfoBarPosition, InfoBarIcon, PushButton, ProgressBar
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 import helper.config
-import win32api, win32con
-import os
-import requests
+import win32api, win32con, requests, os
 from json import loads
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
-from helper.getvalue import apipath, download_log, search_log, autoapi
+from helper.getvalue import apipath, download_log, search_log, autoapi, adurl
+from helper.inital import mkf
 
 try:
-    if os.path.exists(apipath):
-        u = open(apipath, "r")
-        data = json.loads(u.read())
-        api = data["api"]
-        u.close()
-    else:
-        u = open(apipath, "w")
-        u.write(json.dumps({"api": autoapi}))
-        u.close()
-        api = autoapi
-    
-    if not os.path.exists(download_log):
-        d = open(download_log, "r")
-        d.close()
-        
-    if not os.path.exists(search_log):
-        d = open(search_log, "r")
-        d.close()
+    u = open(apipath, "r")
+    data = json.loads(u.read())
+    api = data["api"]
+    u.close()   
 except:
     api = autoapi
-
+mkf()
 
 def is_english_and_characters(input_string):
     return all(char.isalpha() or not char.isspace() for char in input_string)
@@ -136,7 +118,7 @@ class CustomTableItemDelegate(TableItemDelegate):
 
 
 def getad():
-    url = "https://json.zenglingkun.cn/ad/music/home.json"
+    url = adurl
     try:
         ad = requests.get(url).text
         data = loads(ad)

@@ -10,10 +10,10 @@ from qfluentwidgets import ToolButton, PrimaryToolButton
 from qfluentwidgets import FluentIcon as FIF
 import subprocess
 from helper.config import cfg
+from helper.inital import mkf
 
 path = cfg.get(cfg.downloadFolder)
-if not os.path.exists(path):
-    os.makedirs(path)
+mkf()
 def get_all_music():
     all_music = []
     path = cfg.get(cfg.downloadFolder)

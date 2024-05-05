@@ -2,6 +2,7 @@ import json
 import AZMusicAPI
 from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QTableWidgetItem, QWidget, QAbstractItemView
+from qfluentwidgets import ComboBox, LineEdit, PushButton, SubtitleLabel, TableWidget, ProgressBar
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5 import QtCore
 import win32api, win32con
@@ -9,7 +10,7 @@ import os
 import requests
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
-from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoapi
+from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoapi, playlistpath
 
 try:
     u = open(apipath, "r")
@@ -87,8 +88,8 @@ class getlist(QThread):
                 if data_y["code"] != 400:
                     name = data["name"]
                     data = data["tracks"]
-                    if not os.path.isdir("playlist\\" + name):
-                        os.mkdir("playlist\\{}".format(name))
+                    if not os.path.isdir(playlistpath + "\\" + name):
+                        os.mkdir("{}\\{}".format(playlistpath, name))
                         data_v = []
                         try:
                             for i in range(len(data)):
@@ -102,7 +103,7 @@ class getlist(QThread):
                         except:
                             data_v.append({"id": '-1', "name": 'error', "artists": 'error',
                                            "album": 'error'})
-                        u = open("playlist\\{}\\index.json".format(name), "w")
+                        u = open("{}\\{}\\index.json".format(playlistpath, name), "w")
                         u.write(json.dumps({"content": data_v}))
                         u.close()
         else:
@@ -114,8 +115,8 @@ class getlist(QThread):
             if data_y["code"] == 200:
                 name = data["name"]
                 data = data["tracks"]
-                if not os.path.exists("playlist\\{}".format(name)):
-                    os.mkdir("playlist\\{}".format(name))
+                if not os.path.exists("{}\\{}".format(playlistpath, name)):
+                    os.mkdir("{}\\{}".format(playlistpath, name))
                     data_v = []
                     try:
                         for i in range(len(data)):
@@ -129,7 +130,7 @@ class getlist(QThread):
                     except:
                         data_v.append({"id": '-1', "name": 'error', "artists": 'error',
                                        "album": 'error'})
-                    u = open("playlist\\{}\\index.json".format(name), "w")
+                    u = open("{}\\{}\\index.json".format(playlistpath, name), "w")
                     u.write(json.dumps({"content": data_v}))
                     u.close()
         self.finished.emit()
@@ -194,7 +195,7 @@ class playlist(QWidget):
         self.lworker.finished.connect(self.search)
         self.dworker = downloading()
         self.dworker.finished.connect(self.download)
-        data = get_folders("playlist")
+        data = get_folders(playlistpath)
         self.TableWidget.setRowCount(len(data))
         self.TableWidget.clearContents()
         for i in range(len(data)):
@@ -221,8 +222,8 @@ class playlist(QWidget):
 
     def music(self):
         try:
-            name = get_folders("playlist")[self.TableWidget.currentIndex().row()]
-            u = open("playlist\\{}\\index.json".format(name), "r")
+            name = get_folders(playlistpath)[self.TableWidget.currentIndex().row()]
+            u = open("{}\\{}\\index.json".format(playlistpath, name), "r")
             data = json.loads(u.read())
             u.close()
             data = data["content"]
@@ -246,7 +247,7 @@ class playlist(QWidget):
 
     @pyqtSlot()
     def search(self):
-        data = get_folders("playlist")
+        data = get_folders(playlistpath)
         self.TableWidget.setRowCount(len(data))
         self.TableWidget.clearContents()
         for i in range(len(data)):
@@ -327,10 +328,6 @@ class playlist(QWidget):
         self.PushButton.setText(_translate("self", "导入"))
         self.PushButton_2.setText(_translate("self", "下载"))
         self.PushButton_2.setEnabled(False)
-
-
-from qfluentwidgets import ComboBox, LineEdit, PushButton, SubtitleLabel, TableWidget, ProgressBar
-
 
 def get_folders(folder_path):
     folders = []

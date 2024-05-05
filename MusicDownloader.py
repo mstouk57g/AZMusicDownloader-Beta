@@ -5,13 +5,12 @@ from window.main import Window
 import sys
 from PyQt5.QtCore import Qt, QTranslator
 from PyQt5.QtGui import QPixmap
-import win32api
-import win32con
+import win32api, win32con
+from helper.inital import mkf
 
 def global_exception_handler(exc_type, exc_value, exc_traceback):
-    msesg = exc_type, exc_value, exc_traceback
-    win32api.MessageBox(0, msesg, "完犊子咯！这里捕获了异常：", win32con.MB_ICONHAND)
-    # 这个全局捕获把我电脑干废过（
+    msesg = str(exc_type + exc_value + exc_traceback)
+    win32api.MessageBox(0, msesg, "Error", win32con.MB_ICONHAND)
 sys.excepthook = global_exception_handler
 
 if __name__ == '__main__':
@@ -20,6 +19,7 @@ if __name__ == '__main__':
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
     app = QApplication(sys.argv)
+    mkf()
     
     splash_pix = QPixmap('resource/splash.png')
     splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
