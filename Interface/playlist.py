@@ -264,8 +264,14 @@ class playlist(QWidget):
         self.PushButton_2.setEnabled(False)
         self.pro_bar.setValue(0)
         self.pro_bar.setHidden(False)
-        row = self.TableWidget_2.currentIndex().row()
-        id_v = str(self.TableWidget_2.item(row, 0).text())
+        try:
+            row = self.TableWidget_2.currentIndex().row()
+            id_v = str(self.TableWidget_2.item(row, 0).text())
+        except AttributeError:
+            self.TableWidget_2.clearSelection()
+            self.PushButton_2.setEnabled(False)
+            win32api.MessageBox(0, '您选中的行无数据', '错误', win32con.MB_ICONWARNING)
+            return 0
         if id_v != "":
             song_id = id_v
             song = str(self.TableWidget_2.item(row, 1).text())
