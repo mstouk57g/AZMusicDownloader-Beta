@@ -2,18 +2,15 @@
 from helper.config import cfg
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
                             OptionsSettingCard, PushSettingCard, setTheme, isDarkTheme,
-                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
-                            ComboBoxSettingCard, ExpandLayout, Theme, InfoBar)
+                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea, PushButton,
+                            ComboBoxSettingCard, ExpandLayout, Theme, InfoBar, FlyoutView, Flyout)
 from qfluentwidgets import FluentIcon as FIF
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
-import winreg
 from sys import platform, getwindowsversion
-from helper.getvalue import (YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, 
-                             autopath, playlist_download_log, playlist_search_log, 
-                             search_log, download_log, apipath, configpath)   
-from os import remove, path
+from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL
+from helper.inital import delfin
 
 class SettingInterface(ScrollArea):
     musicFoldersChanged = pyqtSignal(list)
@@ -231,20 +228,8 @@ class SettingInterface(ScrollArea):
         self.downloadFolderCard.setContent(cfg.get(cfg.downloadFolder))
         
     def __backtoinitClicked(self):
-        if path.exists(configpath):
-            remove(configpath)
-        if path.exists(playlist_download_log):
-            remove(playlist_download_log)
-        if path.exists(playlist_search_log):
-            remove(playlist_search_log)
-        if path.exists(download_log):
-            remove(download_log)
-        if path.exists(apipath):
-            remove(apipath)
-        if path.exists(search_log):
-            remove(search_log)
+        delfin()
         self.__showRestartTooltip()
-        self.backtoinit.setEnabled(False)
 
     def __onThemeChanged(self, theme: Theme):
         """ theme changed slot """
@@ -254,8 +239,37 @@ class SettingInterface(ScrollArea):
         # chang the theme of setting interface
         self.__setQss()
         
-    def __changelog(self):
+    def opengithub(self):
         QDesktopServices.openUrl(QUrl(RELEASE_URL))
+    def openaz(self):
+        QDesktopServices.openUrl(QUrl(AZ_URL))
+        
+    def __changelog(self):
+        view = FlyoutView(
+            title='AZMusicDownloader V2.3.0更新日志 ',
+            content="更新了个寂寞 \n 我不知道",
+            #image='resource/splash.png',
+            isClosable=True
+        )
+        
+        # add button to view
+        button1 = PushButton(FIF.GITHUB, 'GitHub')
+        button1.setFixedWidth(120)
+        button1.clicked.connect(self.opengithub)
+        view.addWidget(button1, align=Qt.AlignRight)
+        
+        button2 = PushButton('AZ Studio')
+        button2.setFixedWidth(120)
+        button2.clicked.connect(self.openaz)
+        view.addWidget(button2, align=Qt.AlignRight)
+
+        # adjust layout (optional)
+        view.widgetLayout.insertSpacing(1, 5)
+        view.widgetLayout.addSpacing(5)
+
+        # show view
+        w = Flyout.make(view, self.aboutCard, self)
+        view.closed.connect(w.close)
 
     def __connectSignalToSlot(self):
         """ connect signal to slot """
