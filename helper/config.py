@@ -45,7 +45,7 @@ class Config(QConfig):
     
     # Personalize
     language = OptionsConfigItem(
-        "Personalize", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
+        "Personalize", "Language", Language.CHINESE_SIMPLIFIED, OptionsValidator(Language), LanguageSerializer(), restart=True)
     micaEnabled = ConfigItem("Personalize", "MicaEnabled", platform == 'win32' and getwindowsversion().build >= 22000, BoolValidator())
 
 cfg = Config()

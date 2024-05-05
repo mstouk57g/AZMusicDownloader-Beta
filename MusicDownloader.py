@@ -11,7 +11,7 @@ from helper.inital import mkf
 def global_exception_handler(exc_type, exc_value, exc_traceback):
     msesg = str(exc_type) + str(exc_value) + str(exc_traceback)
     win32api.MessageBox(0, msesg, "请将这个错误反馈给我们", win32con.MB_ICONHAND)
-#sys.excepthook = global_exception_handler
+sys.excepthook = global_exception_handler
 
 if __name__ == '__main__':
     QApplication.setHighDpiScaleFactorRoundingPolicy(

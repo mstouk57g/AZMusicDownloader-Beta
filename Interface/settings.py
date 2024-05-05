@@ -147,6 +147,7 @@ class SettingInterface(ScrollArea):
             self.aboutGroup
         )
         
+        self.languageCard.setEnabled(False)
         self.micaCard.setEnabled(platform == 'win32' and getwindowsversion().build >= 22000)
         self.__initWidget()
 
