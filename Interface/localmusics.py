@@ -22,12 +22,12 @@ def get_all_music():
             all_music.append(file_name)
     return all_music
 
-class Demo(QWidget):
+class localmusics(QWidget):
 
     def __init__(self):
         super().__init__()
         # setTheme(Theme.DARK)
-        self.setObjectName("Demo")
+        self.setObjectName("localmusics")
         self.hBoxLayout = QHBoxLayout(self)
         self.vBoxLayout = QVBoxLayout(self)
         self.listWidget = ListWidget(self)
@@ -40,8 +40,7 @@ class Demo(QWidget):
             # item.setIcon(QIcon(':/qfluentwidgets/images/logo.png'))
             # item.setCheckState(Qt.Unchecked)
             self.listWidget.addItem(item)
-            
-        self.setStyleSheet("Demo{background: rgb(249, 249, 249)} ")
+        
         self.hBoxLayout.setContentsMargins(0, 0, 0, 0)
         self.listWidget.clicked.connect(self.openbutton)
         self.resize(300, 400)
@@ -91,16 +90,3 @@ class Demo(QWidget):
         for stand in stands:
             item = QListWidgetItem(stand)
             self.listWidget.addItem(item)
-
-        
-if __name__ == "__main__":
-    # enable dpi scale
-    QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-
-    app = QApplication(sys.argv)
-    w = Demo()
-    w.show()
-    app.exec()
