@@ -1,8 +1,8 @@
 # coding:utf-8
 from helper.config import cfg
-from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard, 
+from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
                             OptionsSettingCard, PushSettingCard, setTheme, isDarkTheme,
-                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea, PushButton,
+                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea, PushButton, PrimaryPushButton,
                             ComboBoxSettingCard, ExpandLayout, Theme, InfoBar, FlyoutView, Flyout)
 from qfluentwidgets import FluentIcon as FIF
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
@@ -10,7 +10,7 @@ from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 from sys import platform, getwindowsversion
 from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL,verdetail
-from helper.inital import get_update, delfin, showup
+from helper.inital import delfin, get_update, showup
 
 class SettingInterface(ScrollArea):
     musicFoldersChanged = pyqtSignal(list)
@@ -25,6 +25,8 @@ class SettingInterface(ScrollArea):
         self.expandLayout = ExpandLayout(self.scrollWidget)
         self.setObjectName('settings')
         self.settingLabel = QLabel(self.tr("设置"), self)
+        self.upworker = get_update()
+        self.upworker.finished.connect(self.showupupgrade)
         
         # Personalize
         self.personalGroup = SettingCardGroup(self.tr('个性化'), self.scrollWidget)
@@ -261,7 +263,10 @@ class SettingInterface(ScrollArea):
         QDesktopServices.openUrl(QUrl(RELEASE_URL))
     def openaz(self):
         QDesktopServices.openUrl(QUrl(AZ_URL))
-
+    def showupupgrade(self, updata):
+        showup(parent = self, updata = updata, upworker = self.upworker)
+    def upupgrade(self):
+        self.upworker.start()
         
     def __changelog(self):
         view = FlyoutView(
@@ -281,6 +286,11 @@ class SettingInterface(ScrollArea):
         button2.setFixedWidth(120)
         button2.clicked.connect(self.openaz)
         view.addWidget(button2, align=Qt.AlignRight)
+        
+        button3 = PrimaryPushButton('Check Update')
+        button3.setFixedWidth(120)
+        button3.clicked.connect(self.upupgrade)
+        view.addWidget(button3, align=Qt.AlignRight)
 
         # adjust layout (optional)
         view.widgetLayout.insertSpacing(1, 5)

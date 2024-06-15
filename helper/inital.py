@@ -72,7 +72,7 @@ class get_update(QThread):
 
     @pyqtSlot()
     def run(self):
-        data = getup()     
+        data = getup()
         self.finished.emit(data)
  
 def openlk(self):
