@@ -1,21 +1,20 @@
 # coding: utf-8
-import json, random, AZMusicAPI, webbrowser
-from PyQt5.QtCore import QModelIndex, Qt
-from PyQt5.QtCore import QThread
+import json, AZMusicAPI
+from PyQt5.QtCore import QModelIndex, Qt, QThread
 from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QStyleOptionViewItem, QTableWidgetItem, QWidget, QHBoxLayout, \
     QVBoxLayout, QLabel, QCompleter, QHeaderView
 from qfluentwidgets import TableWidget, isDarkTheme, TableItemDelegate, SearchLineEdit, \
-    PrimaryPushButton, SpinBox, InfoBar, InfoBarPosition, InfoBarIcon, PushButton, ProgressBar
+    PrimaryPushButton, SpinBox, ProgressBar
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 import helper.config
 import requests, os
-from json import loads
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
-from helper.getvalue import apipath, download_log, search_log, autoapi, upurl, VERSION
-from helper.inital import mkf
+from helper.getvalue import apipath, download_log, search_log, autoapi
+from helper.inital import mkf, get_update, showup
 from helper.flyoutmsg import dlsuc, dlerr, dlwar
+from helper.downloadHelper import downloading
 
 try:
     u = open(apipath, "r")
@@ -52,46 +51,7 @@ class getlist(QThread):
         self.finished.emit()
 
 
-class downloading(QThread):
-    finished = pyqtSignal(str)
 
-    @pyqtSlot()
-    def run(self):
-        musicpath = cfg.get(cfg.downloadFolder)
-        u = open(download_log, "r")
-        data = json.loads(u.read())
-        u.close()
-        id = data["id"]
-        api = data["api"]
-        song = data["song"]
-        singer = data["singer"]
-        if cfg.apicard.value == "NCMA":
-            url = AZMusicAPI.geturl(id=id, api=api)
-        else:
-            url = AZMusicAPI.geturl(id=id, api=api, server="qqma")
-        if url == "Error 3":
-            self.show_error = "Error 3"
-            self.finished.emit("Error")
-        elif url == "Error 4":
-            self.show_error = "Error 4"
-            self.finished.emit("Error")
-        elif url == "NetworkError":
-            self.show_error = "NetworkError"
-            self.finished.emit("Error")
-        if not "Error" in url:
-            response = requests.get(url, stream=True)
-            file_size = int(response.headers.get('content-length', 0))
-            chunk_size = file_size // 100
-            path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
-            with open(path, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=chunk_size):
-                    f.write(chunk)
-                    downloaded_bytes = f.tell()
-                    progress = downloaded_bytes * 100 // file_size
-                    if downloaded_bytes % chunk_size == 0:
-                        self.finished.emit(str(progress))
-
-            self.finished.emit(str(200))
 
 
 # class Worker(QObject):
@@ -130,34 +90,7 @@ class CustomTableItemDelegate(TableItemDelegate):
             option.palette.setColor(QPalette.HighlightedText, Qt.red)
 
 
-def getup():
-    url = upurl
-    try:
-        ad = requests.get(url).text
-        data = loads(ad)
-        msg = data
-    except:
-        try:
-            o = open("resource/hitokoto.json", "r")
-            hit_data = json.loads(o.read())["hitokoto"]
-            o.close()
-            poem = "在等待的过程中，来读句古诗词吧：" + hit_data[random.randint(0, len(hit_data) - 1)]
-        except:
-            poem = "在等待的过程中，来读句古诗词吧：海内存知己，天涯若比邻。"
-        ad = {"latest": "0.0.0", "title": "(⊙o⊙)？",
-              "text": "呀！获取不到更新数据了 ＞﹏＜ 请检查您的网络连接\n{}".format(poem), "time": 200000,
-              "button": "（；´д｀）ゞ", "link": "https://azstudio.net.cn"}
-        msg = ad
-    return msg
 
-
-class get_update(QThread):
-    finished = pyqtSignal(dict)
-
-    @pyqtSlot()
-    def run(self):
-        data = getup()
-        self.finished.emit(data)
 
 
 class searchmusic(QWidget, QObject):
@@ -229,11 +162,11 @@ class searchmusic(QWidget, QObject):
         self.dworker = downloading()
 
         self.upworker = get_update()
-
+     
         # self.worker.finished.connect(self.on_worker_finished)
         self.lworker.finished.connect(self.search)
         self.dworker.finished.connect(self.download)
-        self.upworker.finished.connect(self.showup)
+        self.upworker.finished.connect(self.showupupgrade)
         self.primaryButton1 = PrimaryPushButton('下载', self)
         self.primaryButton1.released.connect(self.rundownload)
         self.primaryButton1.setEnabled(False)
@@ -306,69 +239,13 @@ class searchmusic(QWidget, QObject):
             except:
                 pass
 
-    def openlk(self):
-        webbrowser.open_new_tab(self.up["link"])
+    
 
     def openbutton(self):
         self.primaryButton1.setEnabled(True)
 
-    def showup(self, updata):
-        self.up = updata
-        if not VERSION == self.up["latest"] and self.up["latest"] != "0.0.0":
-            # 等级可为：normal（普通的），important（重要的），fix（修复版）
-            if self.up["level"] == "normal":
-                text = "我们检测到了新的版本，版本号：{}\n本次更新为日常版本迭代，更新了新功能，可选择性进行更新。".format(
-                    str(self.up["latest"]))
-                dlwar("检测到有新版本 {} ，本次更新为日常版本迭代，可选择进行更新。".format(str(self.up["latest"])), self,
-                      title="更新提示", show_time=self.up["flag_time"])
-            elif self.up["level"] == "important":
-                text = "我们检测到了新的版本，版本号：{}\n本次更新为重要版本迭代，修复了Bug，更新了新功能，强烈建议进行更新。".format(
-                    str(self.up["latest"]))
-                dlerr("检测到有新版本 {} ，本次更新为重要版本迭代，强烈建议进行更新。".format(str(self.up["latest"])),
-                      self, title="更新提示", show_time=self.up["flag_time"])
-            elif self.up["level"] == "fix":
-                text = "我们检测到了新的版本，版本号：{}\n本次更新为Bug修复版本，修复了重大Bug，强烈建议进行更新。".format(
-                    str(self.up["latest"]))
-                dlerr("检测到有新版本 {} ，本次更新为Bug修复版本，强烈建议进行更新。".format(str(self.up["latest"])),
-                      self, title="更新提示", show_time=self.up["flag_time"])
-            else:
-                text = "我们检测到了新的版本，版本号：{}\n本次更新类型未知，可能是后续版本的新更新类型。".format(
-                    str(self.up["latest"]))
-                dlwar("检测到有新版本 {} ，本次更新类型未知，可能是后续版本的新更新类型。".format(str(self.up["latest"])),
-                      self, title="更新提示", show_time=self.up["flag_time"])
-            w = InfoBar(
-                icon=InfoBarIcon.INFORMATION,
-                title="有新版本可用",
-                content=text,
-                orient=Qt.Vertical,
-                isClosable=True,
-                position=InfoBarPosition.BOTTOM_RIGHT,
-                duration=self.up["time"],
-                parent=self
-            )
-
-            self.s = PushButton(self.up["button"])
-            w.addWidget(self.s)
-            self.s.clicked.connect(self.openlk)
-            w.show()
-        elif self.up["latest"] == "0.0.0":
-            w = InfoBar(
-                icon=InfoBarIcon.ERROR,
-                title=self.up["title"],
-                content=self.up["text"],
-                orient=Qt.Vertical,
-                isClosable=True,
-                position=InfoBarPosition.BOTTOM_RIGHT,
-                duration=self.up["time"],
-                parent=self
-            )
-            self.s = PushButton(self.up["button"])
-            w.addWidget(self.s)
-            self.s.clicked.connect(self.openlk)
-            w.show()
-        else:
-            dlsuc("您使用的版本是最新版本", self, title="恭喜", show_time=5000)
-        self.upworker.quit()
+    def showupupgrade(self, updata):
+        showup(parent = self, updata = updata, upworker = self.upworker)
 
     @pyqtSlot()
     def searchstart(self):

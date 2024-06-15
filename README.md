@@ -16,7 +16,7 @@ _✨ 优雅地下载音乐✨_
     <img src="https://img.shields.io/badge/AZMusicAPI-1.4.6-green" alt="AZMusicAPI">
   </a>
   <a href="https://github.com/zhiyiYo/PyQt-Fluent-Widgets/">
-    <img src="https://img.shields.io/badge/PyQt_Fluent_Widgets-red" alt="PyQt-Fluent-Widgets">
+    <img src="https://img.shields.io/badge/PyQt_Fluent_Widgets-1.5.5-red" alt="PyQt-Fluent-Widgets">
   </a>
   <a href="https://qm.qq.com/cgi-bin/qm/qr?k=dC63QHGh-kNApdDtxISAg3Adpg84gWCd&jump_from=webapi&authKey=xuvI2AhU2s5dLFtxjHjbg8Hu2y9NKDy3lFpjaYscDWtxeSDIXVUYWw0QN/+hgAUI">
     <img src="https://img.shields.io/badge/AZ_Studio%E4%BA%A4%E6%B5%81%E7%BE%A4-808738069-yellow" alt="qq group">
@@ -28,7 +28,9 @@ _✨ 优雅地下载音乐✨_
 > 若您需要二次分发本程序，需经过开发者书面同意，并需在您的项目中注明该项目地址
 
 ### 系统要求
+
 仅支持 Windows（因为要读取注册表）
+
 仅支持 Windows 10.0.10240 以上的版本
 
 ### 赞助
@@ -37,6 +39,7 @@ _✨ 优雅地下载音乐✨_
 
 欢迎Fork并Pull Requests
 
+同时欢迎
 <a href="https://afdian.net/a/chen_mo">爱发电</a>
 
 ### 文档
