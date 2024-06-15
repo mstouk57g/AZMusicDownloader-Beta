@@ -33,14 +33,18 @@ class Config(QConfig):
     # Application
     beta = ConfigItem(
         "Application", "beta", False, BoolValidator(), restart=True)
-    adcard = ConfigItem(
-        "Application", "adcard", False, BoolValidator(), restart=True)
+    update_card = ConfigItem(
+        "Application", "update_card", False, BoolValidator(), restart=True)
+    debug_card = ConfigItem(
+        "Application", "debug_card", False, BoolValidator(), restart=True)
     
     # Search
     twitcard = ConfigItem(
         "Search", "twitcard", False, BoolValidator(), restart=True)
     hotcard = ConfigItem(
         "Search", "hotcard", False, BoolValidator(), restart=True)
+    apicard = OptionsConfigItem(
+        "Search", "apicard", "NCMA", OptionsValidator(['NCMA', 'QQMA']))
     
     # Personalize
     language = OptionsConfigItem(

@@ -8,11 +8,13 @@ from PyQt5.QtGui import QPixmap
 from win32api import MessageBox
 from win32con import MB_ICONHAND
 from helper.inital import mkf
+from helper.config import cfg
 
-def global_exception_handler(exc_type, exc_value, exc_traceback):
-    msesg = str(exc_type) + str(exc_value) + str(exc_traceback)
-    MessageBox(0, msesg, "请将这个错误反馈给我们", MB_ICONHAND)
-sys.excepthook = global_exception_handler
+if not cfg.debug_card.value:
+    def global_exception_handler(exc_type, exc_value, exc_traceback):
+        msesg = str(exc_type) + str(exc_value) + str(exc_traceback)
+        MessageBox(0, msesg, "请将这个错误反馈给我们", MB_ICONHAND)
+    sys.excepthook = global_exception_handler
 
 if __name__ == '__main__' and sys.platform == 'win32' and sys.getwindowsversion().build >= 7601:
     QApplication.setHighDpiScaleFactorRoundingPolicy(
@@ -28,8 +30,8 @@ if __name__ == '__main__' and sys.platform == 'win32' and sys.getwindowsversion(
     splash.show()
     screen_resolution = app.desktop().screenGeometry()
     screen_width, screen_height = screen_resolution.width(), screen_resolution.height()
-    splash_width = 283
-    splash_height = 276
+    splash_width = 260
+    splash_height = 260
     splash.setFixedSize(splash_width, splash_height)
     splash.move((screen_width - splash_width) // 2, (screen_height - splash_height) // 2)
     
@@ -47,5 +49,5 @@ if __name__ == '__main__' and sys.platform == 'win32' and sys.getwindowsversion(
     splash.finish(w)
     app.exec_()
 else:
-    text = "不支持的操作系统：" + sys.platform()
+    text = "不支持的操作系统：" + sys.platform
     MessageBox(0, text, "软件启动错误", MB_ICONHAND)

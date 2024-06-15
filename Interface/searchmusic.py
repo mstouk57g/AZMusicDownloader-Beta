@@ -13,7 +13,7 @@ import requests, os
 from json import loads
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
-from helper.getvalue import apipath, download_log, search_log, autoapi, adurl
+from helper.getvalue import apipath, download_log, search_log, autoapi, upurl, VERSION
 from helper.inital import mkf
 from helper.flyoutmsg import dlsuc, dlerr, dlwar
 
@@ -21,13 +21,17 @@ try:
     u = open(apipath, "r")
     data = json.loads(u.read())
     api = data["api"]
-    u.close()   
+    q_api = data["q_api"]
+    u.close()
 except:
     api = autoapi
+    q_api = ""
 mkf()
+
 
 def is_english_and_characters(input_string):
     return all(char.isalpha() or not char.isspace() for char in input_string)
+
 
 class getlist(QThread):
     finished = pyqtSignal()
@@ -41,7 +45,10 @@ class getlist(QThread):
         value = data["value"]
         api_value = data["api_value"]
         keywords = text
-        self.songInfos = AZMusicAPI.getmusic(keywords, number=value, api=api_value)
+        if cfg.apicard.value == "NCMA":
+            self.songInfos = AZMusicAPI.getmusic(keywords, number=value, api=api_value)
+        else:
+            self.songInfos = AZMusicAPI.getmusic(keywords, number=value, api=api_value, server="qqma")
         self.finished.emit()
 
 
@@ -58,27 +65,33 @@ class downloading(QThread):
         api = data["api"]
         song = data["song"]
         singer = data["singer"]
-        url = AZMusicAPI.geturl(id=id, api=api)
+        if cfg.apicard.value == "NCMA":
+            url = AZMusicAPI.geturl(id=id, api=api)
+        else:
+            url = AZMusicAPI.geturl(id=id, api=api, server="qqma")
         if url == "Error 3":
-            dlerr(content='这首歌曲无版权，暂不支持下载', parent=self)
-            return 0
+            self.show_error = "Error 3"
+            self.finished.emit("Error")
+        elif url == "Error 4":
+            self.show_error = "Error 4"
+            self.finished.emit("Error")
         elif url == "NetworkError":
-            dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent = self)
-            return 0
+            self.show_error = "NetworkError"
+            self.finished.emit("Error")
+        if not "Error" in url:
+            response = requests.get(url, stream=True)
+            file_size = int(response.headers.get('content-length', 0))
+            chunk_size = file_size // 100
+            path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
+            with open(path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=chunk_size):
+                    f.write(chunk)
+                    downloaded_bytes = f.tell()
+                    progress = downloaded_bytes * 100 // file_size
+                    if downloaded_bytes % chunk_size == 0:
+                        self.finished.emit(str(progress))
 
-        response = requests.get(url, stream=True)
-        file_size = int(response.headers.get('content-length', 0))
-        chunk_size = file_size // 100
-        path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
-        with open(path, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=chunk_size):
-                f.write(chunk)
-                downloaded_bytes = f.tell()
-                progress = downloaded_bytes * 100 // file_size
-                if downloaded_bytes % chunk_size == 0:
-                    self.finished.emit(str(progress))
-
-        self.finished.emit(str(200))
+            self.finished.emit(str(200))
 
 
 # class Worker(QObject):
@@ -117,8 +130,8 @@ class CustomTableItemDelegate(TableItemDelegate):
             option.palette.setColor(QPalette.HighlightedText, Qt.red)
 
 
-def getad():
-    url = adurl
+def getup():
+    url = upurl
     try:
         ad = requests.get(url).text
         data = loads(ad)
@@ -128,21 +141,22 @@ def getad():
             o = open("resource/hitokoto.json", "r")
             hit_data = json.loads(o.read())["hitokoto"]
             o.close()
-            poem = hit_data[random.randint(0, len(hit_data) - 1)]
+            poem = "在等待的过程中，来读句古诗词吧：" + hit_data[random.randint(0, len(hit_data) - 1)]
         except:
-            poem = "海内存知己，天涯若比邻"
-        ad = {"title": "(⊙o⊙)？", "text": "呀！找不到广告了 ＞﹏＜ 请检查您的网络连接\n{}".format(poem), "time": 30000,
-              "button": "（；´д｀）ゞ", "url": "https://azstudio.net.cn"}
+            poem = "在等待的过程中，来读句古诗词吧：海内存知己，天涯若比邻。"
+        ad = {"latest": "0.0.0", "title": "(⊙o⊙)？",
+              "text": "呀！获取不到更新数据了 ＞﹏＜ 请检查您的网络连接\n{}".format(poem), "time": 200000,
+              "button": "（；´д｀）ゞ", "link": "https://azstudio.net.cn"}
         msg = ad
     return msg
 
 
-class get_ad(QThread):
+class get_update(QThread):
     finished = pyqtSignal(dict)
 
     @pyqtSlot()
     def run(self):
-        data = getad()
+        data = getup()
         self.finished.emit(data)
 
 
@@ -152,7 +166,7 @@ class searchmusic(QWidget, QObject):
         super().__init__()
         # setTheme(Theme.DARK)
         self.setObjectName("searchmusic")
-        
+
         self.hBoxLayout = QHBoxLayout(self)
         self.layout1 = QVBoxLayout(self)
 
@@ -214,12 +228,12 @@ class searchmusic(QWidget, QObject):
 
         self.dworker = downloading()
 
-        self.adworker = get_ad()
+        self.upworker = get_update()
 
         # self.worker.finished.connect(self.on_worker_finished)
         self.lworker.finished.connect(self.search)
         self.dworker.finished.connect(self.download)
-        self.adworker.finished.connect(self.showad)
+        self.upworker.finished.connect(self.showup)
         self.primaryButton1 = PrimaryPushButton('下载', self)
         self.primaryButton1.released.connect(self.rundownload)
         self.primaryButton1.setEnabled(False)
@@ -277,8 +291,8 @@ class searchmusic(QWidget, QObject):
         self.hBoxLayout.addWidget(self.empty5)
         self.hBoxLayout.addWidget(self.empty6)
         self.resize(635, 700)
-        if helper.config.Config.adcard.value == False:
-            self.adworker.start()
+        if helper.config.Config.update_card.value == False:
+            self.upworker.start()
         if helper.config.cfg.hotcard.value:
             try:
                 data = requests.get(api + "search/hot").json()["result"]["hots"]
@@ -293,36 +307,84 @@ class searchmusic(QWidget, QObject):
                 pass
 
     def openlk(self):
-        webbrowser.open_new_tab(self.ad["url"])
+        webbrowser.open_new_tab(self.up["link"])
 
     def openbutton(self):
         self.primaryButton1.setEnabled(True)
 
-    def showad(self, addata):
-        self.ad = addata
-        w = InfoBar(
-            icon=InfoBarIcon.INFORMATION,
-            title=self.ad["title"],
-            content=self.ad["text"],
-            orient=Qt.Vertical,
-            isClosable=True,
-            position=InfoBarPosition.BOTTOM_RIGHT,
-            duration=self.ad["time"],
-            parent=self
-        )
+    def showup(self, updata):
+        self.up = updata
+        if not VERSION == self.up["latest"] and self.up["latest"] != "0.0.0":
+            # 等级可为：normal（普通的），important（重要的），fix（修复版）
+            if self.up["level"] == "normal":
+                text = "我们检测到了新的版本，版本号：{}\n本次更新为日常版本迭代，更新了新功能，可选择性进行更新。".format(
+                    str(self.up["latest"]))
+                dlwar("检测到有新版本 {} ，本次更新为日常版本迭代，可选择进行更新。".format(str(self.up["latest"])), self,
+                      title="更新提示", show_time=self.up["flag_time"])
+            elif self.up["level"] == "important":
+                text = "我们检测到了新的版本，版本号：{}\n本次更新为重要版本迭代，修复了Bug，更新了新功能，强烈建议进行更新。".format(
+                    str(self.up["latest"]))
+                dlerr("检测到有新版本 {} ，本次更新为重要版本迭代，强烈建议进行更新。".format(str(self.up["latest"])),
+                      self, title="更新提示", show_time=self.up["flag_time"])
+            elif self.up["level"] == "fix":
+                text = "我们检测到了新的版本，版本号：{}\n本次更新为Bug修复版本，修复了重大Bug，强烈建议进行更新。".format(
+                    str(self.up["latest"]))
+                dlerr("检测到有新版本 {} ，本次更新为Bug修复版本，强烈建议进行更新。".format(str(self.up["latest"])),
+                      self, title="更新提示", show_time=self.up["flag_time"])
+            else:
+                text = "我们检测到了新的版本，版本号：{}\n本次更新类型未知，可能是后续版本的新更新类型。".format(
+                    str(self.up["latest"]))
+                dlwar("检测到有新版本 {} ，本次更新类型未知，可能是后续版本的新更新类型。".format(str(self.up["latest"])),
+                      self, title="更新提示", show_time=self.up["flag_time"])
+            w = InfoBar(
+                icon=InfoBarIcon.INFORMATION,
+                title="有新版本可用",
+                content=text,
+                orient=Qt.Vertical,
+                isClosable=True,
+                position=InfoBarPosition.BOTTOM_RIGHT,
+                duration=self.up["time"],
+                parent=self
+            )
 
-        self.s = PushButton(self.ad["button"])
-        w.addWidget(self.s)
-        self.s.clicked.connect(self.openlk)
-        w.show()
-        self.adworker.quit()
+            self.s = PushButton(self.up["button"])
+            w.addWidget(self.s)
+            self.s.clicked.connect(self.openlk)
+            w.show()
+        elif self.up["latest"] == "0.0.0":
+            w = InfoBar(
+                icon=InfoBarIcon.ERROR,
+                title=self.up["title"],
+                content=self.up["text"],
+                orient=Qt.Vertical,
+                isClosable=True,
+                position=InfoBarPosition.BOTTOM_RIGHT,
+                duration=self.up["time"],
+                parent=self
+            )
+            self.s = PushButton(self.up["button"])
+            w.addWidget(self.s)
+            self.s.clicked.connect(self.openlk)
+            w.show()
+        else:
+            dlsuc("您使用的版本是最新版本", self, title="恭喜", show_time=5000)
+        self.upworker.quit()
 
     @pyqtSlot()
     def searchstart(self):
         # self.lworker.started.connect(
         #     lambda: self.lworker.run(text=self.lineEdit.text(), value=self.spinBox.value(), api_value=api))
         u = open(search_log, "w")
-        u.write(json.dumps({"text": self.lineEdit.text(), "api_value": api, "value": self.spinBox.value()}))
+        if cfg.apicard.value == "NCMA":
+            if api == "" or api is None:
+                dlerr("未配置NeteaseCloudMusicApi地址", parent=self)
+                return "Error"
+            u.write(json.dumps({"text": self.lineEdit.text(), "api_value": api, "value": self.spinBox.value()}))
+        else:
+            if q_api == "" or q_api is None:
+                dlerr("未配置QQMusicApi地址", parent=self)
+                return "Error"
+            u.write(json.dumps({"text": self.lineEdit.text(), "api_value": q_api, "value": self.spinBox.value()}))
         u.close()
         self.lworker.start()
 
@@ -354,7 +416,16 @@ class searchmusic(QWidget, QObject):
             return 0
         # self.dworker.started.connect(lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
         u = open(download_log, 'w')
-        u.write(json.dumps({"id": song_id, "api": api, "song": song, "singer": singer}))
+        if cfg.apicard.value == "NCMA":
+            if api == "" or api is None:
+                dlerr("未配置NeteaseCloudMusicApi地址", parent=self)
+                return "Error"
+            u.write(json.dumps({"id": song_id, "api": api, "song": song, "singer": singer}))
+        else:
+            if q_api == "" or q_api is None:
+                dlerr("未配置QQMusicApi地址", parent=self)
+                return "Error"
+            u.write(json.dumps({"id": song_id, "api": q_api, "song": song, "singer": singer}))
         u.close()
         self.dworker.start()
 
@@ -375,7 +446,7 @@ class searchmusic(QWidget, QObject):
             dlwar(content='你还没有输入噢', parent=self)
             return 0
         elif songInfos == "NetworkError":
-            dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent = self)
+            dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent=self)
             return 0
         self.songdata = songInfos
         self.tableView.setRowCount(self.spinBox.value())
@@ -412,6 +483,7 @@ class searchmusic(QWidget, QObject):
                 data = self.songdata[row]
             except:
                 dlerr(content='您选中的行无数据', parent=self)
+                return 0
             song_id = data["id"]
             song = data["name"]
             singer = data["artists"]
@@ -429,5 +501,17 @@ class searchmusic(QWidget, QObject):
             text = '音乐下载完成！\n歌曲名：{}\n艺术家：{}\n保存路径：{}'.format(song, singer, path)
             dlsuc(content=text, parent=self)
             self.ProgressBar.setHidden(True)
+        elif progress == "Error":
+            error = self.dworker.show_error
+            self.dworker.quit()
+            self.ProgressBar.setHidden(True)
+            self.primaryButton1.setEnabled(False)
+            self.tableView.clearSelection()
+            if error == "Error 3":
+                dlerr(content='这首歌曲无版权，暂不支持下载', parent=self)
+            elif error == "Error 4":
+                dlerr(content='获取链接失败，建议检查API服务器是否配置了账号Cookie', parent=self)
+            elif error == "NetworkError":
+                dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent=self)
         else:
             self.ProgressBar.setValue(int(progress))

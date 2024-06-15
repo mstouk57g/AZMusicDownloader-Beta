@@ -88,11 +88,18 @@ class SettingInterface(ScrollArea):
             configItem=cfg.beta,
             parent=self.appGroup
         )
-        self.adCard = SwitchSettingCard(
-            FIF.CALORIES,
-            self.tr('关闭广告'),
-            self.tr('这是我们目前唯一的收入来源，求求别关闭qwq，如果真的要关闭的话，得重启后才能生效'),
-            configItem=cfg.adcard,
+        self.Update_Card = SwitchSettingCard(
+            FIF.FLAG,
+            self.tr('禁用更新检查'),
+            self.tr('开启后启动将不会检查版本更新'),
+            configItem=cfg.update_card,
+            parent=self.appGroup
+        )
+        self.debug_Card = SwitchSettingCard(
+            FIF.DEVELOPER_TOOLS,
+            self.tr('Debug模式'),
+            self.tr('开启后，全局异常捕获将会被关闭，并在启动时输出日志，方便开发时检查异常。'),
+            configItem=cfg.debug_card,
             parent=self.appGroup
         )
         self.backtoinit = PushSettingCard(
@@ -120,7 +127,15 @@ class SettingInterface(ScrollArea):
             configItem=cfg.hotcard,
             parent=self.searchGroup
         )
-
+        self.apiCard = ComboBoxSettingCard(
+            cfg.apicard,
+            FIF.GLOBE,
+            self.tr('第三方音乐API'),
+            self.tr('仅会修改搜索下载页使用的API。由于QQMA需要账号COOKIE才能进行调用，请自行部署。'),
+            texts=['NCMA', 'QQMA'],
+            parent=self.searchGroup
+        )
+        #self.apiCard.setEnabled(False)
         # About
         self.aboutGroup = SettingCardGroup(self.tr('关于'), self.scrollWidget)
         self.helpCard = HyperlinkCard(
@@ -179,7 +194,8 @@ class SettingInterface(ScrollArea):
         self.personalGroup.addSettingCard(self.micaCard)
 
         self.appGroup.addSettingCard(self.beta)
-        self.appGroup.addSettingCard(self.adCard)
+        self.appGroup.addSettingCard(self.Update_Card)
+        self.appGroup.addSettingCard(self.debug_Card)
         self.appGroup.addSettingCard(self.backtoinit)
 
         self.aboutGroup.addSettingCard(self.helpCard)
@@ -188,6 +204,7 @@ class SettingInterface(ScrollArea):
         
         self.searchGroup.addSettingCard(self.twitCard)
         self.searchGroup.addSettingCard(self.hotCard)
+        self.searchGroup.addSettingCard(self.apiCard)
 
         # add setting card group to layout
         self.expandLayout.setSpacing(28)
@@ -211,7 +228,7 @@ class SettingInterface(ScrollArea):
         """ show restart tooltip """
         InfoBar.warning(
             '',
-            self.tr('Configuration takes effect after restart'),
+            self.tr('设置需要重启程序后生效'),
             parent=self.window()
         )
 
@@ -247,8 +264,9 @@ class SettingInterface(ScrollArea):
         
     def __changelog(self):
         view = FlyoutView(
-            title='AZMusicDownloader V2.3.0更新日志 ',
-            content="更新了个寂寞 \n 我不知道",
+            title='AZMusicDownloader V2.5.0更新日志 ',
+            content="1.添加对QQMusicApi的支持\n2.修复了搜索页Bug\n3.将AZMusicAPI更新为1.4.6\n4"
+                    ".添加Debug模式",
             #image='resource/splash.png',
             isClosable=True
         )
