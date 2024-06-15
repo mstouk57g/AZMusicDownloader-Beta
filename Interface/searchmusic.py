@@ -239,8 +239,6 @@ class searchmusic(QWidget, QObject):
             except:
                 pass
 
-    
-
     def openbutton(self):
         self.primaryButton1.setEnabled(True)
 

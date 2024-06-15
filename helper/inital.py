@@ -3,6 +3,7 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot, QThread
 from os import path, makedirs, remove
 from json import loads
 from helper.flyoutmsg import dlsuc, dlerr, dlwar
+from helper.getvalue import outapoem
 from PyQt5.QtCore import Qt, QThread
 from helper.config import cfg
 from qfluentwidgets import InfoBar, InfoBarPosition, InfoBarIcon, PushButton
@@ -54,21 +55,15 @@ def delfin():
 def getup():
     url = upurl
     try:
-        ad = requests.get(url).text
-        data = loads(ad)
+        ud = requests.get(url).text
+        data = loads(ud)
         msg = data
     except:
-        try:
-            o = open("resource/hitokoto.json", "r")
-            hit_data = json.loads(o.read())["hitokoto"]
-            o.close()
-            poem = "在等待的过程中，来读句古诗词吧：" + hit_data[random.randint(0, len(hit_data) - 1)]
-        except:
-            poem = "在等待的过程中，来读句古诗词吧：海内存知己，天涯若比邻。"
-        ad = {"latest": "0.0.0", "title": "(⊙o⊙)？",
+        poem = "在等待的过程中，来读句古诗词吧：" + outapoem()       
+        ud = {"latest": "0.0.0", "title": "(⊙o⊙)？",
               "text": "呀！获取不到更新数据了 ＞﹏＜ 请检查您的网络连接\n{}".format(poem), "time": 200000,
               "button": "（；´д｀）ゞ", "link": "https://azstudio.net.cn"}
-        msg = ad
+        msg = ud
     return msg
 
 

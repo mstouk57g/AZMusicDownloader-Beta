@@ -11,7 +11,7 @@ _✨ 优雅地下载音乐✨_
 <p align="center">
   <img src="https://img.shields.io/badge/license-Apache_2.0-orange" alt="license">
   <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python" alt="Python">
-  <img src="https://img.shields.io/badge/Windows-Only-pink?logo=windows" alt="WinOnly">
+  <img src="https://img.shields.io/badge/Windows-≥10240-pink?logo=windows" alt="WinOnly">
   <a href="https://pypi.org/project/AZMusicAPI/">
     <img src="https://img.shields.io/badge/AZMusicAPI-1.4.6-green" alt="AZMusicAPI">
   </a>
