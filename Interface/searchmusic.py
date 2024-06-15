@@ -14,7 +14,7 @@ from helper.config import cfg
 from helper.getvalue import apipath, download_log, search_log, autoapi
 from helper.inital import mkf, get_update, showup
 from helper.flyoutmsg import dlsuc, dlerr, dlwar
-from helper.downloadHelper import downloading
+from helper.downloadHelper import downloading, download
 
 try:
     u = open(apipath, "r")
@@ -165,7 +165,7 @@ class searchmusic(QWidget, QObject):
      
         # self.worker.finished.connect(self.on_worker_finished)
         self.lworker.finished.connect(self.search)
-        self.dworker.finished.connect(self.download)
+        self.dworker.finished.connect(self.ddload)
         self.upworker.finished.connect(self.showupupgrade)
         self.primaryButton1 = PrimaryPushButton('下载', self)
         self.primaryButton1.released.connect(self.rundownload)
@@ -245,6 +245,11 @@ class searchmusic(QWidget, QObject):
     def showupupgrade(self, updata):
         showup(parent = self, updata = updata, upworker = self.upworker)
 
+    
+    def ddload(self, progress):
+        download(progress = progress, table = self.tableView, progressbar=self.ProgressBar, songdata=self.songdata, 
+                 dworker=self.dworker, button=self.primaryButton1, parent=self, howto = "search")
+    
     @pyqtSlot()
     def searchstart(self):
         # self.lworker.started.connect(
@@ -267,7 +272,7 @@ class searchmusic(QWidget, QObject):
     # def keys(self):
     #     self.worker_thread.started.connect(lambda: self.worker.do_work(text=self.lineEdit.text()))
     #     self.worker_thread.start()
-
+        
     @pyqtSlot()
     def rundownload(self):
         musicpath = cfg.get(cfg.downloadFolder)
@@ -349,44 +354,4 @@ class searchmusic(QWidget, QObject):
         self.tableView.resizeColumnsToContents()
         self.lworker.quit()
 
-    def download(self, progress):
-        musicpath = cfg.get(cfg.downloadFolder)
-        if progress == "200":
-            self.ProgressBar.setValue(100)
-            row = self.tableView.currentIndex().row()
-            try:
-                data = self.songdata[row]
-            except:
-                dlerr(content='您选中的行无数据', parent=self)
-                return 0
-            song_id = data["id"]
-            song = data["name"]
-            singer = data["artists"]
-            album = data["album"]
-            self.dworker.quit()
-            self.tableView.clearSelection()
-            self.primaryButton1.setEnabled(False)
-            path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
-            path = os.path.abspath(path)
-            audio = EasyID3(path)
-            audio['title'] = song
-            audio['album'] = album
-            audio["artist"] = singer
-            audio.save()
-            text = '音乐下载完成！\n歌曲名：{}\n艺术家：{}\n保存路径：{}'.format(song, singer, path)
-            dlsuc(content=text, parent=self)
-            self.ProgressBar.setHidden(True)
-        elif progress == "Error":
-            error = self.dworker.show_error
-            self.dworker.quit()
-            self.ProgressBar.setHidden(True)
-            self.primaryButton1.setEnabled(False)
-            self.tableView.clearSelection()
-            if error == "Error 3":
-                dlerr(content='这首歌曲无版权，暂不支持下载', parent=self)
-            elif error == "Error 4":
-                dlerr(content='获取链接失败，建议检查API服务器是否配置了账号Cookie', parent=self)
-            elif error == "NetworkError":
-                dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent=self)
-        else:
-            self.ProgressBar.setValue(int(progress))
+    

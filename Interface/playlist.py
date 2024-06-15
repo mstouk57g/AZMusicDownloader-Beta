@@ -11,6 +11,7 @@ from mutagen.easyid3 import EasyID3
 from helper.config import cfg
 from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoapi, playlistpath
 from helper.flyoutmsg import dlerr, dlsuc
+from helper.downloadHelper import downloading, download
 
 try:
     u = open(apipath, "r")
@@ -19,42 +20,6 @@ try:
     u.close()
 except:
     api = autoapi
-
-
-class downloading(QThread):
-    finished = pyqtSignal(str)
-
-    @pyqtSlot()
-    def run(self):
-        musicpath = cfg.get(cfg.downloadFolder)
-        u = open(playlist_download_log, "r")
-        data = json.loads(u.read())
-        u.close()
-        id = data["id"]
-        api = data["api"]
-        song = data["song"]
-        singer = data["singer"]
-        url = AZMusicAPI.geturl(id=id, api=api)
-        if url == "Error 3":
-            dlerr(content='这首歌曲无版权，暂不支持下载', parent=self)
-            return 0
-        elif url == "NetworkError":
-            dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent = self)
-            return 0
-        response = requests.get(url, stream=True)
-        file_size = int(response.headers.get('content-length', 0))
-        chunk_size = file_size // 100
-        path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
-        with open(path, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=chunk_size):
-                f.write(chunk)
-                downloaded_bytes = f.tell()
-                progress = downloaded_bytes * 100 // file_size
-                if downloaded_bytes % chunk_size == 0:
-                    self.finished.emit(str(progress))
-
-        self.finished.emit(str(200))
-
 
 class getlist(QThread):
     finished = pyqtSignal()
@@ -190,7 +155,7 @@ class playlist(QWidget):
         self.lworker = getlist()
         self.lworker.finished.connect(self.search)
         self.dworker = downloading()
-        self.dworker.finished.connect(self.download)
+        self.dworker.finished.connect(self.ddload)
         data = get_folders(playlistpath)
         self.TableWidget.setRowCount(len(data))
         self.TableWidget.clearContents()
@@ -290,30 +255,9 @@ class playlist(QWidget):
             self.PushButton_2.setEnabled(False)
             dlerr(content='您选中的行无数据', parent=self)
 
-    def download(self, pro):
-        musicpath = cfg.get(cfg.downloadFolder)
-        if pro == "200":
-            self.pro_bar.setValue(100)
-            u = open(playlist_download_log, "r")
-            data = json.loads(u.read())
-            u.close()
-            song = data["song"]
-            singer = data["singer"]
-            album = data["album"]
-            path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
-            path = os.path.abspath(path)
-            audio = EasyID3(path)
-            audio['title'] = song
-            audio['album'] = album
-            audio["artist"] = singer
-            audio.save()
-            text = '音乐下载完成！\n歌曲名：{}\n艺术家：{}\n保存路径：{}'.format(song, singer, path)
-            dlsuc(content=text, parent=self)
-            self.TableWidget_2.clearSelection()
-            self.PushButton_2.setEnabled(False)
-            self.pro_bar.setHidden(True)
-        else:
-            self.pro_bar.setValue(int(pro))
+    def ddload(self, progress):
+        download(progress = progress, table = self.TableWidget_2, progressbar=self.pro_bar, songdata=None, 
+                 dworker=None, button=self.PushButton_2, parent=self, howto = "lists")
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.SubtitleLabel.setText(_translate("self", "导入歌单"))

@@ -12,7 +12,7 @@ import requests, os
 from json import loads
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
-from helper.getvalue import apipath, download_log, search_log, autoapi, upurl, VERSION
+from helper.getvalue import apipath, download_log, search_log, autoapi, upurl, VERSION, playlist_download_log
 from helper.inital import mkf
 from helper.flyoutmsg import dlsuc, dlerr, dlwar
 
@@ -56,3 +56,60 @@ class downloading(QThread):
                         self.finished.emit(str(progress))
 
             self.finished.emit(str(200))
+            
+def download(progress, table, progressbar, songdata, dworker, button, parent, howto):
+        musicpath = cfg.get(cfg.downloadFolder)
+        if progress == "200":
+            progressbar.setValue(100)
+            
+            if howto == "search":
+                row = table.currentIndex().row()
+                try:
+                    data = songdata[row]
+                except:
+                    dlerr(content='您选中的行无数据', parent=parent)
+                    return 0
+                
+                song_id = data["id"]
+                song = data["name"]
+                singer = data["artists"]
+                album = data["album"]
+                dworker.quit()
+            elif howto == "lists":
+                u = open(playlist_download_log, "r")
+                data = json.loads(u.read())
+                u.close()
+                song = data["song"]
+                singer = data["singer"]
+                album = data["album"]
+                                
+            table.clearSelection()           
+            button.setEnabled(False)
+            path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
+            path = os.path.abspath(path)
+            
+            audio = EasyID3(path)
+            audio['title'] = song
+            audio['album'] = album
+            audio["artist"] = singer
+            audio.save()
+            
+            text = '音乐下载完成！\n歌曲名：{}\n艺术家：{}\n保存路径：{}'.format(song, singer, path)
+            dlsuc(content=text, parent=parent)
+            progressbar.setHidden(True)
+            
+        elif progress == "Error":
+            error = dworker.show_error
+            dworker.quit()
+            progressbar.setHidden(True)
+            button.setEnabled(False)
+            table.clearSelection()
+            
+            if error == "Error 3":
+                dlerr(content='这首歌曲无版权，暂不支持下载', parent=parent)
+            elif error == "Error 4":
+                dlerr(content='获取链接失败，建议检查API服务器是否配置了账号Cookie', parent=parent)
+            elif error == "NetworkError":
+                dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent=parent)
+        else:
+            progressbar.setValue(int(progress))
