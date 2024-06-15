@@ -1,20 +1,11 @@
-import json, random, AZMusicAPI, webbrowser
-from PyQt5.QtCore import QModelIndex, Qt
+import json, AZMusicAPI
 from PyQt5.QtCore import QThread
-from PyQt5.QtGui import QPalette
-from PyQt5.QtWidgets import QStyleOptionViewItem, QTableWidgetItem, QWidget, QHBoxLayout, \
-    QVBoxLayout, QLabel, QCompleter, QHeaderView
-from qfluentwidgets import TableWidget, isDarkTheme, TableItemDelegate, SearchLineEdit, \
-    PrimaryPushButton, SpinBox, InfoBar, InfoBarPosition, InfoBarIcon, PushButton, ProgressBar
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
-import helper.config
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import requests, os
-from json import loads
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
-from helper.getvalue import apipath, download_log, search_log, autoapi, upurl, VERSION, playlist_download_log
-from helper.inital import mkf
-from helper.flyoutmsg import dlsuc, dlerr, dlwar
+from helper.getvalue import download_log, playlist_download_log
+from helper.flyoutmsg import dlsuc, dlerr
 
 class downloading(QThread):
     finished = pyqtSignal(str)
@@ -29,6 +20,7 @@ class downloading(QThread):
         api = data["api"]
         song = data["song"]
         singer = data["singer"]
+        
         if cfg.apicard.value == "NCMA":
             url = AZMusicAPI.geturl(id=id, api=api)
         else:
@@ -42,6 +34,7 @@ class downloading(QThread):
         elif url == "NetworkError":
             self.show_error = "NetworkError"
             self.finished.emit("Error")
+            
         if not "Error" in url:
             response = requests.get(url, stream=True)
             file_size = int(response.headers.get('content-length', 0))

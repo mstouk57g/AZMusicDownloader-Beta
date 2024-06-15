@@ -1,20 +1,14 @@
 # coding: utf-8
 import json, AZMusicAPI
-from PyQt5.QtCore import QModelIndex, Qt, QThread
-from PyQt5.QtGui import QPalette
-from PyQt5.QtWidgets import QStyleOptionViewItem, QTableWidgetItem, QWidget, QHBoxLayout, \
-    QVBoxLayout, QLabel, QCompleter, QHeaderView
-from qfluentwidgets import TableWidget, isDarkTheme, TableItemDelegate, SearchLineEdit, \
-    PrimaryPushButton, SpinBox, ProgressBar
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import Qt, QThread
+from PyQt5.QtWidgets import QTableWidgetItem, QCompleter
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import helper.config
 import requests, os
-from mutagen.easyid3 import EasyID3
 from helper.config import cfg
 from helper.getvalue import apipath, download_log, search_log, autoapi
-from helper.inital import mkf, get_update, showup
-from helper.flyoutmsg import dlsuc, dlerr, dlwar
-from helper.downloadHelper import downloading, download
+from helper.inital import mkf
+from helper.flyoutmsg import dlerr, dlwar
 
 try:
     u = open(apipath, "r")
@@ -42,6 +36,7 @@ class getlist(QThread):
         value = data["value"]
         api_value = data["api_value"]
         keywords = text
+        
         if cfg.apicard.value == "NCMA":
             self.songInfos = AZMusicAPI.getmusic(keywords, number=value, api=api_value)
         else:
@@ -50,42 +45,41 @@ class getlist(QThread):
 
 def sethotlineEdit(lineEdit):
     if helper.config.cfg.hotcard.value:
-            try:
-                data = requests.get(api + "search/hot").json()["result"]["hots"]
-                hot_song = []
-                for i in data:
-                    hot_song.append(i["first"])
-                completer = QCompleter(hot_song, lineEdit)
-                completer.setCaseSensitivity(Qt.CaseInsensitive)
-                completer.setMaxVisibleItems(10)
-                lineEdit.setCompleter(completer)
-            except:
-                pass
-
-    
+        try:
+            data = requests.get(api + "search/hot").json()["result"]["hots"]
+            hot_song = []
+            for i in data:
+                hot_song.append(i["first"])
+            completer = QCompleter(hot_song, lineEdit)
+            completer.setCaseSensitivity(Qt.CaseInsensitive)
+            completer.setMaxVisibleItems(10)
+            lineEdit.setCompleter(completer)
+        except:
+            pass
 
 def searchstart(lineEdit, parent, spinBox, lworker):
-        # self.lworker.started.connect(
-        #     lambda: self.lworker.run(text=self.lineEdit.text(), value=self.spinBox.value(), api_value=api))
-        u = open(search_log, "w")
-        if cfg.apicard.value == "NCMA":
-            if api == "" or api is None:
-                dlerr("未配置NeteaseCloudMusicApi地址", parent=parent)
-                return "Error"
-            u.write(json.dumps({"text": lineEdit.text(), "api_value": api, "value": spinBox.value()}))
-        else:
-            if q_api == "" or q_api is None:
-                dlerr("未配置QQMusicApi地址", parent=parent)
-                return "Error"
-            u.write(json.dumps({"text": lineEdit.text(), "api_value": q_api, "value": spinBox.value()}))
-        u.close()
-        lworker.start()
+    # self.lworker.started.connect(
+    #     lambda: self.lworker.run(text=self.lineEdit.text(), value=self.spinBox.value(), api_value=api))
+    u = open(search_log, "w")
+    if cfg.apicard.value == "NCMA":
+        if api == "" or api is None:
+            dlerr("未配置NeteaseCloudMusicApi地址", parent=parent)
+            return "Error"
+        u.write(json.dumps({"text": lineEdit.text(), "api_value": api, "value": spinBox.value()}))
+    else:
+        if q_api == "" or q_api is None:
+            dlerr("未配置QQMusicApi地址", parent=parent)
+            return "Error"
+        u.write(json.dumps({"text": lineEdit.text(), "api_value": q_api, "value": spinBox.value()}))
+    u.close()
+    lworker.start()
 
 def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker):
         musicpath = cfg.get(cfg.downloadFolder)
         primaryButton1.setEnabled(False)
         ProgressBar.setHidden(False)
         ProgressBar.setValue(0)
+        
         row = tableView.currentIndex().row()
         songdata = lworker.songInfos
         try:
@@ -93,15 +87,18 @@ def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker
         except:
             dlerr(content='您选中的行无数据', parent=parent)
             return 0
+        
         song_id = data["id"]
         song = data["name"]
         singer = data["artists"]
+        
         try:
             if os.path.exists(musicpath) == False:
                 os.mkdir(musicpath)
         except:
             dlerr(content='音乐下载路径无法读取\创建失败', parent=parent)
             return 0
+        
         # self.dworker.started.connect(lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
         u = open(download_log, 'w')
         if cfg.apicard.value == "NCMA":
@@ -128,7 +125,7 @@ def search(lworker, parent, tableView, spinBox):
         elif songInfos == "NetworkError":
             dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent=parent)
             return 0
-        songdata = songInfos
+        
         tableView.setRowCount(spinBox.value())
         for i in range(len(songInfos)):
             data = songInfos[i]
@@ -144,6 +141,7 @@ def search(lworker, parent, tableView, spinBox):
                 Artist = Artist[:8] + "..."
             if len(Album) > 8:
                 Album = Album[:8] + "..."
+                
             data = []
             data.append(str(song_id))
             data.append(title)
@@ -151,7 +149,6 @@ def search(lworker, parent, tableView, spinBox):
             data.append(Album)
             for j in range(4):
                 tableView.setItem(i, j, QTableWidgetItem(data[j]))
+                
         tableView.resizeColumnsToContents()
         lworker.quit()
-
-

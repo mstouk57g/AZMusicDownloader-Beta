@@ -1,22 +1,14 @@
 # coding: utf-8
-import json, AZMusicAPI
-from PyQt5.QtCore import QModelIndex, Qt, QThread
+from PyQt5.QtCore import QModelIndex, Qt
 from PyQt5.QtGui import QPalette
-from PyQt5.QtWidgets import QStyleOptionViewItem, QTableWidgetItem, QWidget, QHBoxLayout, \
-    QVBoxLayout, QLabel, QCompleter, QHeaderView
+from PyQt5.QtWidgets import QStyleOptionViewItem, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QHeaderView
 from qfluentwidgets import TableWidget, isDarkTheme, TableItemDelegate, SearchLineEdit, \
     PrimaryPushButton, SpinBox, ProgressBar
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QObject
 import helper.config
-import requests, os
-from mutagen.easyid3 import EasyID3
-from helper.config import cfg
-from helper.getvalue import apipath, download_log, search_log, autoapi
-from helper.inital import mkf, get_update, showup
-from helper.flyoutmsg import dlsuc, dlerr, dlwar
+from helper.inital import get_update, showup
 from helper.downloadHelper import downloading, download
-from helper.searchmusicHelper import getlist, sethotlineEdit, search, searchstart, rundownload, download
-
+from helper.searchmusicHelper import getlist, sethotlineEdit, search, searchstart, rundownload
 
 # class Worker(QObject):
 #     finished = pyqtSignal()
@@ -37,7 +29,6 @@ from helper.searchmusicHelper import getlist, sethotlineEdit, search, searchstar
 #
 #         self.finished.emit()
 
-
 class CustomTableItemDelegate(TableItemDelegate):
     """ Custom table item delegate """
 
@@ -53,17 +44,12 @@ class CustomTableItemDelegate(TableItemDelegate):
             option.palette.setColor(QPalette.Text, Qt.red)
             option.palette.setColor(QPalette.HighlightedText, Qt.red)
 
-
-
-
-
 class searchmusic(QWidget, QObject):
 
     def __init__(self):
         super().__init__()
         # setTheme(Theme.DARK)
         self.setObjectName("searchmusic")
-
 
         self.hBoxLayout = QHBoxLayout(self)
         self.layout1 = QVBoxLayout(self)
@@ -116,10 +102,12 @@ class searchmusic(QWidget, QObject):
         self.spinBox.setValue(15)
         # self.empty0 = QLabel('第几页', self)
         # self.spinBox0 = SpinBox(self)
+        
         self.layout1.addWidget(self.empty)
         self.layout1.addWidget(self.spinBox)
         # self.layout1.addWidget(self.empty0)
         # self.layout1.addWidget(self.spinBox0)
+        
         # self.worker_thread = QThread()
         # self.worker = Worker()
         # self.worker.moveToThread(self.worker_thread)
@@ -206,16 +194,10 @@ class searchmusic(QWidget, QObject):
     def showupupgrade(self, updata):
         showup(parent = self, updata = updata, upworker = self.upworker)
 
-    
-    
-    
-
     # @pyqtSlot()
     # def keys(self):
     #     self.worker_thread.started.connect(lambda: self.worker.do_work(text=self.lineEdit.text()))
     #     self.worker_thread.start()
-        
-    
 
     # @pyqtSlot()
     # def on_worker_finished(self):
@@ -223,6 +205,3 @@ class searchmusic(QWidget, QObject):
     #     self.completer.setCaseSensitivity(Qt.CaseInsensitive)
     #     self.lineEdit.setCompleter(self.completer)
     #     self.worker_thread.quit()
-
-    
-    
