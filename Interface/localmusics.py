@@ -1,7 +1,7 @@
 # coding: utf-8
 import os
 
-from PyQt5.QtWidgets import QApplication, QListWidgetItem, QWidget, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QListWidgetItem, QWidget, QHBoxLayout, QVBoxLayout
 
 from qfluentwidgets import ListWidget
 from qfluentwidgets import ToolButton, PrimaryToolButton

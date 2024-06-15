@@ -1,6 +1,6 @@
 # coding:utf-8
 from helper.config import cfg
-from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
+from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard, 
                             OptionsSettingCard, PushSettingCard, setTheme, isDarkTheme,
                             HyperlinkCard, PrimaryPushSettingCard, ScrollArea, PushButton,
                             ComboBoxSettingCard, ExpandLayout, Theme, InfoBar, FlyoutView, Flyout)
@@ -9,8 +9,8 @@ from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 from sys import platform, getwindowsversion
-from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL
-from helper.inital import delfin
+from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL,verdetail
+from helper.inital import get_update, delfin, showup
 
 class SettingInterface(ScrollArea):
     musicFoldersChanged = pyqtSignal(list)
@@ -261,12 +261,12 @@ class SettingInterface(ScrollArea):
         QDesktopServices.openUrl(QUrl(RELEASE_URL))
     def openaz(self):
         QDesktopServices.openUrl(QUrl(AZ_URL))
+
         
     def __changelog(self):
         view = FlyoutView(
             title='AZMusicDownloader V2.5.0更新日志 ',
-            content="1.添加对QQMusicApi的支持\n2.修复了搜索页Bug\n3.将AZMusicAPI更新为1.4.6\n4"
-                    ".添加Debug模式",
+            content=verdetail,
             #image='resource/splash.png',
             isClosable=True
         )

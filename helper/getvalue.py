@@ -50,6 +50,8 @@ def outapoem():
     outpoem = poem[randint(0, len(poem) - 1)]
     return outpoem
 
+verdetail = "1.添加对QQMusicApi的支持\n2.修复了搜索页Bug\n3.将AZMusicAPI更新为1.4.6\n4.添加Debug模式"
+
 YEAR = int(date.today().year)
 AUTHOR = "AZ Studio"
 VERSION = "2.5.0"
