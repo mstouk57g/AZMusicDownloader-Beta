@@ -44,7 +44,7 @@ class playlist(QWidget):
         self.PushButton.setGeometry(QtCore.QRect(380, 330, 102, 32))
         self.PushButton.setObjectName("PushButton")
         self.PushButton.clicked.connect(lambda: searchstart(PushButton=self.PushButton, lworker=self.lworker,
-                                                            ComboBox=self.ComboBox, LineEdit=self.LineEdit))
+                                                            ComboBox=self.ComboBox, LineEdit=self.LineEdit, parent=self))
         
         self.TableWidget = TableWidget(self)
         self.TableWidget.setGeometry(QtCore.QRect(15, 11, 281, 601))

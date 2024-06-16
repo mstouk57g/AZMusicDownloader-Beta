@@ -16,6 +16,7 @@ try:
 except:
     api = autoapi
 
+
 class getlist(QThread):
     finished = pyqtSignal()
 
@@ -68,14 +69,14 @@ class getlist(QThread):
             params = {"id": id_v}
             data_y = requests.get(api_v, params=params).json()
             data = data_y["playlist"]
-            
+
             if data_y["code"] == 200:
                 name = data["name"]
                 data = data["tracks"]
                 if not os.path.exists("{}\\{}".format(playlistpath, name)):
                     os.mkdir("{}\\{}".format(playlistpath, name))
                     data_v = []
-                    
+
                     try:
                         for i in range(len(data)):
                             artists = ""
@@ -88,17 +89,18 @@ class getlist(QThread):
                     except:
                         data_v.append({"id": '-1', "name": 'error', "artists": 'error',
                                        "album": 'error'})
-                        
+
                     u = open("{}\\{}\\index.json".format(playlistpath, name), "w")
                     u.write(json.dumps({"content": data_v}))
                     u.close()
         self.finished.emit()
 
+
 def FindLists(TableWidget):
     data = get_folders(playlistpath)
     TableWidget.setRowCount(len(data))
     TableWidget.clearContents()
-    
+
     for i in range(len(data)):
         data_v = []
         data_v.append(str(i + 1))
@@ -106,7 +108,9 @@ def FindLists(TableWidget):
         for j in range(2):
             TableWidget.setItem(i, j, QTableWidgetItem(data_v[j]))
 
-def searchstart(PushButton, lworker, ComboBox, LineEdit):
+
+def searchstart(PushButton, lworker, ComboBox, LineEdit, parent):
+    if LineEdit.text() != '':
         PushButton.setEnabled(False)
         # self.getlist_worker.started.connect(
         #     lambda: self.lworker.run(type_value=self.ComboBox.text(), value=self.LineEdit.text(), api_value=api))
@@ -114,89 +118,96 @@ def searchstart(PushButton, lworker, ComboBox, LineEdit):
         u.write(json.dumps({"type_value": ComboBox.text(), "value": LineEdit.text(), "api_value": api}))
         u.close()
         lworker.start()
+    else:
+        dlerr(erid=1, parent=parent)
+
 
 def music(TableWidget, TableWidget_2, parent):
-        try:
-            name = get_folders(playlistpath)[TableWidget.currentIndex().row()]
-            u = open("{}\\{}\\index.json".format(playlistpath, name), "r")
-            data = json.loads(u.read())
-            u.close()
-            data = data["content"]
-            TableWidget_2.clearContents()
-            
-            for i in range(len(data)):
-                add = []
-                id_v = str(data[i]["id"])
-                name_v = str(data[i]["name"])
-                artists_v = str(data[i]["artists"])
-                album_v = str(data[i]["album"])
-                
-                add.append(id_v)
-                add.append(name_v)
-                add.append(artists_v)
-                add.append(album_v)
-                for j in range(4):
-                    TableWidget_2.setItem(i, j, QTableWidgetItem(add[j]))
-                    
-            TableWidget_2.resizeColumnsToContents()
-            TableWidget_2.setRowCount(len(data))
-        except:
-            dlerr(content='您双击的行无数据', parent=parent)
- 
-def search(PushButton, lworker, TableWidget):
-        data = get_folders(playlistpath)
-        TableWidget.setRowCount(len(data))
-        TableWidget.clearContents()
-        
+    try:
+        name = get_folders(playlistpath)[TableWidget.currentIndex().row()]
+        u = open("{}\\{}\\index.json".format(playlistpath, name), "r")
+        data = json.loads(u.read())
+        u.close()
+        data = data["content"]
+        TableWidget_2.clearContents()
+
         for i in range(len(data)):
-            data_v = []
-            data_v.append(str(i + 1))
-            data_v.append(data[i])
-            for j in range(2):
-                TableWidget.setItem(i, j, QTableWidgetItem(data_v[j]))
-                
-        TableWidget.resizeColumnsToContents()
-        PushButton.setEnabled(True)
-        lworker.quit()
+            add = []
+            id_v = str(data[i]["id"])
+            name_v = str(data[i]["name"])
+            artists_v = str(data[i]["artists"])
+            album_v = str(data[i]["album"])
+
+            add.append(id_v)
+            add.append(name_v)
+            add.append(artists_v)
+            add.append(album_v)
+            for j in range(4):
+                TableWidget_2.setItem(i, j, QTableWidgetItem(add[j]))
+
+        TableWidget_2.resizeColumnsToContents()
+        TableWidget_2.setRowCount(len(data))
+    except:
+        dlerr(erid=2, parent=parent)
+
+
+def search(PushButton, lworker, TableWidget):
+    data = get_folders(playlistpath)
+    TableWidget.setRowCount(len(data))
+    TableWidget.clearContents()
+
+    for i in range(len(data)):
+        data_v = []
+        data_v.append(str(i + 1))
+        data_v.append(data[i])
+        for j in range(2):
+            TableWidget.setItem(i, j, QTableWidgetItem(data_v[j]))
+
+    TableWidget.resizeColumnsToContents()
+    PushButton.setEnabled(True)
+    lworker.quit()
+
 
 def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
+    PushButton_2.setEnabled(False)
+    pro_bar.setValue(0)
+    pro_bar.setHidden(False)
+
+    try:
+        row = TableWidget_2.currentIndex().row()
+        id_v = str(TableWidget_2.item(row, 0).text())
+    except AttributeError:
+        TableWidget_2.clearSelection()
         PushButton_2.setEnabled(False)
-        pro_bar.setValue(0)
-        pro_bar.setHidden(False)
-        
+        dlwar(content='您选中的行无数据', parent=parent)
+        pro_bar.setHidden(True)
+        return 0
+
+    if id_v != "":
+        song_id = id_v
+        song = str(TableWidget_2.item(row, 1).text())
+        singer = str(TableWidget_2.item(row, 2).text())
+        album = str(TableWidget_2.item(row, 3).text())
+
         try:
-            row = TableWidget_2.currentIndex().row()
-            id_v = str(TableWidget_2.item(row, 0).text())
-        except AttributeError:
-            TableWidget_2.clearSelection()
-            PushButton_2.setEnabled(False)
-            dlwar(content='您选中的行无数据', parent=parent)
+            if os.path.exists(cfg.get(cfg.downloadFolder)) == False:
+                os.mkdir(cfg.get(cfg.downloadFolder))
+        except:
+            dlerr(erid=3, parent=parent)
             return 0
-        
-        if id_v != "":
-            song_id = id_v
-            song = str(TableWidget_2.item(row, 1).text())
-            singer = str(TableWidget_2.item(row, 2).text())
-            album = str(TableWidget_2.item(row, 3).text())
-            
-            try:
-                if os.path.exists(cfg.get(cfg.downloadFolder)) == False:
-                    os.mkdir(cfg.get(cfg.downloadFolder))
-            except:
-                dlerr(erid=3, parent=parent)
-                return 0
-            
-            # self.download_worker.started.connect(
-            #     lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
-            u = open(playlist_download_log, 'w')
-            u.write(json.dumps({"id": song_id, "api": api, "song": song, "singer": singer, "album": album}))
-            u.close()
-            dworker.start()
-        else:
-            TableWidget_2.clearSelection()
-            PushButton_2.setEnabled(False)
-            dlwar(content='您选中的行无数据', parent=parent)
-            
+
+        # self.download_worker.started.connect(
+        #     lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
+        u = open(playlist_download_log, 'w')
+        u.write(json.dumps({"id": song_id, "api": api, "song": song, "singer": singer, "album": album}))
+        u.close()
+        dworker.start()
+    else:
+        TableWidget_2.clearSelection()
+        PushButton_2.setEnabled(False)
+        dlwar(content='您选中的行无数据', parent=parent)
+
+
 def get_folders(folder_path):
     folders = []
 
