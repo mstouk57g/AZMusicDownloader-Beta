@@ -11,7 +11,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
 
 jobs:
-  build:
+  build_EXE:
     runs-on: windows-lastest
 
     steps:
