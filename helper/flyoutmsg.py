@@ -1,7 +1,8 @@
 from PyQt5.QtCore import Qt
 from qfluentwidgets import InfoBar, InfoBarPosition
+from helper.getvalue import errlist
 
-def dlsuc(content, parent, title = "", show_time = 3000):
+def dlsuc(parent, content, title = "", show_time = 3000):
     # convenient class mothod
     InfoBar.success(
         title=title,
@@ -12,10 +13,10 @@ def dlsuc(content, parent, title = "", show_time = 3000):
         duration=show_time,
         parent=parent)
 
-def dlerr(content, parent, title = "错误", show_time = 3000):
+def dlerr(erid, parent, title = "错误", show_time = 3000):
     InfoBar.error(
         title=title,
-        content=content,
+        content=errlist[int(erid)],
         orient=Qt.Horizontal,
         isClosable=True,
         position=InfoBarPosition.TOP,

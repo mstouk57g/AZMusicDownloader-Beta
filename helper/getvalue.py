@@ -50,6 +50,15 @@ def outapoem():
     outpoem = poem[randint(0, len(poem) - 1)]
     return outpoem
 
+# 错误内容列表
+errlist = ['未搜索到相关的歌曲，换个关键词试试吧',
+           '你还没有输入噢',
+           '您选中的行无数据', 
+           '音乐下载路径无法读取\创建失败', 
+           "未配置NeteaseCloudMusicApi地址", 
+           "未配置QQMusicApi地址",
+           '您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁']
+
 verdetail = "1.添加对QQMusicApi的支持\n2.修复了搜索页Bug\n3.将AZMusicAPI更新为1.4.6\n4.添加Debug模式"
 
 YEAR = int(date.today().year)

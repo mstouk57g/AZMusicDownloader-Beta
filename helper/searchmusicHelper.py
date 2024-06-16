@@ -63,7 +63,7 @@ def searchstart(lineEdit, parent, spinBox, lworker):
     u = open(search_log, "w")
     if cfg.apicard.value == "NCMA":
         if api == "" or api is None:
-            dlerr("未配置NeteaseCloudMusicApi地址", parent=parent)
+            dlerr(erid=4, parent=parent)
             return "Error"
         u.write(json.dumps({"text": lineEdit.text(), "api_value": api, "value": spinBox.value()}))
     else:

@@ -68,12 +68,14 @@ class getlist(QThread):
             params = {"id": id_v}
             data_y = requests.get(api_v, params=params).json()
             data = data_y["playlist"]
+            
             if data_y["code"] == 200:
                 name = data["name"]
                 data = data["tracks"]
                 if not os.path.exists("{}\\{}".format(playlistpath, name)):
                     os.mkdir("{}\\{}".format(playlistpath, name))
                     data_v = []
+                    
                     try:
                         for i in range(len(data)):
                             artists = ""
@@ -86,6 +88,7 @@ class getlist(QThread):
                     except:
                         data_v.append({"id": '-1', "name": 'error', "artists": 'error',
                                        "album": 'error'})
+                        
                     u = open("{}\\{}\\index.json".format(playlistpath, name), "w")
                     u.write(json.dumps({"content": data_v}))
                     u.close()
@@ -95,6 +98,7 @@ def FindLists(TableWidget):
     data = get_folders(playlistpath)
     TableWidget.setRowCount(len(data))
     TableWidget.clearContents()
+    
     for i in range(len(data)):
         data_v = []
         data_v.append(str(i + 1))
@@ -119,18 +123,21 @@ def music(TableWidget, TableWidget_2, parent):
             u.close()
             data = data["content"]
             TableWidget_2.clearContents()
+            
             for i in range(len(data)):
                 add = []
                 id_v = str(data[i]["id"])
                 name_v = str(data[i]["name"])
                 artists_v = str(data[i]["artists"])
                 album_v = str(data[i]["album"])
+                
                 add.append(id_v)
                 add.append(name_v)
                 add.append(artists_v)
                 add.append(album_v)
                 for j in range(4):
                     TableWidget_2.setItem(i, j, QTableWidgetItem(add[j]))
+                    
             TableWidget_2.resizeColumnsToContents()
             TableWidget_2.setRowCount(len(data))
         except:
@@ -140,12 +147,14 @@ def search(PushButton, lworker, TableWidget):
         data = get_folders(playlistpath)
         TableWidget.setRowCount(len(data))
         TableWidget.clearContents()
+        
         for i in range(len(data)):
             data_v = []
             data_v.append(str(i + 1))
             data_v.append(data[i])
             for j in range(2):
                 TableWidget.setItem(i, j, QTableWidgetItem(data_v[j]))
+                
         TableWidget.resizeColumnsToContents()
         PushButton.setEnabled(True)
         lworker.quit()
@@ -154,6 +163,7 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
         PushButton_2.setEnabled(False)
         pro_bar.setValue(0)
         pro_bar.setHidden(False)
+        
         try:
             row = TableWidget_2.currentIndex().row()
             id_v = str(TableWidget_2.item(row, 0).text())
@@ -162,17 +172,20 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
             PushButton_2.setEnabled(False)
             dlerr(content='您选中的行无数据', parent=parent)
             return 0
+        
         if id_v != "":
             song_id = id_v
             song = str(TableWidget_2.item(row, 1).text())
             singer = str(TableWidget_2.item(row, 2).text())
             album = str(TableWidget_2.item(row, 3).text())
+            
             try:
                 if os.path.exists(cfg.get(cfg.downloadFolder)) == False:
                     os.mkdir(cfg.get(cfg.downloadFolder))
             except:
                 dlerr(content='音乐下载路径无法读取\创建失败', parent=parent)
                 return 0
+            
             # self.download_worker.started.connect(
             #     lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
             u = open(playlist_download_log, 'w')
