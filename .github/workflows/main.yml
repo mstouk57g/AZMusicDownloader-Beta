@@ -10,4 +10,29 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
 
+jobs:
+  build:
+    runs-on: windows-lastest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'         
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install nuitka
+
+      - name: Package
+        # Build python script into a stand-alone exe
+        uses: Nuitka/Nuitka-Action@main
+        with:
+          nuitka-version: main
+          script-name: MusicDownloader.py
+          enable-plugins: pyqt5 
+
+
 
