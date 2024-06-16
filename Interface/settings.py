@@ -53,7 +53,7 @@ class SettingInterface(ScrollArea):
             FIF.LANGUAGE,
             self.tr('Language'),
             self.tr('Set your preferred language for UI'),
-            texts=['简体中文', '繁體中文', 'English', self.tr('Use system setting')],
+            texts=['简体中文', self.tr('Use system setting')],
             parent=self.personalGroup
         )
         self.micaCard = SwitchSettingCard(
@@ -164,7 +164,6 @@ class SettingInterface(ScrollArea):
             self.aboutGroup
         )
         
-        self.languageCard.setEnabled(False)
         self.micaCard.setEnabled(platform == 'win32' and getwindowsversion().build >= 22000)
         self.__initWidget()
 

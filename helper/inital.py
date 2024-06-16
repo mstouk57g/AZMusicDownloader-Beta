@@ -2,11 +2,10 @@ import json, requests, webbrowser
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QThread
 from os import path, makedirs, remove
 from json import loads
-from helper.flyoutmsg import dlsuc, dlwar
+from helper.flyoutmsg import dlsuc, dlwar, flyout_bottom
 from helper.getvalue import outapoem
-from PyQt5.QtCore import Qt, QThread
+from PyQt5.QtCore import QThread
 from helper.config import cfg
-from qfluentwidgets import InfoBar, InfoBarPosition, InfoBarIcon, PushButton
 from helper.getvalue import (apipath, download_log, search_log, autoapi, configpath, upurl, VERSION,
                              playlistpath, logpath, playlist_download_log, playlist_search_log)
 
@@ -79,10 +78,6 @@ class get_update(QThread):
         self.finished.emit(data)
 
 
-def openlk(self):
-    webbrowser.open_new_tab(self.up["link"])
-
-
 def showup(parent, updata, upworker):
     up = updata
     if not VERSION == up["latest"] and up["latest"] != "0.0.0":
@@ -107,36 +102,10 @@ def showup(parent, updata, upworker):
                 str(up["latest"]))
             dlwar("检测到有新版本 {} ，本次更新类型未知，可能是后续版本的新更新类型。".format(str(up["latest"])),
                   parent, title="更新提示", show_time=up["flag_time"])
-        w = InfoBar(
-            icon=InfoBarIcon.INFORMATION,
-            title="有新版本可用",
-            content=text,
-            orient=Qt.Vertical,
-            isClosable=True,
-            position=InfoBarPosition.BOTTOM_RIGHT,
-            duration=up["time"],
-            parent=parent
-        )
-
-        s = PushButton(up["button"])
-        w.addWidget(s)
-        s.clicked.connect(openlk)
-        w.show()
+        flyout_bottom(parent=parent, title="有新版本可用", content=text, button_content=up["button"], button_todo=lambda: webbrowser.open_new_tab(up["link"]), duration=up["time"])
+        
     elif up["latest"] == "0.0.0":
-        w = InfoBar(
-            icon=InfoBarIcon.ERROR,
-            title=up["title"],
-            content=up["text"],
-            orient=Qt.Vertical,
-            isClosable=True,
-            position=InfoBarPosition.BOTTOM_RIGHT,
-            duration=up["time"],
-            parent=parent
-        )
-        s = PushButton(up["button"])
-        w.addWidget(s)
-        s.clicked.connect(openlk)
-        w.show()
+        flyout_bottom(parent=parent, title=up["title"], content=up["text"], button_content=up["button"], button_todo=lambda: webbrowser.open_new_tab(up["link"]), duration=up["time"])
     else:
         dlsuc(content = "您使用的版本是最新版本", parent=parent, title="恭喜", show_time=5000)
     upworker.quit()

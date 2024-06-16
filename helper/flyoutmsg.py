@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from qfluentwidgets import InfoBar, InfoBarPosition
+from qfluentwidgets import InfoBar, InfoBarPosition, PushButton, InfoBarIcon
 from helper.getvalue import outputlist
 
 
@@ -44,3 +44,22 @@ def dlwar(outid, parent, title="警告", show_time=3000):
         position=InfoBarPosition.TOP,
         duration=show_time,
         parent=parent)
+    
+
+def flyout_bottom(parent, title, content, button_content, button_todo, duration=3000):
+    w = InfoBar(
+            icon=InfoBarIcon.INFORMATION,
+            title=title,
+            content=content,
+            orient=Qt.Vertical,
+            isClosable=True,
+            position=InfoBarPosition.BOTTOM_RIGHT,
+            duration=duration,
+            parent=parent
+        )
+
+    s = PushButton(button_content)
+    w.addWidget(s)
+    s.clicked.connect(button_todo)
+    w.show()
+    
