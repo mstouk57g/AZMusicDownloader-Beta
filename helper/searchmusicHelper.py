@@ -63,12 +63,12 @@ def searchstart(lineEdit, parent, spinBox, lworker):
     u = open(search_log, "w")
     if cfg.apicard.value == "NCMA":
         if api == "" or api is None:
-            dlerr(erid=4, parent=parent)
+            dlerr(outid=4, parent=parent)
             return "Error"
         u.write(json.dumps({"text": lineEdit.text(), "api_value": api, "value": spinBox.value()}))
     else:
         if q_api == "" or q_api is None:
-            dlerr(erid=5, parent=parent)
+            dlerr(outid=5, parent=parent)
             return "Error"
         u.write(json.dumps({"text": lineEdit.text(), "api_value": q_api, "value": spinBox.value()}))
     u.close()
@@ -96,19 +96,19 @@ def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker
             if os.path.exists(musicpath) == False:
                 os.mkdir(musicpath)
         except:
-            dlerr(erid=3, parent=parent)
+            dlerr(outid=3, parent=parent)
             return 0
         
         # self.dworker.started.connect(lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
         u = open(download_log, 'w')
         if cfg.apicard.value == "NCMA":
             if api == "" or api is None:
-                dlerr(erid=4, parent=parent)
+                dlerr(outid=4, parent=parent)
                 return "Error"
             u.write(json.dumps({"id": song_id, "api": api, "song": song, "singer": singer}))
         else:
             if q_api == "" or q_api is None:
-                dlerr(erid=5, parent=parent)
+                dlerr(outid=5, parent=parent)
                 return "Error"
             u.write(json.dumps({"id": song_id, "api": q_api, "song": song, "singer": singer}))
         u.close()
@@ -117,13 +117,13 @@ def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker
 def search(lworker, parent, tableView, spinBox):
         songInfos = lworker.songInfos
         if songInfos == "Error 0":
-            dlwar(erid=0, parent=parent)
+            dlwar(outid=0, parent=parent)
             return 0
         elif songInfos == "Error 1":
-            dlwar(erid=1, parent=parent)
+            dlwar(outid=1, parent=parent)
             return 0
         elif songInfos == "NetworkError":
-            dlerr(erid=6, parent=parent)
+            dlerr(outid=6, parent=parent)
             return 0
         
         tableView.setRowCount(spinBox.value())

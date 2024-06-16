@@ -33,6 +33,7 @@ class downloading(QThread):
             url = AZMusicAPI.geturl(id=id, api=api, server="qqma")
         else:
             url = AZMusicAPI.geturl(id=id, api=api)
+            
         if url == "Error 3":
             self.show_error = "Error 3"
             self.finished.emit("Error")
@@ -68,7 +69,7 @@ def download(progress, table, progressbar, songdata, dworker, button, parent, ho
                 try:
                     data = songdata[row]
                 except:
-                    dlwar(content='您选中的行无数据', parent=parent)
+                    dlwar(outid=2, parent=parent)
                     return 0
                 
                 song_id = data["id"]
@@ -107,10 +108,10 @@ def download(progress, table, progressbar, songdata, dworker, button, parent, ho
             table.clearSelection()
             
             if error == "Error 3":
-                dlerr(erid=7, parent=parent)
+                dlerr(outid=7, parent=parent)
             elif error == "Error 4":
-                dlerr(erid=8, parent=parent)
+                dlerr(outid=8, parent=parent)
             elif error == "NetworkError":
-                dlerr(erid=6, parent=parent)
+                dlerr(outid=6, parent=parent)
         else:
             progressbar.setValue(int(progress))

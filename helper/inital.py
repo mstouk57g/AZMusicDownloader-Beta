@@ -1,4 +1,4 @@
-import json, random, requests, webbrowser
+import json, requests, webbrowser
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QThread
 from os import path, makedirs, remove
 from json import loads
@@ -138,5 +138,5 @@ def showup(parent, updata, upworker):
         s.clicked.connect(openlk)
         w.show()
     else:
-        dlsuc("您使用的版本是最新版本", parent, title="恭喜", show_time=5000)
+        dlsuc(content = "您使用的版本是最新版本", parent=parent, title="恭喜", show_time=5000)
     upworker.quit()

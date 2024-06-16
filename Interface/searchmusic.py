@@ -115,7 +115,7 @@ class searchmusic(QWidget, QObject):
         self.lworker = getlist()
         self.dworker = downloading(howto="search")       
         self.upworker = get_update()
-        self.lworker.finished.connect(lambda: search(lworker=self.lworker, parent=self.parent,
+        self.lworker.finished.connect(lambda: search(lworker=self.lworker, parent=self,
                         tableView=self.tableView, spinBox=self.spinBox))
         self.dworker.finished.connect(lambda Progress: download(progress = Progress, table = self.tableView, progressbar=self.ProgressBar, 
                             songdata=self.lworker.songInfos, dworker=self.dworker, button=self.primaryButton1, parent=self, howto = "search"))

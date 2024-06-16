@@ -1,18 +1,8 @@
-import json
-import AZMusicAPI
-from PyQt5.QtCore import QThread
-from PyQt5.QtWidgets import QTableWidgetItem, QWidget, QAbstractItemView
+from PyQt5.QtWidgets import QWidget, QAbstractItemView
 from qfluentwidgets import ComboBox, LineEdit, PushButton, SubtitleLabel, TableWidget, ProgressBar
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5 import QtCore
-import os
-import requests
-from mutagen.easyid3 import EasyID3
-from helper.config import cfg
-from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoapi, playlistpath
-from helper.flyoutmsg import dlerr, dlsuc
 from helper.downloadHelper import downloading, download
-from helper.playlistHelper import getlist, get_folders, FindLists, searchstart, music, search, rundownload
+from helper.playlistHelper import getlist, FindLists, searchstart, music, search, rundownload
 
 
 
@@ -85,7 +75,7 @@ class playlist(QWidget):
         self.lworker.finished.connect(lambda: search(PushButton=self.PushButton, lworker=self.lworker, TableWidget=self.TableWidget))
         self.dworker = downloading(howto = "playlist")
         self.dworker.finished.connect(lambda Progress: download(progress = Progress, table = self.TableWidget_2, progressbar=self.pro_bar, 
-                            songdata=None, dworker=None, button=self.PushButton_2, parent=self, howto = "lists"))
+                            songdata=None, dworker=self.dworker, button=self.PushButton_2, parent=self, howto = "lists"))
         
         self.retranslateUi()
         FindLists(TableWidget=self.TableWidget)

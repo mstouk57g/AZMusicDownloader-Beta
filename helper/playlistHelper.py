@@ -119,7 +119,7 @@ def searchstart(PushButton, lworker, ComboBox, LineEdit, parent):
         u.close()
         lworker.start()
     else:
-        dlerr(erid=1, parent=parent)
+        dlerr(outid=1, parent=parent)
 
 
 def music(TableWidget, TableWidget_2, parent):
@@ -179,7 +179,7 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
     except AttributeError:
         TableWidget_2.clearSelection()
         PushButton_2.setEnabled(False)
-        dlwar(content='您选中的行无数据', parent=parent)
+        dlwar(outid=2, parent=parent)
         pro_bar.setHidden(True)
         return 0
 
@@ -193,7 +193,7 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
             if os.path.exists(cfg.get(cfg.downloadFolder)) == False:
                 os.mkdir(cfg.get(cfg.downloadFolder))
         except:
-            dlerr(erid=3, parent=parent)
+            dlerr(outid=3, parent=parent)
             return 0
 
         # self.download_worker.started.connect(
@@ -205,7 +205,7 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
     else:
         TableWidget_2.clearSelection()
         PushButton_2.setEnabled(False)
-        dlwar(content='您选中的行无数据', parent=parent)
+        dlwar(outid=2, parent=parent)
 
 
 def get_folders(folder_path):
