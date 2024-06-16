@@ -75,7 +75,7 @@ class show_toast(QThread):
 
         toast('AZMusicDownloader', self.content, buttons=buttons)
 
-class download:
+class download(QThread):
     def __init__(self, progress, table, progressbar, songdata, dworker, button, parent, howto):
         self.progress = progress
         self.table = table
@@ -128,6 +128,7 @@ class download:
             text = '音乐下载完成！\n歌曲名：{}\n艺术家：{}\n保存路径：{}'.format(song, singer, path)
             dlsuc(content=text, parent=self.parent)
             if cfg.toast:
+                global thread
                 thread = show_toast(content=text, path=path, musicpath=musicpath)
                 thread.start()
                 #thread.wait()
@@ -148,4 +149,3 @@ class download:
                 dlerr(outid=6, parent=self.parent)
         else:
             self.progressbar.setValue(int(self.progress))
-        print("尝试保持线程运行至生命周期结束")
