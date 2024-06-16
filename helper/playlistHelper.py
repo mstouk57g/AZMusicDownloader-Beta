@@ -6,7 +6,7 @@ import os
 import requests
 from helper.config import cfg
 from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoapi, playlistpath
-from helper.flyoutmsg import dlerr
+from helper.flyoutmsg import dlerr, dlwar
 
 try:
     u = open(apipath, "r")
@@ -170,7 +170,7 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
         except AttributeError:
             TableWidget_2.clearSelection()
             PushButton_2.setEnabled(False)
-            dlerr(content='您选中的行无数据', parent=parent)
+            dlwar(content='您选中的行无数据', parent=parent)
             return 0
         
         if id_v != "":
@@ -183,7 +183,7 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
                 if os.path.exists(cfg.get(cfg.downloadFolder)) == False:
                     os.mkdir(cfg.get(cfg.downloadFolder))
             except:
-                dlerr(content='音乐下载路径无法读取\创建失败', parent=parent)
+                dlerr(erid=3, parent=parent)
                 return 0
             
             # self.download_worker.started.connect(
@@ -195,7 +195,7 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
         else:
             TableWidget_2.clearSelection()
             PushButton_2.setEnabled(False)
-            dlerr(content='您选中的行无数据', parent=parent)
+            dlwar(content='您选中的行无数据', parent=parent)
             
 def get_folders(folder_path):
     folders = []

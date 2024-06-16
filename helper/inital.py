@@ -2,7 +2,7 @@ import json, random, requests, webbrowser
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QThread
 from os import path, makedirs, remove
 from json import loads
-from helper.flyoutmsg import dlsuc, dlerr, dlwar
+from helper.flyoutmsg import dlsuc, dlwar
 from helper.getvalue import outapoem
 from PyQt5.QtCore import Qt, QThread
 from helper.config import cfg
@@ -90,12 +90,12 @@ def showup(parent, updata, upworker):
             elif up["level"] == "important":
                 text = "我们检测到了新的版本，版本号：{}\n本次更新为重要版本迭代，修复了Bug，更新了新功能，强烈建议进行更新。".format(
                     str(up["latest"]))
-                dlerr("检测到有新版本 {} ，本次更新为重要版本迭代，强烈建议进行更新。".format(str(up["latest"])),
+                dlwar("检测到有新版本 {} ，本次更新为重要版本迭代，强烈建议进行更新。".format(str(up["latest"])),
                       parent, title="更新提示", show_time=up["flag_time"])
             elif up["level"] == "fix":
                 text = "我们检测到了新的版本，版本号：{}\n本次更新为Bug修复版本，修复了重大Bug，强烈建议进行更新。".format(
                     str(up["latest"]))
-                dlerr("检测到有新版本 {} ，本次更新为Bug修复版本，强烈建议进行更新。".format(str(up["latest"])),
+                dlwar("检测到有新版本 {} ，本次更新为Bug修复版本，强烈建议进行更新。".format(str(up["latest"])),
                       parent, title="更新提示", show_time=up["flag_time"])
             else:
                 text = "我们检测到了新的版本，版本号：{}\n本次更新类型未知，可能是后续版本的新更新类型。".format(

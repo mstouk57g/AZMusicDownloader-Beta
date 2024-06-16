@@ -68,7 +68,7 @@ def searchstart(lineEdit, parent, spinBox, lworker):
         u.write(json.dumps({"text": lineEdit.text(), "api_value": api, "value": spinBox.value()}))
     else:
         if q_api == "" or q_api is None:
-            dlerr("未配置QQMusicApi地址", parent=parent)
+            dlerr(erid=5, parent=parent)
             return "Error"
         u.write(json.dumps({"text": lineEdit.text(), "api_value": q_api, "value": spinBox.value()}))
     u.close()
@@ -85,7 +85,7 @@ def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker
             songdata = lworker.songInfos
             data = songdata[row]
         except:
-            dlerr(content='您选中的行无数据', parent=parent)
+            dlwar(content='您选中的行无数据', parent=parent)
             return 0
         
         song_id = data["id"]
@@ -96,19 +96,19 @@ def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker
             if os.path.exists(musicpath) == False:
                 os.mkdir(musicpath)
         except:
-            dlerr(content='音乐下载路径无法读取\创建失败', parent=parent)
+            dlerr(erid=3, parent=parent)
             return 0
         
         # self.dworker.started.connect(lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
         u = open(download_log, 'w')
         if cfg.apicard.value == "NCMA":
             if api == "" or api is None:
-                dlerr("未配置NeteaseCloudMusicApi地址", parent=parent)
+                dlerr(erid=4, parent=parent)
                 return "Error"
             u.write(json.dumps({"id": song_id, "api": api, "song": song, "singer": singer}))
         else:
             if q_api == "" or q_api is None:
-                dlerr("未配置QQMusicApi地址", parent=parent)
+                dlerr(erid=5, parent=parent)
                 return "Error"
             u.write(json.dumps({"id": song_id, "api": q_api, "song": song, "singer": singer}))
         u.close()
@@ -117,13 +117,13 @@ def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker
 def search(lworker, parent, tableView, spinBox):
         songInfos = lworker.songInfos
         if songInfos == "Error 0":
-            dlwar(content='未搜索到相关的歌曲，换个关键词试试吧', parent=parent)
+            dlwar(erid=0, parent=parent)
             return 0
         elif songInfos == "Error 1":
-            dlwar(content='你还没有输入噢', parent=parent)
+            dlwar(erid=1, parent=parent)
             return 0
         elif songInfos == "NetworkError":
-            dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent=parent)
+            dlerr(erid=6, parent=parent)
             return 0
         
         tableView.setRowCount(spinBox.value())

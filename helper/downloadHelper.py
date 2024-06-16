@@ -5,7 +5,7 @@ import requests, os
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg
 from helper.getvalue import download_log, playlist_download_log
-from helper.flyoutmsg import dlsuc, dlerr
+from helper.flyoutmsg import dlsuc, dlerr, dlwar
 
 class downloading(QThread):
     finished = pyqtSignal(str)
@@ -68,7 +68,7 @@ def download(progress, table, progressbar, songdata, dworker, button, parent, ho
                 try:
                     data = songdata[row]
                 except:
-                    dlerr(content='您选中的行无数据', parent=parent)
+                    dlwar(content='您选中的行无数据', parent=parent)
                     return 0
                 
                 song_id = data["id"]
@@ -107,10 +107,10 @@ def download(progress, table, progressbar, songdata, dworker, button, parent, ho
             table.clearSelection()
             
             if error == "Error 3":
-                dlerr(content='这首歌曲无版权，暂不支持下载', parent=parent)
+                dlerr(erid=7, parent=parent)
             elif error == "Error 4":
-                dlerr(content='获取链接失败，建议检查API服务器是否配置了账号Cookie', parent=parent)
+                dlerr(erid=8, parent=parent)
             elif error == "NetworkError":
-                dlerr(content='您可能是遇到了以下其一问题：网络错误 / 服务器宕机 / IP被封禁', parent=parent)
+                dlerr(erid=6, parent=parent)
         else:
             progressbar.setValue(int(progress))
