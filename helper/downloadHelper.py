@@ -1,5 +1,5 @@
 import json, AZMusicAPI
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QObject, QThread
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import requests, os
 from mutagen.easyid3 import EasyID3
@@ -10,10 +10,18 @@ from helper.flyoutmsg import dlsuc, dlerr
 class downloading(QThread):
     finished = pyqtSignal(str)
 
+    def __init__(self, howto):
+        super().__init__()
+        self.howto = howto
+        
     @pyqtSlot()
     def run(self):
         musicpath = cfg.get(cfg.downloadFolder)
-        u = open(download_log, "r")
+        if self.howto == "search":
+            u = open(download_log, "r")
+        elif self.howto == "playlist":
+            u = open(playlist_download_log, "r")
+            
         data = json.loads(u.read())
         u.close()
         id = data["id"]
@@ -21,10 +29,10 @@ class downloading(QThread):
         song = data["song"]
         singer = data["singer"]
         
-        if cfg.apicard.value == "NCMA":
-            url = AZMusicAPI.geturl(id=id, api=api)
-        else:
+        if cfg.apicard.value == "QQMA" and self.howto == "search":
             url = AZMusicAPI.geturl(id=id, api=api, server="qqma")
+        else:
+            url = AZMusicAPI.geturl(id=id, api=api)
         if url == "Error 3":
             self.show_error = "Error 3"
             self.finished.emit("Error")

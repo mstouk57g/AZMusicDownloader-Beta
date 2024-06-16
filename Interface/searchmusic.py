@@ -113,7 +113,7 @@ class searchmusic(QWidget, QObject):
         # self.worker.moveToThread(self.worker_thread)
       
         self.lworker = getlist()
-        self.dworker = downloading()       
+        self.dworker = downloading(howto="search")       
         self.upworker = get_update()
         self.lworker.finished.connect(lambda: search(lworker=self.lworker, parent=self.parent,
                         tableView=self.tableView, spinBox=self.spinBox))
