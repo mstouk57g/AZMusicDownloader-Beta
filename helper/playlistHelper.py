@@ -1,17 +1,12 @@
 import json
-import AZMusicAPI
 from PyQt5.QtCore import QThread
-from PyQt5.QtWidgets import QTableWidgetItem, QWidget, QAbstractItemView
-from qfluentwidgets import ComboBox, LineEdit, PushButton, SubtitleLabel, TableWidget, ProgressBar
+from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5 import QtCore
 import os
 import requests
-from mutagen.easyid3 import EasyID3
 from helper.config import cfg
 from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoapi, playlistpath
-from helper.flyoutmsg import dlerr, dlsuc
-from helper.downloadHelper import downloading, download
+from helper.flyoutmsg import dlerr
 
 try:
     u = open(apipath, "r")

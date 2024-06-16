@@ -81,8 +81,8 @@ def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker
         ProgressBar.setValue(0)
         
         row = tableView.currentIndex().row()
-        songdata = lworker.songInfos
         try:
+            songdata = lworker.songInfos
             data = songdata[row]
         except:
             dlerr(content='您选中的行无数据', parent=parent)

@@ -1,5 +1,5 @@
 import json, AZMusicAPI
-from PyQt5.QtCore import QObject, QThread
+from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import requests, os
 from mutagen.easyid3 import EasyID3
