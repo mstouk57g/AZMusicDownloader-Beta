@@ -6,6 +6,9 @@ from mutagen.easyid3 import EasyID3
 from helper.config import cfg
 from helper.getvalue import download_log, playlist_download_log
 from helper.flyoutmsg import dlsuc, dlerr, dlwar
+from win11toast import toast
+
+thread = None
 
 class downloading(QThread):
     finished = pyqtSignal(str)
@@ -58,26 +61,51 @@ class downloading(QThread):
                         self.finished.emit(str(progress))
 
             self.finished.emit(str(200))
-            
-def download(progress, table, progressbar, songdata, dworker, button, parent, howto):
+
+class show_toast(QThread):
+    def __init__(self, content, path, musicpath):
+        super().__init__()
+        self.content = content
+        self.path = path
+        self.musicpath = musicpath
+    def run(self):
+        buttons = [
+                {'activationType': 'protocol', 'arguments': self.path, 'content': 'Play'},
+                {'activationType': 'protocol', 'arguments': self.musicpath, 'content': 'Open Folder'}]
+
+        toast('AZMusicDownloader', self.content, buttons=buttons)
+
+class download:
+    def __init__(self, progress, table, progressbar, songdata, dworker, button, parent, howto):
+        self.progress = progress
+        self.table = table
+        self.progressbar = progressbar
+        self.songdata = songdata
+        self.dworker = dworker
+        self.button = button
+        self.parent = parent
+        self.howto = howto
+        self.run()
+        
+    def run(self):
         musicpath = cfg.get(cfg.downloadFolder)
-        if progress == "200":
-            progressbar.setValue(100)
+        if self.progress == "200":
+            self.progressbar.setValue(100)
             
-            if howto == "search":
-                row = table.currentIndex().row()
+            if self.howto == "search":
+                row = self.table.currentIndex().row()
                 try:
-                    data = songdata[row]
+                    data = self.songdata[row]
                 except:
-                    dlwar(outid=2, parent=parent)
+                    dlwar(outid=2, parent=self.parent)
                     return 0
                 
                 song_id = data["id"]
                 song = data["name"]
                 singer = data["artists"]
                 album = data["album"]
-                dworker.quit()
-            elif howto == "lists":
+                self.dworker.quit()
+            elif self.howto == "lists":
                 u = open(playlist_download_log, "r")
                 data = json.loads(u.read())
                 u.close()
@@ -85,8 +113,8 @@ def download(progress, table, progressbar, songdata, dworker, button, parent, ho
                 singer = data["singer"]
                 album = data["album"]
                                 
-            table.clearSelection()           
-            button.setEnabled(False)
+            self.table.clearSelection()           
+            self.button.setEnabled(False)
             path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
             path = os.path.abspath(path)
             
@@ -96,22 +124,28 @@ def download(progress, table, progressbar, songdata, dworker, button, parent, ho
             audio["artist"] = singer
             audio.save()
             
+            self.progressbar.setHidden(True)
             text = '音乐下载完成！\n歌曲名：{}\n艺术家：{}\n保存路径：{}'.format(song, singer, path)
-            dlsuc(content=text, parent=parent)
-            progressbar.setHidden(True)
+            dlsuc(content=text, parent=self.parent)
+            if cfg.toast:
+                thread = show_toast(content=text, path=path, musicpath=musicpath)
+                thread.start()
+                #thread.wait()
+                thread.finished.connect(thread.quit)
             
-        elif progress == "Error":
-            error = dworker.show_error
-            dworker.quit()
-            progressbar.setHidden(True)
-            button.setEnabled(False)
-            table.clearSelection()
+        elif self.progress == "Error":
+            error = self.dworker.show_error
+            self.dworker.quit()
+            self.progressbar.setHidden(True)
+            self.button.setEnabled(False)
+            self.table.clearSelection()
             
             if error == "Error 3":
-                dlerr(outid=7, parent=parent)
+                dlerr(outid=7, parent=self.parent)
             elif error == "Error 4":
-                dlerr(outid=8, parent=parent)
+                dlerr(outid=8, parent=self.parent)
             elif error == "NetworkError":
-                dlerr(outid=6, parent=parent)
+                dlerr(outid=6, parent=self.parent)
         else:
-            progressbar.setValue(int(progress))
+            self.progressbar.setValue(int(self.progress))
+        print("尝试保持线程运行至生命周期结束")

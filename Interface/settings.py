@@ -68,17 +68,24 @@ class SettingInterface(ScrollArea):
         self.DownloadSettings = SettingCardGroup(self.tr("下载设置"), self.scrollWidget)
         self.downloadFolderCard = PushSettingCard(
             self.tr('选择目录'),
-            FIF.DOWNLOAD,
+            FIF.FOLDER,
             self.tr("下载目录"),
             cfg.get(cfg.downloadFolder),
             self.DownloadSettings
         )
         self.FolderAuto = PushSettingCard(
             self.tr('恢复默认'),
-            FIF.DOWNLOAD,
+            FIF.CLEAR_SELECTION,
             self.tr("恢复下载目录默认值"),
             self.tr('下载目录默认值为：') + autopath + self.tr('（即用户音乐文件夹）'),
             self.DownloadSettings
+        )
+        self.toast = SwitchSettingCard(
+            FIF.MEGAPHONE,
+            self.tr('使用Windows系统通知'),
+            self.tr("开启后，下载完毕时将使用Windows系统通知通知您"),
+            configItem=cfg.toast,
+            parent=self.DownloadSettings,
         )
 
         # Application
@@ -188,6 +195,8 @@ class SettingInterface(ScrollArea):
         # add cards to group
         self.DownloadSettings.addSettingCard(self.downloadFolderCard)
         self.DownloadSettings.addSettingCard(self.FolderAuto)
+        if cfg.beta:
+            self.DownloadSettings.addSettingCard(self.toast)
 
         self.personalGroup.addSettingCard(self.themeCard)
         self.personalGroup.addSettingCard(self.themeColorCard)
