@@ -55,9 +55,16 @@ class Plugins_Card(CardWidget):
         self.hBoxLayout.addLayout(self.vBoxLayout)
 
         self.hBoxLayout.addStretch(1)
-        # self.hBoxLayout.addWidget(self.openButton, 0, Qt.AlignRight)
-        # self.hBoxLayout.addWidget(self.moreButton, 0, Qt.AlignRight)
-        # self.moreButton.setFixedSize(32, 32)
+        self.openButton = PushButton("open")
+        self.openButton.setObjectName(title)
+        self.alaka = self.openButton.objectName().__str__()
+        self.openButton.clicked.connect(lambda: self.button(idname=self.alaka))
+        self.hBoxLayout.addWidget(self.openButton, 0, Qt.AlignRight)
+        #self.hBoxLayout.addWidget(self.moreButton, 0, Qt.AlignRight)
+        #self.moreButton.setFixedSize(32, 32)
+        
+    def button(self, idname):
+        print(idname)
 
 
 class plugins(QWidget):
