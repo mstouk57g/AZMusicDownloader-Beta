@@ -10,7 +10,7 @@ from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 from sys import platform, getwindowsversion
 from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL,verdetail
-from helper.inital import delfin, get_update, showup
+from helper.inital import delfin, get_update, showup, setSettingsQss
 
 class SettingInterface(ScrollArea):
     musicFoldersChanged = pyqtSignal(list)
@@ -183,7 +183,9 @@ class SettingInterface(ScrollArea):
         self.setWidgetResizable(True)
 
         # initialize style sheet
-        self.__setQss()
+        self.scrollWidget.setObjectName('scrollWidget')
+        self.settingLabel.setObjectName('settingLabel')
+        setSettingsQss(parent=self)
 
         # initialize layout
         self.__initLayout()
@@ -224,15 +226,6 @@ class SettingInterface(ScrollArea):
         self.expandLayout.addWidget(self.personalGroup)
         self.expandLayout.addWidget(self.appGroup)
         self.expandLayout.addWidget(self.aboutGroup)
-
-    def __setQss(self):
-        """ set style sheet """
-        self.scrollWidget.setObjectName('scrollWidget')
-        self.settingLabel.setObjectName('settingLabel')
-
-        theme = 'dark' if isDarkTheme() else 'light'
-        with open(f'resource/qss/{theme}/setting_interface.qss', encoding='utf-8') as f:
-            self.setStyleSheet(f.read())
 
     def __showRestartTooltip(self):
         """ show restart tooltip """

@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-
+from helper.inital import setSettingsQss
 from PyQt5.QtCore import Qt, QPoint, QSize, QUrl, QRect
 from PyQt5.QtGui import QIcon, QFont, QColor, QPainter
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QSizePolicy
@@ -23,26 +23,18 @@ class plugins(ScrollArea):
         self.setObjectName('plugins')
         self.resize(1000, 800)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setViewportMargins(0, 120, 0, 20)
+        self.setViewportMargins(0, 20, 0, 20)
         self.setWidget(self.scrollWidget)
         self.setWidgetResizable(True)
-        
-        
-        self.PluginsGroup = SettingCardGroup(self.tr('插件列表'), self.scrollWidget)
+        self.scrollWidget.setObjectName('scrollWidget')
+
+        self.PluginsGroup = SettingCardGroup(self.tr('插件列表/管理'), self.scrollWidget)
         run_plugins_plugin(parent=self)
-        self.__setQss()
+        setSettingsQss(parent=self)
 
         self.expandLayout.setSpacing(28)
         self.expandLayout.setContentsMargins(60, 10, 60, 0)
         self.expandLayout.addWidget(self.PluginsGroup)
-    
-    def __setQss(self):
-        """ set style sheet """
-        self.scrollWidget.setObjectName('scrollWidget')
-
-        theme = 'dark' if isDarkTheme() else 'light'
-        with open(f'resource/qss/{theme}/setting_interface.qss', encoding='utf-8') as f:
-            self.setStyleSheet(f.read())
             
     def addCard(self, icon, title, content, type, uuid):
         print(type)
