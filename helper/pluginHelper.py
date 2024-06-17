@@ -58,4 +58,6 @@ def run_plugins_plugin(parent):
         get_json = open(f"plugins/{folder}/index.json", "r", encoding="utf-8")
         data = json.loads(get_json.read())
         get_json.close()
-        parent.addCard(data["icon"], data["name"], data["desc"])
+        print(folder)
+        print(data["type"])
+        parent.addCard(data["icon"], data["name"], data["desc"], data["type"], folder)

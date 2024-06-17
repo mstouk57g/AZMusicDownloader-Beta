@@ -5,73 +5,65 @@ import sys
 from PyQt5.QtCore import Qt, QPoint, QSize, QUrl, QRect
 from PyQt5.QtGui import QIcon, QFont, QColor, QPainter
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QSizePolicy
-
-from qfluentwidgets import (CardWidget, setTheme, Theme, IconWidget, BodyLabel, CaptionLabel, PushButton,
-                            TransparentToolButton, FluentIcon, RoundMenu, Action, ElevatedCardWidget,
-                            ImageLabel, isDarkTheme, FlowLayout, MSFluentTitleBar, SimpleCardWidget,
-                            HeaderCardWidget, InfoBarIcon, HyperlinkLabel, HorizontalFlipView,
-                            PrimaryPushButton, TitleLabel, PillPushButton, setFont, SingleDirectionScrollArea,
-                            VerticalSeparator)
-
+from helper.config import cfg
+from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
+                            OptionsSettingCard, PushSettingCard, setTheme, isDarkTheme,
+                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea, PushButton, PrimaryPushButton,
+                            ComboBoxSettingCard, ExpandLayout, Theme, InfoBar, FlyoutView, Flyout)
+from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets.components.widgets.acrylic_label import AcrylicBrush
 from helper.pluginHelper import run_plugins_plugin
 
-class Plugins_Card(CardWidget):
+class plugins(ScrollArea):
 
-    def __init__(self, icon, title, content, parent=None):
-        super().__init__(parent)
-        self.iconWidget = IconWidget(icon)
-        self.titleLabel = BodyLabel(title, self)
-        self.contentLabel = CaptionLabel(content, self)
-        # self.openButton = PushButton('详情', self)
-        # self.moreButton = TransparentToolButton(FluentIcon.MORE, self)
-
-        self.hBoxLayout = QHBoxLayout(self)
-        self.vBoxLayout = QVBoxLayout()
-
-        self.setFixedHeight(73)
-        self.iconWidget.setFixedSize(48, 48)
-        self.contentLabel.setTextColor("#606060", "#d2d2d2")
-        # self.openButton.setFixedWidth(120)
-
-        self.hBoxLayout.setContentsMargins(20, 11, 11, 11)
-        self.hBoxLayout.setSpacing(15)
-        self.hBoxLayout.addWidget(self.iconWidget)
-
-        self.vBoxLayout.setContentsMargins(0, 0, 0, 0)
-        self.vBoxLayout.setSpacing(0)
-        self.vBoxLayout.addWidget(self.titleLabel, 0, Qt.AlignVCenter)
-        self.vBoxLayout.addWidget(self.contentLabel, 0, Qt.AlignVCenter)
-        self.vBoxLayout.setAlignment(Qt.AlignVCenter)
-        self.hBoxLayout.addLayout(self.vBoxLayout)
-
-        self.hBoxLayout.addStretch(1)
-        self.openButton = PushButton("open")
-        self.openButton.setObjectName(title)
-        self.alaka = self.openButton.objectName().__str__()
-        self.openButton.clicked.connect(lambda: self.button(idname=self.alaka))
-        self.hBoxLayout.addWidget(self.openButton, 0, Qt.AlignRight)
-        #self.hBoxLayout.addWidget(self.moreButton, 0, Qt.AlignRight)
-        #self.moreButton.setFixedSize(32, 32)
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.scrollWidget = QWidget()
+        self.expandLayout = ExpandLayout(self.scrollWidget)
+        self.setObjectName('plugins')
+        self.resize(1000, 800)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setViewportMargins(0, 120, 0, 20)
+        self.setWidget(self.scrollWidget)
+        self.setWidgetResizable(True)
         
-    def button(self, idname):
-        print(idname)
-
-
-class plugins(QWidget):
-
-    def __init__(self):
-        super().__init__()
-        self.resize(600, 600)
-        self.setObjectName("plugins")
-
-        self.vBoxLayout = QVBoxLayout(self)
-        self.vBoxLayout.setSpacing(6)
-        self.vBoxLayout.setContentsMargins(30, 60, 30, 30)
-        self.vBoxLayout.setAlignment(Qt.AlignTop)
-
+        
+        self.PluginsGroup = SettingCardGroup(self.tr('插件列表'), self.scrollWidget)
         run_plugins_plugin(parent=self)
+        self.__setQss()
 
-    def addCard(self, icon, title, content):
-        card = Plugins_Card(icon, title, content, self)
-        self.vBoxLayout.addWidget(card, alignment=Qt.AlignTop)
+        self.expandLayout.setSpacing(28)
+        self.expandLayout.setContentsMargins(60, 10, 60, 0)
+        self.expandLayout.addWidget(self.PluginsGroup)
+    
+    def __setQss(self):
+        """ set style sheet """
+        self.scrollWidget.setObjectName('scrollWidget')
+
+        theme = 'dark' if isDarkTheme() else 'light'
+        with open(f'resource/qss/{theme}/setting_interface.qss', encoding='utf-8') as f:
+            self.setStyleSheet(f.read())
+            
+    def addCard(self, icon, title, content, type, uuid):
+        print(type)
+        if type == "Bar" or "api":
+            print("1")
+            self.PluginCard = SwitchSettingCard(
+                icon,
+                title,
+                content,
+                cfg.micaEnabled,
+                self.PluginsGroup
+            )
+        elif type == "Window":
+            print("2")
+            self.Plugintoinit = PushSettingCard(
+                self.tr('打开'),
+                icon,
+                title,
+                content,
+                self.PluginsGroup
+            )
+        
+        self.PluginCard.setObjectName(uuid)
+        self.PluginsGroup.addSettingCard(self.PluginCard)
