@@ -14,16 +14,7 @@ from qfluentwidgets import (CardWidget, setTheme, Theme, IconWidget, BodyLabel, 
                             VerticalSeparator)
 
 from qfluentwidgets.components.widgets.acrylic_label import AcrylicBrush
-
-
-
-def get_folders(directory):
-    folders = []
-    for item in os.listdir(directory):
-        item_path = os.path.join(directory, item)
-        if os.path.isdir(item_path):
-            folders.append(item)
-    return folders
+from helper.pluginHelper import run_plugins_plugin
 
 class Plugins_Card(CardWidget):
 
@@ -75,34 +66,12 @@ class plugins(QWidget):
         self.setObjectName("plugins")
 
         self.vBoxLayout = QVBoxLayout(self)
-
         self.vBoxLayout.setSpacing(6)
         self.vBoxLayout.setContentsMargins(30, 60, 30, 30)
         self.vBoxLayout.setAlignment(Qt.AlignTop)
 
-        for folder in get_folders("plugins"):
-            get_json = open(f"plugins/{folder}/index.json", "r", encoding="utf-8")
-            data = json.loads(get_json.read())
-            get_json.close()
-            self.addCard(data["icon"], data["name"], data["desc"])
-
-
+        run_plugins_plugin(parent=self)
 
     def addCard(self, icon, title, content):
         card = Plugins_Card(icon, title, content, self)
         self.vBoxLayout.addWidget(card, alignment=Qt.AlignTop)
-
-
-if __name__ == '__main__':
-    # enable dpi scale
-    QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-
-    # setTheme(Theme.DARK)
-
-    app = QApplication(sys.argv)
-    w = plugins()
-    w.show()
-    app.exec_()

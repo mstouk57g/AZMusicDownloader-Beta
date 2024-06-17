@@ -51,6 +51,7 @@ class Window(MSFluentWindow):
 
     def __init__(self):
         super().__init__()
+        self.setObjectName("MainWindow")
 
         self.initNavigation()
         self.initWindow()

@@ -52,3 +52,10 @@ def run_plugins(parent):
         if cfg.debug_card.value:
             print(f"将插件添加至导航栏: {plugin_name}")
         exec(f"parent.addSubInterface(plugin_instance, {icon}, '{name}')")
+        
+def run_plugins_plugin(parent):
+    for folder in get_folders("plugins"):
+        get_json = open(f"plugins/{folder}/index.json", "r", encoding="utf-8")
+        data = json.loads(get_json.read())
+        get_json.close()
+        parent.addCard(data["icon"], data["name"], data["desc"])
