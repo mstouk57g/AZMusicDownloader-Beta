@@ -294,7 +294,7 @@ class SettingInterface(ScrollArea):
         
     def __changelog(self):
         view = FlyoutView(
-            title='AZMusicDownloader V2.5.0更新日志 ',
+            title=f'AZMusicDownloader {VERSION}更新日志 ',
             content=verdetail,
             #image='resource/splash.png',
             isClosable=True
@@ -311,7 +311,7 @@ class SettingInterface(ScrollArea):
         button2.clicked.connect(self.openaz)
         view.addWidget(button2, align=Qt.AlignRight)
         
-        button3 = PrimaryPushButton('Check Update')
+        button3 = PrimaryPushButton('检查更新')
         button3.setFixedWidth(120)
         button3.clicked.connect(self.upupgrade)
         view.addWidget(button3, align=Qt.AlignRight)
