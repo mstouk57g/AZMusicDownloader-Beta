@@ -190,7 +190,7 @@ class SettingInterface(ScrollArea):
             self.debug_Card = SwitchSettingCard(
                 FIF.DEVELOPER_TOOLS,
                 self.tr('Debug Mode'),
-                self.tr('The global exception capture will be disabled, and there will be outputs in the commandline.'),
+                self.tr('The global exception capture will be disabled, and there will be outputs in the commandline.(Code Running Only)'),
                 configItem=cfg.debug_card,
                 parent=self.BetaOnlyGroup
             )
