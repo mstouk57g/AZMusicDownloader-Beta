@@ -313,7 +313,7 @@ class SettingInterface(ScrollArea):
         setTheme(theme)
 
         # chang the theme of setting interface
-        self.__setQss()
+        setSettingsQss(parent=self)
         
     def opengithub(self):
         QDesktopServices.openUrl(QUrl(RELEASE_URL))
