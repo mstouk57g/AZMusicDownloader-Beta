@@ -1,12 +1,9 @@
-import winreg
 from datetime import date
 from random import randint
+from PyQt5.QtCore import QStandardPaths
 
-reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")
-
-config_path_value = winreg.QueryValueEx(reg_key, "AppData")
-DataPath = config_path_value[0]
-allpath = "{}\\AZMusicDownload".format(DataPath)
+config_path_value = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
+allpath = "{}\\AZMusicDownload".format(config_path_value)
 logpath = "{}\\log".format(allpath)
 playlistpath = "{}\\playlist".format(allpath)
 
@@ -19,9 +16,8 @@ search_log = "{}\\search_log.json".format(logpath)
 playlist_download_log = "{}\\playlist_download_log.json".format(logpath)
 playlist_search_log = "{}\\playlist_search_log.json".format(logpath)
 
-music_path_value = winreg.QueryValueEx(reg_key, "My Music")
-personalmusicpath = music_path_value[0]
-autopath = "{}\\AZMusicDownload".format(personalmusicpath)
+music_path_value = QStandardPaths.writableLocation(QStandardPaths.MusicLocation)
+autopath = "{}\\AZMusicDownload".format(music_path_value)
 
 autoapi = "https://ncma.azprod.cn/"  # API为ncma的克隆项目
 upurl = "https://json.zenglingkun.cn/update/md/index.json"

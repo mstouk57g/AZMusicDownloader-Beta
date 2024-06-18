@@ -37,7 +37,7 @@ class plugins(ScrollArea):
         self.musicFolderCard = FolderListSettingCard(
             plu.PluginFolders,
             "插件目录",
-            directory=None,
+            directory=QStandardPaths.writableLocation(QStandardPaths.DesktopLocation),
             parent=self.ListsGroup
         )
         self.ListsGroup.addSettingCard(self.musicFolderCard)
