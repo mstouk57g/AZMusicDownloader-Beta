@@ -145,10 +145,10 @@ class SettingInterface(ScrollArea):
                 parent=self.BetaOnlyGroup
             )
             self.toast_Card = SwitchSettingCard(
-                FIF.DICTIONARY_ADD,
+                FIF.MEGAPHONE,
                 self.tr('Enable Windows Toast'),
-                self.tr('Use System Notification to notice you when the process is finished. ( Windows 10/11 Only )'),
-                configItem=cfg.PluginEnable,
+                self.tr('Use System Notification to notice you when the process is finished. ( Windows 10.0.17134 or later)'),
+                configItem=cfg.toast,
                 parent=self.BetaOnlyGroup
             )
 
@@ -179,6 +179,8 @@ class SettingInterface(ScrollArea):
         )
         
         self.micaCard.setEnabled(platform == 'win32' and getwindowsversion().build >= 22000)
+        if cfg.beta.value:
+            self.toast_Card.setEnabled(platform == 'win32' and getwindowsversion().build >= 17134)
         self.__initWidget()
 
 
@@ -204,8 +206,6 @@ class SettingInterface(ScrollArea):
         # add cards to group
         self.DownloadSettings.addSettingCard(self.downloadFolderCard)
         self.DownloadSettings.addSettingCard(self.FolderAuto)
-        if cfg.beta:
-            self.DownloadSettings.addSettingCard(self.toast)
 
         self.personalGroup.addSettingCard(self.themeCard)
         self.personalGroup.addSettingCard(self.themeColorCard)
@@ -219,6 +219,7 @@ class SettingInterface(ScrollArea):
         if cfg.beta.value:
             self.BetaOnlyGroup.addSettingCard(self.debug_Card)
             self.BetaOnlyGroup.addSettingCard(self.plugin_Card)
+            self.BetaOnlyGroup.addSettingCard(self.toast_Card)
 
         self.aboutGroup.addSettingCard(self.helpCard)
         self.aboutGroup.addSettingCard(self.feedbackCard)
@@ -285,8 +286,10 @@ class SettingInterface(ScrollArea):
         if not cfg.beta.value:
             self.debug_Card.setValue(False)
             self.plugin_Card.setValue(False)
+            self.toast_Card.setValue(False)
             self.debug_Card.setVisible(False)
             self.plugin_Card.setVisible(False)
+            self.toast_Card.setVisible(False)
             self.BetaOnlyGroup.setVisible(False)
         
     def __changelog(self):

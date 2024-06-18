@@ -123,11 +123,11 @@ class download(QThread):
             audio['album'] = album
             audio["artist"] = singer
             audio.save()
-            
+
             self.progressbar.setHidden(True)
             text = '音乐下载完成！\n歌曲名：{}\n艺术家：{}\n保存路径：{}'.format(song, singer, path)
             dlsuc(content=text, parent=self.parent)
-            if cfg.toast:
+            if cfg.toast.value:
                 global thread
                 thread = show_toast(content=text, path=path, musicpath=musicpath)
                 thread.start()

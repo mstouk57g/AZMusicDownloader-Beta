@@ -51,7 +51,7 @@ class Config(QConfig):
     
     #BetaOnly
     toast = ConfigItem(
-        "BetaOnly", "toast", False, BoolValidator(), restart=True)
+        "BetaOnly", "toast", False, BoolValidator())
     PluginEnable = ConfigItem(
         "BetaOnly", "EnablePlugins", False, BoolValidator(), restart=True)
     debug_card = ConfigItem(
