@@ -1,7 +1,5 @@
 # coding:utf-8
-import importlib
-import json
-import os
+import importlib, sys, json, os
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import SwitchSettingCard, PushSettingCard
 from helper.config import cfg
@@ -16,6 +14,8 @@ def get_folders(directory):
             folders.append(item)
     return folders
 
+folders = cfg.PluginFolders.value
+
 def load_plugins(parent):
         # 遍历插件目录中的文件
         global plugins_items
@@ -24,14 +24,15 @@ def load_plugins(parent):
         num = 0
         if cfg.debug_card.value:
             print("————————插件导入————————")
-        for dirname in get_folders(plugin_dir):
-            for filename in os.listdir(f'plugins\\{dirname}'):
+        for dirname in folders:
+            sys.path.append(dirname)
+            for filename in os.listdir(dirname):
                 if filename.endswith('.py'):
                     plugin_name = filename[:-3]
-                    module_name = f"{plugin_dir}.{dirname}.{plugin_name}"
+                    module_name = f"{plugin_name}"
                     try:
                         module = importlib.import_module(module_name)
-                        plugin_class = getattr(module, plugin_name.capitalize())
+                        plugin_class = getattr(module, plugin_name)
                         plugins_items[plugin_name] = plugin_class()
                         if cfg.debug_card.value:
                             print(f"导入插件: {plugin_name}")
@@ -44,8 +45,11 @@ def load_plugins(parent):
 
 def run_plugins(parent):
     global plugins_items
+    num = 0
     for plugin_name, plugin_instance in plugins_items.items():
-        get_v = open(f"plugins/{plugin_name}/index.json", "r", encoding="utf-8")
+        folder = folders[num]
+        num = num + 1
+        get_v = open(f"{folder}/index.json", "r", encoding="utf-8")
         data = json.loads(get_v.read())
         get_v.close()
         #icon = f'plugins/{plugin_name}/{data["icon"]}'
@@ -57,18 +61,14 @@ def run_plugins(parent):
         exec(f"parent.addSubInterface(plugin_instance, {icon}, '{name}')")
         
 def run_plugins_plugin(parent, PluginsGroup):
-    for folder in get_folders("plugins"):
-        get_json = open(f"plugins/{folder}/index.json", "r", encoding="utf-8")
+    for folder in folders:
+        get_json = open(f"{folder}/index.json", "r", encoding="utf-8")
         data = json.loads(get_json.read())
         get_json.close()
-        print(folder)
-        print(data["type"])
         addCard(parent, PluginsGroup, data["icon"], data["name"], data["desc"], data["type"], folder)
 
 def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
-    print(type)
     if type == "Bar":
-        print("1 "+type)
         PluginCard = SwitchSettingCard(
             icon,
             title,
@@ -77,7 +77,6 @@ def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
             PluginsGroup
         )
     elif type == "api":
-        print("2 "+type)
         PluginCard = SwitchSettingCard(
                 icon,
                 title,
@@ -86,7 +85,6 @@ def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
                 PluginsGroup
             )
     elif type == "Window":
-        print("3 "+type)
         PluginCard = PushSettingCard(
             '打开',
             icon,
