@@ -2,3 +2,4 @@
 *.json
 test.py
 plugins/*
+.vscode/*

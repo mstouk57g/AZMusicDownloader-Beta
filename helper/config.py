@@ -1,7 +1,7 @@
 # coding:utf-8
 from enum import Enum
 from sys import platform, getwindowsversion
-from helper.getvalue import configpath, autopath, plufigpath
+from helper.getvalue import configpath, autopath
 from PyQt5.QtCore import QLocale
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
                             OptionsValidator,  FolderValidator, ConfigSerializer, FolderListValidator)
@@ -29,16 +29,12 @@ class Config(QConfig):
     # Folders
     downloadFolder = ConfigItem(
         "Folders", "Download", autopath, FolderValidator())
-    toast = ConfigItem(
-        "Folders", "toast", False, BoolValidator(), restart=True)
 
     # Application
     beta = ConfigItem(
         "Application", "beta", False, BoolValidator(), restart=True)
     update_card = ConfigItem(
         "Application", "update_card", False, BoolValidator(), restart=True)
-    debug_card = ConfigItem(
-        "Application", "debug_card", False, BoolValidator(), restart=True)
     
     # Search
     twitcard = ConfigItem(
@@ -52,13 +48,19 @@ class Config(QConfig):
     language = OptionsConfigItem(
         "Personalize", "Language", Language.CHINESE_SIMPLIFIED, OptionsValidator(Language), LanguageSerializer(), restart=True)
     micaEnabled = ConfigItem("Personalize", "MicaEnabled", platform == 'win32' and getwindowsversion().build >= 22000, BoolValidator())
-
-class PluginConfig(QConfig):
+    
+    #BetaOnly
+    toast = ConfigItem(
+        "BetaOnly", "toast", False, BoolValidator(), restart=True)
+    PluginEnable = ConfigItem(
+        "BetaOnly", "EnablePlugins", False, BoolValidator(), restart=True)
+    debug_card = ConfigItem(
+        "BetaOnly", "debug_card", False, BoolValidator(), restart=True)
+    
+    #pluginsFolders
     PluginFolders = ConfigItem(
-        "Plugins", "Folders", [], FolderListValidator())
+        "Plugins", "Folders", [], FolderListValidator(), restart=True)
+
 
 cfg = Config()
 qconfig.load(configpath, cfg)
-if cfg.beta.value:
-    plu = PluginConfig()
-    qconfig.load(plufigpath, plu)

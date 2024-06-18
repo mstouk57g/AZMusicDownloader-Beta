@@ -13,10 +13,6 @@ from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEA
 from helper.inital import delfin, get_update, showup, setSettingsQss
 
 class SettingInterface(ScrollArea):
-    musicFoldersChanged = pyqtSignal(list)
-    acrylicEnableChanged = pyqtSignal(bool)
-    downloadFolderChanged = pyqtSignal(str)
-    minimizeToTrayChanged = pyqtSignal(bool)
     micaEnableChanged = pyqtSignal(bool)
 
     def __init__(self, parent=None):
@@ -51,15 +47,15 @@ class SettingInterface(ScrollArea):
         self.languageCard = ComboBoxSettingCard(
             cfg.language,
             FIF.LANGUAGE,
-            self.tr('Language'),
-            self.tr('Set your preferred language for UI'),
-            texts=['简体中文', self.tr('Use system setting')],
+            self.tr('语言'),
+            self.tr('选择应用显示语言'),
+            texts=['简体中文', self.tr('使用系统设置')],
             parent=self.personalGroup
         )
         self.micaCard = SwitchSettingCard(
             FIF.TRANSPARENT,
-            self.tr('Mica effect'),
-            self.tr('Apply semi transparent to windows and surfaces'),
+            self.tr('云母效果'),
+            self.tr('应用Mica半透明效果（仅支持Windows11）'),
             cfg.micaEnabled,
             self.personalGroup
         )
@@ -80,13 +76,6 @@ class SettingInterface(ScrollArea):
             self.tr('下载目录默认值为：') + autopath + self.tr('（即用户音乐文件夹）'),
             self.DownloadSettings
         )
-        self.toast = SwitchSettingCard(
-            FIF.MEGAPHONE,
-            self.tr('使用Windows系统通知'),
-            self.tr("开启后，下载完毕时将使用Windows系统通知通知您"),
-            configItem=cfg.toast,
-            parent=self.DownloadSettings,
-        )
 
         # Application
         self.appGroup = SettingCardGroup(self.tr('应用程序设置'), self.scrollWidget)
@@ -102,13 +91,6 @@ class SettingInterface(ScrollArea):
             self.tr('禁用更新检查'),
             self.tr('开启后启动将不会检查版本更新'),
             configItem=cfg.update_card,
-            parent=self.appGroup
-        )
-        self.debug_Card = SwitchSettingCard(
-            FIF.DEVELOPER_TOOLS,
-            self.tr('Debug模式'),
-            self.tr('开启后，全局异常捕获将会被关闭，并在启动时输出日志，方便开发时检查异常。'),
-            configItem=cfg.debug_card,
             parent=self.appGroup
         )
         self.backtoinit = PushSettingCard(
@@ -144,7 +126,32 @@ class SettingInterface(ScrollArea):
             texts=['NCMA', 'QQMA'],
             parent=self.searchGroup
         )
-        #self.apiCard.setEnabled(False)
+        
+        #BetaOnly
+        if cfg.beta.value:
+            self.BetaOnlyGroup = SettingCardGroup(self.tr('Beta Only'), self.scrollWidget)
+            self.debug_Card = SwitchSettingCard(
+                FIF.DEVELOPER_TOOLS,
+                self.tr('Debug Mode'),
+                self.tr('The global exception capture will be disabled, and there will be outputs in the commandline.'),
+                configItem=cfg.debug_card,
+                parent=self.BetaOnlyGroup
+            )
+            self.plugin_Card = SwitchSettingCard(
+                FIF.DICTIONARY_ADD,
+                self.tr('Enable Plugins'),
+                self.tr('You can use more API or other features through using plugins.'),
+                configItem=cfg.PluginEnable,
+                parent=self.BetaOnlyGroup
+            )
+            self.toast_Card = SwitchSettingCard(
+                FIF.DICTIONARY_ADD,
+                self.tr('Enable Windows Toast'),
+                self.tr('Use System Notification to notice you when the process is finished. ( Windows 10/11 Only )'),
+                configItem=cfg.PluginEnable,
+                parent=self.BetaOnlyGroup
+            )
+
         # About
         self.aboutGroup = SettingCardGroup(self.tr('关于'), self.scrollWidget)
         self.helpCard = HyperlinkCard(
@@ -207,8 +214,11 @@ class SettingInterface(ScrollArea):
 
         self.appGroup.addSettingCard(self.beta)
         self.appGroup.addSettingCard(self.Update_Card)
-        self.appGroup.addSettingCard(self.debug_Card)
         self.appGroup.addSettingCard(self.backtoinit)
+        
+        if cfg.beta.value:
+            self.BetaOnlyGroup.addSettingCard(self.debug_Card)
+            self.BetaOnlyGroup.addSettingCard(self.plugin_Card)
 
         self.aboutGroup.addSettingCard(self.helpCard)
         self.aboutGroup.addSettingCard(self.feedbackCard)
@@ -224,6 +234,8 @@ class SettingInterface(ScrollArea):
         self.expandLayout.addWidget(self.DownloadSettings)
         self.expandLayout.addWidget(self.searchGroup)
         self.expandLayout.addWidget(self.personalGroup)
+        if cfg.beta.value:
+            self.expandLayout.addWidget(self.BetaOnlyGroup)
         self.expandLayout.addWidget(self.appGroup)
         self.expandLayout.addWidget(self.aboutGroup)
 
@@ -269,6 +281,14 @@ class SettingInterface(ScrollArea):
     def upupgrade(self):
         self.upworker.start()
         
+    def beta_not(self):
+        if not cfg.beta.value:
+            self.debug_Card.setValue(False)
+            self.plugin_Card.setValue(False)
+            self.debug_Card.setVisible(False)
+            self.plugin_Card.setVisible(False)
+            self.BetaOnlyGroup.setVisible(False)
+        
     def __changelog(self):
         view = FlyoutView(
             title='AZMusicDownloader V2.5.0更新日志 ',
@@ -310,6 +330,6 @@ class SettingInterface(ScrollArea):
         self.downloadFolderCard.clicked.connect(self.__onDownloadFolderCardClicked)
         self.FolderAuto.clicked.connect(self.__FolederAutoCardClicked)
         self.backtoinit.clicked.connect(self.__backtoinitClicked)
-        self.beta.checkedChanged.connect(self.minimizeToTrayChanged)
+        self.beta.checkedChanged.connect(self.beta_not)
         self.aboutCard.clicked.connect(self.__changelog)
         self.feedbackCard.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))

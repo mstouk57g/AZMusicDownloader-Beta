@@ -60,6 +60,7 @@ class Window(MSFluentWindow):
         self.addSubInterface(localmusics(), FIF.MUSIC_FOLDER, '我的音乐库')
         if cfg.beta.value:
             self.addSubInterface(playlist(), FIF.EXPRESSIVE_INPUT_ENTRY, '歌单')
+        if cfg.PluginEnable.value:
             self.addSubInterface(plugins(), FIF.BOOK_SHELF, '插件', position=NavigationItemPosition.BOTTOM)
             load_plugins(parent=self)
             run_plugins(parent=self)

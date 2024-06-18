@@ -8,7 +8,6 @@ logpath = "{}\\log".format(allpath)
 playlistpath = "{}\\playlist".format(allpath)
 
 configpath = "{}\\config.json".format(allpath)
-plufigpath = "{}\\plufig.json".format(allpath)
 apipath = "{}\\api.json".format(allpath)
 
 download_log = "{}\\download_log.json".format(logpath)

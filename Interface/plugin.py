@@ -13,7 +13,6 @@ from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSett
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets.components.widgets.acrylic_label import AcrylicBrush
 from helper.pluginHelper import run_plugins_plugin
-from helper.config import plu
 
 class plugins(ScrollArea):
 
@@ -35,7 +34,7 @@ class plugins(ScrollArea):
         setSettingsQss(parent=self)
         
         self.musicFolderCard = FolderListSettingCard(
-            plu.PluginFolders,
+            cfg.PluginFolders,
             "插件目录",
             directory=QStandardPaths.writableLocation(QStandardPaths.DesktopLocation),
             parent=self.ListsGroup
