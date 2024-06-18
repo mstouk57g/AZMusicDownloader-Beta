@@ -13,6 +13,7 @@ from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSett
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets.components.widgets.acrylic_label import AcrylicBrush
 from helper.pluginHelper import run_plugins_plugin
+import window.main
 
 class plugins(ScrollArea):
 
@@ -27,20 +28,17 @@ class plugins(ScrollArea):
         self.setWidget(self.scrollWidget)
         self.setWidgetResizable(True)
         self.scrollWidget.setObjectName('scrollWidget')
-        
-        self.ListsGroup = SettingCardGroup(self.tr('插件列表'), self.scrollWidget)
-        self.PluginsGroup = SettingCardGroup(self.tr('插件管理'), self.scrollWidget)
+        self.ListsGroup = SettingCardGroup(self.tr('已导入的插件'), self.scrollWidget)
+        self.PluginsGroup = SettingCardGroup(self.tr('管理插件'), self.scrollWidget)
         run_plugins_plugin(parent=self, PluginsGroup=self.PluginsGroup)
         setSettingsQss(parent=self)
-        
-        self.musicFolderCard = FolderListSettingCard(
+        self.PluginListCard = FolderListSettingCard(
             cfg.PluginFolders,
-            "插件目录",
+            "插件",
             directory=QStandardPaths.writableLocation(QStandardPaths.DesktopLocation),
             parent=self.ListsGroup
         )
-        self.ListsGroup.addSettingCard(self.musicFolderCard)
-
+        self.ListsGroup.addSettingCard(self.PluginListCard)
         self.expandLayout.setSpacing(28)
         self.expandLayout.setContentsMargins(60, 10, 60, 0)
         self.expandLayout.addWidget(self.ListsGroup)

@@ -57,12 +57,12 @@ outputlist = ['未搜索到相关的歌曲，换个关键词试试吧',
            '这首歌曲无版权，暂不支持下载',
            '获取链接失败，建议检查API服务器是否配置了账号Cookie']
 
-verdetail = "1.添加对QQMusicApi的支持\n2.修复了搜索页Bug\n3.将AZMusicAPI更新为1.4.6\n4.添加Debug模式"
+verdetail = "1.优化项目结构，UI与逻辑分离\n2.支持Windows系统通知\n3.修复了部分歌单的已知Bug\n4.重构插件页，无需手动导入插件\n5.添加了插件的更多功能"
 
 YEAR = int(date.today().year)
 AUTHOR = "AZ Studio"
-VERSION = "2.4.0"
+VERSION = "2.6.0"
 HELP_URL = "https://md.azprod.cn/docs/"
 FEEDBACK_URL = "https://github.com/AZ-Studio-2023/AZMusicDownloader/issues"
-RELEASE_URL = "https://github.com/AZ-Studio-2023/AZMusicDownloader/releases/tag/v2.5.0"
+RELEASE_URL = "https://github.com/AZ-Studio-2023/AZMusicDownloader/releases/tag/v2.6.0"
 AZ_URL = "https://azstudio.net.cn/"

@@ -86,6 +86,7 @@ class SettingInterface(ScrollArea):
             configItem=cfg.beta,
             parent=self.appGroup
         )
+        self.beta.checkedChanged.connect(self.beta_enable)
         self.Update_Card = SwitchSettingCard(
             FIF.FLAG,
             self.tr('禁用更新检查'),
@@ -128,8 +129,8 @@ class SettingInterface(ScrollArea):
         )
         
         #BetaOnly
+        self.BetaOnlyGroup = SettingCardGroup(self.tr('Beta Only'), self.scrollWidget)
         if cfg.beta.value:
-            self.BetaOnlyGroup = SettingCardGroup(self.tr('Beta Only'), self.scrollWidget)
             self.debug_Card = SwitchSettingCard(
                 FIF.DEVELOPER_TOOLS,
                 self.tr('Debug Mode'),
@@ -184,6 +185,47 @@ class SettingInterface(ScrollArea):
         self.__initWidget()
 
 
+    def beta_enable(self):
+        if cfg.beta.value:
+            self.debug_Card = SwitchSettingCard(
+                FIF.DEVELOPER_TOOLS,
+                self.tr('Debug Mode'),
+                self.tr('The global exception capture will be disabled, and there will be outputs in the commandline.'),
+                configItem=cfg.debug_card,
+                parent=self.BetaOnlyGroup
+            )
+            self.plugin_Card = SwitchSettingCard(
+                FIF.DICTIONARY_ADD,
+                self.tr('Enable Plugins'),
+                self.tr('You can use more API or other features through using plugins.'),
+                configItem=cfg.PluginEnable,
+                parent=self.BetaOnlyGroup
+            )
+            self.toast_Card = SwitchSettingCard(
+                FIF.MEGAPHONE,
+                self.tr('Enable Windows Toast'),
+                self.tr(
+                    'Use System Notification to notice you when the process is finished. ( Windows 10.0.17134 or later)'),
+                configItem=cfg.toast,
+                parent=self.BetaOnlyGroup
+            )
+            self.toast_Card.setEnabled(platform == 'win32' and getwindowsversion().build >= 17134)
+            self.expandLayout.addWidget(self.BetaOnlyGroup)
+            self.BetaOnlyGroup.addSettingCard(self.debug_Card)
+            self.BetaOnlyGroup.addSettingCard(self.plugin_Card)
+            self.BetaOnlyGroup.addSettingCard(self.toast_Card)
+            self.debug_Card.setVisible(True)
+            self.plugin_Card.setVisible(True)
+            self.toast_Card.setVisible(True)
+            self.BetaOnlyGroup.setVisible(True)
+        else:
+            self.debug_Card.setValue(False)
+            self.plugin_Card.setValue(False)
+            self.toast_Card.setValue(False)
+            self.debug_Card.setVisible(False)
+            self.plugin_Card.setVisible(False)
+            self.toast_Card.setVisible(False)
+            self.BetaOnlyGroup.setVisible(False)
     def __initWidget(self):
         self.resize(1000, 800)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

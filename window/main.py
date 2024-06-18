@@ -43,9 +43,6 @@ if cfg.debug_card.value:
     print("选择的API："+cfg.apicard.value)
     print(f"显示语言：{cfg.language.value}")
 
-if not os.path.exists("plugins"):
-    os.mkdir("plugins")
-
 class Window(MSFluentWindow):
 
     def __init__(self):
@@ -61,11 +58,10 @@ class Window(MSFluentWindow):
         if cfg.beta.value:
             self.addSubInterface(playlist(), FIF.EXPRESSIVE_INPUT_ENTRY, '歌单')
         if cfg.PluginEnable.value:
-            self.addSubInterface(plugins(), FIF.BOOK_SHELF, '插件', position=NavigationItemPosition.BOTTOM)
+            self.addSubInterface(plugins(), FIF.TILES, '插件', position=NavigationItemPosition.BOTTOM)
             load_plugins(parent=self)
             run_plugins(parent=self)
         self.addSubInterface(SettingInterface(), FIF.SETTING, '设置', position=NavigationItemPosition.BOTTOM)
-
     def initWindow(self):
         self.resize(900, 700)
         self.setWindowIcon(QIcon('resource/logo.png'))

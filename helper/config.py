@@ -32,7 +32,7 @@ class Config(QConfig):
 
     # Application
     beta = ConfigItem(
-        "Application", "beta", False, BoolValidator(), restart=True)
+        "Application", "beta", False, BoolValidator())
     update_card = ConfigItem(
         "Application", "update_card", False, BoolValidator(), restart=True)
     
