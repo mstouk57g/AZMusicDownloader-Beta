@@ -12,7 +12,6 @@ from qfluentwidgets import NavigationItemPosition, MSFluentWindow, NavigationIte
 from qfluentwidgets import FluentIcon as FIF
 from Interface.localmusics import localmusics
 from Interface.playlist import playlist
-from helper.config import Config
 from Interface.plugin import plugins
 from helper.config import cfg
 from helper.getvalue import apipath, autoapi
@@ -31,7 +30,7 @@ except:
 # Print logs | 日志输出
 if cfg.debug_card.value:
     print("————————日志信息————————")
-    if Config.beta.value:
+    if cfg.beta.value:
         print("Beta实验功能：启用")
     else:
         print("Beta实验功能：禁用")
@@ -42,7 +41,7 @@ if cfg.debug_card.value:
     print("使用的NeteaseCloudMusicApi：" + api)
     print("使用的QQMusicApi：" + q_api)
     print("选择的API："+cfg.apicard.value)
-    print(f"显示语言：{Config.language.value}")
+    print(f"显示语言：{cfg.language.value}")
 
 if not os.path.exists("plugins"):
     os.mkdir("plugins")
@@ -59,7 +58,7 @@ class Window(MSFluentWindow):
     def initNavigation(self):
         self.addSubInterface(searchmusic(), FIF.CARE_RIGHT_SOLID, '搜索下载')
         self.addSubInterface(localmusics(), FIF.MUSIC_FOLDER, '我的音乐库')
-        if Config.beta.value:
+        if cfg.beta.value:
             self.addSubInterface(playlist(), FIF.EXPRESSIVE_INPUT_ENTRY, '歌单')
             self.addSubInterface(plugins(), FIF.BOOK_SHELF, '插件', position=NavigationItemPosition.BOTTOM)
             load_plugins(parent=self)

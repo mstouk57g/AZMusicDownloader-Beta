@@ -2,17 +2,18 @@ import json
 import os
 import sys
 from helper.inital import setSettingsQss
-from PyQt5.QtCore import Qt, QPoint, QSize, QUrl, QRect
+from PyQt5.QtCore import Qt, QPoint, QSize, QUrl, QRect, QStandardPaths
 from PyQt5.QtGui import QIcon, QFont, QColor, QPainter
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QSizePolicy
 from helper.config import cfg
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
-                            OptionsSettingCard, PushSettingCard, setTheme, isDarkTheme,
+                            OptionsSettingCard, FolderListSettingCard, PushSettingCard, setTheme, isDarkTheme,
                             HyperlinkCard, PrimaryPushSettingCard, ScrollArea, PushButton, PrimaryPushButton,
                             ComboBoxSettingCard, ExpandLayout, Theme, InfoBar, FlyoutView, Flyout)
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets.components.widgets.acrylic_label import AcrylicBrush
 from helper.pluginHelper import run_plugins_plugin
+from helper.config import plu
 
 class plugins(ScrollArea):
 
@@ -28,13 +29,22 @@ class plugins(ScrollArea):
         self.setWidgetResizable(True)
         self.scrollWidget.setObjectName('scrollWidget')
         
-        # self.PluginsGroup = SettingCardGroup(self.tr('插件列表'), self.scrollWidget)
+        self.ListsGroup = SettingCardGroup(self.tr('插件列表'), self.scrollWidget)
         self.PluginsGroup = SettingCardGroup(self.tr('插件管理'), self.scrollWidget)
         run_plugins_plugin(parent=self, PluginsGroup=self.PluginsGroup)
         setSettingsQss(parent=self)
+        
+        self.musicFolderCard = FolderListSettingCard(
+            plu.PluginFolders,
+            "插件目录",
+            directory=None,
+            parent=self.ListsGroup
+        )
+        self.ListsGroup.addSettingCard(self.musicFolderCard)
 
         self.expandLayout.setSpacing(28)
         self.expandLayout.setContentsMargins(60, 10, 60, 0)
+        self.expandLayout.addWidget(self.ListsGroup)
         self.expandLayout.addWidget(self.PluginsGroup)
             
         
