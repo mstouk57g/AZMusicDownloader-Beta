@@ -3,6 +3,7 @@ import importlib
 import json
 import os
 from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import SwitchSettingCard, PushSettingCard
 from helper.config import cfg
 
 plugins_items = {}
@@ -47,17 +48,53 @@ def run_plugins(parent):
         get_v = open(f"plugins/{plugin_name}/index.json", "r", encoding="utf-8")
         data = json.loads(get_v.read())
         get_v.close()
+        #icon = f'plugins/{plugin_name}/{data["icon"]}'
         icon = data["show_icon"]
+        #icon = "resource/logo.png"
         name = data["name"]
         if cfg.debug_card.value:
             print(f"将插件添加至导航栏: {plugin_name}")
         exec(f"parent.addSubInterface(plugin_instance, {icon}, '{name}')")
         
-def run_plugins_plugin(parent):
+def run_plugins_plugin(parent, PluginsGroup):
     for folder in get_folders("plugins"):
         get_json = open(f"plugins/{folder}/index.json", "r", encoding="utf-8")
         data = json.loads(get_json.read())
         get_json.close()
         print(folder)
         print(data["type"])
-        parent.addCard(data["icon"], data["name"], data["desc"], data["type"], folder)
+        addCard(parent, PluginsGroup, data["icon"], data["name"], data["desc"], data["type"], folder)
+
+def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
+    print(type)
+    if type == "Bar":
+        print("1 "+type)
+        PluginCard = SwitchSettingCard(
+            icon,
+            title,
+            content,
+            cfg.micaEnabled,
+            PluginsGroup
+        )
+    elif type == "api":
+        print("2 "+type)
+        PluginCard = SwitchSettingCard(
+                icon,
+                title,
+                content,
+                None,
+                PluginsGroup
+            )
+    elif type == "Window":
+        print("3 "+type)
+        PluginCard = PushSettingCard(
+            '打开',
+            icon,
+            title,
+            content,
+            PluginsGroup
+        )
+            
+    PluginCard.setObjectName(uuid)
+    parent.PluginsGroup.addSettingCard(PluginCard)
+    
