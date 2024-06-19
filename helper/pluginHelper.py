@@ -30,7 +30,7 @@ def load_plugins(parent):
         sys.path.append(dirname)
         for filename in os.listdir(dirname):
             last_path = os.path.basename(dirname)
-            if filename.endswith('.py') and os.path.exists(dirname) and os.path.exists(dirname + "/index.json") and filename.replace(".py", "") == last_path:
+            if filename.endswith('.py') and os.path.exists(dirname) and os.path.exists(dirname + "/index.json") and filename.replace(".py", "") == last_path and not os.path.exists(dirname + "/plugin.lock"):
                 plugin_name = filename[:-3]
                 module_name = f"{plugin_name}"
                 try:
@@ -66,7 +66,15 @@ def run_plugins(parent):
             exec(f"parent.addSubInterface(plugin_instance, {icon}, '{name}')")
 
 
+def set_plugin_disable(folder, state):
+    if not state:
+        w = open(f"{folder}/plugin.lock", "w")
+        w.close()
+    else:
+        if os.path.exists(f"{folder}/plugin.lock"):
+            os.remove(f"{folder}/plugin.lock")
 def run_plugins_plugin(parent, PluginsGroup):
+    folders = cfg.PluginFolders.value
     for folder in folders:
         get_json = open(f"{folder}/index.json", "r", encoding="utf-8")
         data = json.loads(get_json.read())
@@ -76,29 +84,42 @@ def run_plugins_plugin(parent, PluginsGroup):
 
 def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
     if type == "Bar":
-        PluginCard = SwitchSettingCard(
+        PluginCard_Bar = SwitchSettingCard(
             icon,
             title,
             content,
             cfg.micaEnabled,
             PluginsGroup
         )
+        PluginCard_Bar.checkedChanged.connect(lambda: set_plugin_disable(uuid, PluginCard_Bar.isChecked()))
+        if not os.path.exists(uuid + "/plugin.lock"):
+            PluginCard_Bar.setValue(True)
+        else:
+            PluginCard_Bar.setValue(False)
+        PluginCard_Bar.setObjectName(uuid)
+        parent.PluginsGroup.addSettingCard(PluginCard_Bar)
     elif type == "api":
-        PluginCard = SwitchSettingCard(
+        PluginCard_api = SwitchSettingCard(
             icon,
             title,
             content,
             None,
             PluginsGroup
         )
+        PluginCard_api.checkedChanged.connect(lambda: set_plugin_disable(uuid, PluginCard.isChecked()))
+        if not os.path.exists(uuid + "/plugin.lock"):
+            PluginCard_api.setValue(True)
+        else:
+            PluginCard_api.setValue(False)
+        PluginCard_api.setObjectName(uuid)
+        parent.PluginsGroup.addSettingCard(PluginCard_api)
     elif type == "Window":
-        PluginCard = PushSettingCard(
+        PluginCard_window = PushSettingCard(
             '打开',
             icon,
             title,
             content,
             PluginsGroup
         )
-
-    PluginCard.setObjectName(uuid)
-    parent.PluginsGroup.addSettingCard(PluginCard)
+        PluginCard_window.setObjectName(uuid)
+        parent.PluginsGroup.addSettingCard(PluginCard_window)
