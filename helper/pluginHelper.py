@@ -59,7 +59,7 @@ def run_plugins(parent):
         get_v = open(f"{folder}/index.json", "r", encoding="utf-8")
         data = json.loads(get_v.read())
         get_v.close()
-        if data["type"] == "Bar":
+        if data["type"] == "Bar" and os.path.basename(folder) == plugin_name:
             #icon = f'plugins/{plugin_name}/{data["icon"]}'
             icon = data["show_icon"]
             #icon = "resource/logo.png"
