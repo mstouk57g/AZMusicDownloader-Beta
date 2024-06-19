@@ -1,8 +1,11 @@
 # coding:utf-8
 import importlib, sys, json, os
+
+from PyQt5.QtWidgets import QApplication
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import SwitchSettingCard, PushSettingCard
 from helper.config import cfg
+from helper.flyoutmsg import dlerr
 
 plugins_items = {}
 
@@ -76,10 +79,25 @@ def set_plugin_disable(folder, state):
 def run_plugins_plugin(parent, PluginsGroup):
     folders = cfg.PluginFolders.value
     for folder in folders:
-        get_json = open(f"{folder}/index.json", "r", encoding="utf-8")
-        data = json.loads(get_json.read())
-        get_json.close()
-        addCard(parent, PluginsGroup, data["icon"], data["name"], data["desc"], data["type"], folder)
+        if os.path.exists(folder + "/index.json"):
+            get_json = open(f"{folder}/index.json", "r", encoding="utf-8")
+            data = json.loads(get_json.read())
+            get_json.close()
+            addCard(parent, PluginsGroup, data["icon"], data["name"], data["desc"], data["type"], folder)
+
+def open_plugin_window(plugin, parent):
+    try:
+        plugin_name = os.path.basename(plugin)
+        new = plugins_items[plugin_name]
+        if os.path.exists(plugin + "/index.json"):
+            get_json = open(f"{plugin}/index.json", "r", encoding="utf-8")
+            data = json.loads(get_json.read())
+            new.setWindowTitle(data["name"])
+        new.show()
+    except:
+        dlerr(outid=9, parent=parent)
+
+
 
 
 def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
@@ -106,7 +124,7 @@ def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
             None,
             PluginsGroup
         )
-        PluginCard_api.checkedChanged.connect(lambda: set_plugin_disable(uuid, PluginCard.isChecked()))
+        PluginCard_api.checkedChanged.connect(lambda: set_plugin_disable(uuid, PluginCard_api.isChecked()))
         if not os.path.exists(uuid + "/plugin.lock"):
             PluginCard_api.setValue(True)
         else:
@@ -122,4 +140,5 @@ def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
             PluginsGroup
         )
         PluginCard_window.setObjectName(uuid)
+        PluginCard_window.clicked.connect(lambda: open_plugin_window(uuid, parent=parent))
         parent.PluginsGroup.addSettingCard(PluginCard_window)
