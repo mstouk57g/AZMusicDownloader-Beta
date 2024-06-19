@@ -1,12 +1,12 @@
 # coding:utf-8
-import json
+import json, sys
 import os
 
 from Interface.searchmusic import searchmusic
 from Interface.settings import SettingInterface
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QMessageBox, QApplication
 
 from qfluentwidgets import NavigationItemPosition, MSFluentWindow, NavigationItemPosition
 from qfluentwidgets import FluentIcon as FIF
@@ -70,3 +70,6 @@ class Window(MSFluentWindow):
         desktop = QApplication.desktop().availableGeometry()
         w, h = desktop.width(), desktop.height()
         self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
+        
+    def closeEvent(self, event):
+        sys.exit(0)
