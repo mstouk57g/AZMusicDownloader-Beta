@@ -3,12 +3,14 @@ from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import requests, os
 from mutagen.easyid3 import EasyID3
-from helper.config import cfg
+from helper.config import cfg, pfg
 from helper.getvalue import download_log, playlist_download_log
 from helper.flyoutmsg import dlsuc, dlerr, dlwar
 from win11toast import toast
+from helper.pluginHelper import plugins_items
 
 thread = None
+
 
 class downloading(QThread):
     finished = pyqtSignal(str)
@@ -16,7 +18,7 @@ class downloading(QThread):
     def __init__(self, howto):
         super().__init__()
         self.howto = howto
-        
+
     @pyqtSlot()
     def run(self):
         musicpath = cfg.get(cfg.downloadFolder)
@@ -24,19 +26,25 @@ class downloading(QThread):
             u = open(download_log, "r")
         elif self.howto == "playlist":
             u = open(playlist_download_log, "r")
-            
+
         data = json.loads(u.read())
         u.close()
         id = data["id"]
-        api = data["api"]
+        if pfg.apicard.value == "NCMA" or pfg.apicard.value == "QQMA":
+            api = data["api"]
         song = data["song"]
         singer = data["singer"]
-        
-        if cfg.apicard.value == "QQMA" and self.howto == "search":
+
+        if pfg.apicard.value == "QQMA" and self.howto == "search":
             url = AZMusicAPI.geturl(id=id, api=api, server="qqma")
-        else:
+        elif pfg.apicard.value == "NCMA" and self.howto == "search":
             url = AZMusicAPI.geturl(id=id, api=api)
-            
+        elif self.howto == "search":
+            try:
+                api_plugin = plugins_items[pfg.apicard.value]
+                url = api_plugin.geturl(id=id)
+            except:
+                url = "PluginAPIImportError"
         if url == "Error 3":
             self.show_error = "Error 3"
             self.finished.emit("Error")
@@ -46,7 +54,10 @@ class downloading(QThread):
         elif url == "NetworkError":
             self.show_error = "NetworkError"
             self.finished.emit("Error")
-            
+        elif url == "PluginAPIImportError":
+            self.show_error = "PluginAPIImportError"
+            self.finished.emit("Error")
+
         if not "Error" in url:
             response = requests.get(url, stream=True)
             file_size = int(response.headers.get('content-length', 0))
@@ -62,18 +73,21 @@ class downloading(QThread):
 
             self.finished.emit(str(200))
 
+
 class show_toast(QThread):
     def __init__(self, content, path, musicpath):
         super().__init__()
         self.content = content
         self.path = path
         self.musicpath = musicpath
+
     def run(self):
         buttons = [
-                {'activationType': 'protocol', 'arguments': self.path, 'content': 'Play'},
-                {'activationType': 'protocol', 'arguments': self.musicpath, 'content': 'Open Folder'}]
+            {'activationType': 'protocol', 'arguments': self.path, 'content': 'Play'},
+            {'activationType': 'protocol', 'arguments': self.musicpath, 'content': 'Open Folder'}]
 
         toast('AZMusicDownloader', self.content, buttons=buttons)
+
 
 class download(QThread):
     def __init__(self, progress, table, progressbar, songdata, dworker, button, parent, howto):
@@ -86,12 +100,12 @@ class download(QThread):
         self.parent = parent
         self.howto = howto
         self.run()
-        
+
     def run(self):
         musicpath = cfg.get(cfg.downloadFolder)
         if self.progress == "200":
             self.progressbar.setValue(100)
-            
+
             if self.howto == "search":
                 row = self.table.currentIndex().row()
                 try:
@@ -99,7 +113,7 @@ class download(QThread):
                 except:
                     dlwar(outid=2, parent=self.parent)
                     return 0
-                
+
                 song_id = data["id"]
                 song = data["name"]
                 singer = data["artists"]
@@ -112,12 +126,12 @@ class download(QThread):
                 song = data["song"]
                 singer = data["singer"]
                 album = data["album"]
-                                
-            self.table.clearSelection()           
+
+            self.table.clearSelection()
             self.button.setEnabled(False)
             path = "{}\\{} - {}.mp3".format(musicpath, singer, song)
             path = os.path.abspath(path)
-            
+
             audio = EasyID3(path)
             audio['title'] = song
             audio['album'] = album
@@ -133,19 +147,21 @@ class download(QThread):
                 thread.start()
                 #thread.wait()
                 thread.finished.connect(thread.quit)
-            
+
         elif self.progress == "Error":
             error = self.dworker.show_error
             self.dworker.quit()
             self.progressbar.setHidden(True)
             self.button.setEnabled(False)
             self.table.clearSelection()
-            
+
             if error == "Error 3":
                 dlerr(outid=7, parent=self.parent)
             elif error == "Error 4":
                 dlerr(outid=8, parent=self.parent)
             elif error == "NetworkError":
                 dlerr(outid=6, parent=self.parent)
+            elif error == "PluginAPIImportError":
+                dlerr(9, self.parent)
         else:
             self.progressbar.setValue(int(self.progress))

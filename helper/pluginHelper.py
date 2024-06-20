@@ -19,9 +19,8 @@ def get_folders(directory):
     return folders
 
 def load_plugins(parent):
-    # 遍历插件目录中的文件
     global plugins_items
-    plugins_items = {}
+    # 遍历插件目录中的文件
     num = 0
     if cfg.debug_card.value:
         print("————————插件导入————————")
