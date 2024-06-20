@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 from sys import platform, getwindowsversion
 from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL,verdetail
 from helper.inital import delfin, get_update, showup, setSettingsQss
+from helper import SettingHelper
 
 class SettingInterface(ScrollArea):
     micaEnableChanged = pyqtSignal(bool)
@@ -119,12 +120,14 @@ class SettingInterface(ScrollArea):
             configItem=cfg.hotcard,
             parent=self.searchGroup
         )
+        texts = SettingHelper.get_all_api()
+        print(texts)
         self.apiCard = ComboBoxSettingCard(
             cfg.apicard,
             FIF.GLOBE,
             self.tr('第三方音乐API'),
             self.tr('仅会修改搜索下载页使用的API。由于QQMA需要账号COOKIE才能进行调用，请自行部署。'),
-            texts=['NCMA', 'QQMA'],
+            texts=texts,
             parent=self.searchGroup
         )
         
@@ -141,7 +144,7 @@ class SettingInterface(ScrollArea):
             self.plugin_Card = SwitchSettingCard(
                 FIF.DICTIONARY_ADD,
                 self.tr('Enable Plugins'),
-                self.tr('You can use more API or other features through using plugins.'),
+                self.tr('You can use more APIs or other features through using plugins.'),
                 configItem=cfg.PluginEnable,
                 parent=self.BetaOnlyGroup
             )
@@ -197,7 +200,7 @@ class SettingInterface(ScrollArea):
             self.plugin_Card = SwitchSettingCard(
                 FIF.DICTIONARY_ADD,
                 self.tr('Enable Plugins'),
-                self.tr('You can use more API or other features through using plugins.'),
+                self.tr('You can use more APIs or other features through using plugins.'),
                 configItem=cfg.PluginEnable,
                 parent=self.BetaOnlyGroup
             )
