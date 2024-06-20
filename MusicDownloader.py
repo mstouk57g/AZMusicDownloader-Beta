@@ -20,7 +20,6 @@ if __name__ == '__main__' and sys.platform == 'win32' and sys.getwindowsversion(
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
     app = QApplication(sys.argv)
-    mkf()
     
     splash_pix = QPixmap('resource/splash.png')
     splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
@@ -32,7 +31,9 @@ if __name__ == '__main__' and sys.platform == 'win32' and sys.getwindowsversion(
     splash_height = 260
     splash.setFixedSize(splash_width, splash_height)
     splash.move((screen_width - splash_width) // 2, (screen_height - splash_height) // 2)
-    
+
+    mkf()
+
     locale = cfg.get(cfg.language).value
     fluentTranslator = FluentTranslator(locale)
     settingTranslator = QTranslator()

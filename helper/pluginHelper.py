@@ -18,21 +18,6 @@ def get_folders(directory):
             folders.append(item)
     return folders
 
-
-def get_all_api():
-    global apilists
-    for folder in folders:
-        for filename in os.listdir(folder):
-            last_path = os.path.basename(folder)
-            if filename.endswith('.py') and os.path.exists(folder) and os.path.exists(
-                    folder + "/index.json") and filename.replace(".py", "") == last_path and not os.path.exists(
-                folder + "/plugin.lock"):
-                u = open(folder + "/index.json", "r", encoding="utf-8")
-                data = json.loads(u.read())
-                u.close()
-                if data["type"] == "api":
-                    apilists.append(filename.replace(".py", ""))
-
 def load_plugins(parent):
     # 遍历插件目录中的文件
     global plugins_items
@@ -57,9 +42,9 @@ def load_plugins(parent):
                 except Exception as e:
                     if cfg.debug_card.value:
                         print(f"导入{plugin_name}插件错误: {e}")
-    if cfg.debug_card.value:
-        print("添加Plugins中的API")
-    get_all_api()
+    #if cfg.debug_card.value:
+    #    print("添加Plugins中的API")
+    #get_all_api()
     if cfg.debug_card.value:
         print(f"成功导入了{str(num)}个插件")
 

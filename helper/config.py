@@ -2,6 +2,7 @@
 from enum import Enum
 from sys import platform, getwindowsversion
 from helper.getvalue import configpath, autopath
+from helper.SettingHelper import get_all_api
 from PyQt5.QtCore import QLocale
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
                             OptionsValidator,  FolderValidator, ConfigSerializer, FolderListValidator)
@@ -35,14 +36,16 @@ class Config(QConfig):
         "Application", "beta", False, BoolValidator())
     update_card = ConfigItem(
         "Application", "update_card", False, BoolValidator(), restart=True)
+        
+    #pluginsFolders
+    PluginFolders = ConfigItem(
+        "Plugins", "Folders", [], FolderListValidator(), restart=True)
     
     # Search
     twitcard = ConfigItem(
         "Search", "twitcard", False, BoolValidator(), restart=True)
     hotcard = ConfigItem(
         "Search", "hotcard", False, BoolValidator(), restart=True)
-    apicard = OptionsConfigItem(
-        "Search", "apicard", "NCMA", OptionsValidator(['NCMA', 'QQMA']))
     
     # Personalize
     language = OptionsConfigItem(
@@ -56,11 +59,13 @@ class Config(QConfig):
         "BetaOnly", "EnablePlugins", False, BoolValidator(), restart=True)
     debug_card = ConfigItem(
         "BetaOnly", "debug_card", False, BoolValidator(), restart=True)
-    
-    #pluginsFolders
-    PluginFolders = ConfigItem(
-        "Plugins", "Folders", [], FolderListValidator(), restart=True)
-
 
 cfg = Config()
 qconfig.load(configpath, cfg)
+
+class Plufig(Config):
+    apicard = OptionsConfigItem(
+        "Search", "apicard", "NCMA", OptionsValidator(get_all_api(folders_arg=cfg.PluginFolders.value)))
+
+pfg = Plufig()
+qconfig.load(configpath, pfg)

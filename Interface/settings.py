@@ -1,5 +1,5 @@
 # coding:utf-8
-from helper.config import cfg
+from helper.config import cfg, pfg
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
                             OptionsSettingCard, PushSettingCard, setTheme, isDarkTheme,
                             HyperlinkCard, PrimaryPushSettingCard, ScrollArea, PushButton, PrimaryPushButton,
@@ -120,7 +120,7 @@ class SettingInterface(ScrollArea):
             parent=self.searchGroup
         )
         self.apiCard = ComboBoxSettingCard(
-            cfg.apicard,
+            pfg.apicard,
             FIF.GLOBE,
             self.tr('第三方音乐API'),
             self.tr('仅会修改搜索下载页使用的API。由于QQMA需要账号COOKIE才能进行调用，请自行部署。'),

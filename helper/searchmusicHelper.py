@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QTableWidgetItem, QCompleter
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import helper.config
 import requests, os
-from helper.config import cfg
+from helper.config import cfg, pfg
 from helper.getvalue import apipath, download_log, search_log, autoapi
 from helper.inital import mkf
 from helper.flyoutmsg import dlerr, dlwar
@@ -37,7 +37,7 @@ class getlist(QThread):
         api_value = data["api_value"]
         keywords = text
         
-        if cfg.apicard.value == "NCMA":
+        if pfg.apicard.value == "NCMA":
             self.songInfos = AZMusicAPI.getmusic(keywords, number=value, api=api_value)
         else:
             self.songInfos = AZMusicAPI.getmusic(keywords, number=value, api=api_value, server="qqma")
@@ -61,7 +61,7 @@ def searchstart(lineEdit, parent, spinBox, lworker):
     # self.lworker.started.connect(
     #     lambda: self.lworker.run(text=self.lineEdit.text(), value=self.spinBox.value(), api_value=api))
     u = open(search_log, "w")
-    if cfg.apicard.value == "NCMA":
+    if pfg.apicard.value == "NCMA":
         if api == "" or api is None:
             dlerr(outid=4, parent=parent)
             return "Error"
@@ -101,7 +101,7 @@ def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker
         
         # self.dworker.started.connect(lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
         u = open(download_log, 'w')
-        if cfg.apicard.value == "NCMA":
+        if pfg.apicard.value == "NCMA":
             if api == "" or api is None:
                 dlerr(outid=4, parent=parent)
                 return "Error"

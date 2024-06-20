@@ -13,7 +13,7 @@ from qfluentwidgets import FluentIcon as FIF
 from Interface.localmusics import localmusics
 from Interface.playlist import playlist
 from Interface.plugin import plugins
-from helper.config import cfg
+from helper.config import cfg,pfg
 from helper.getvalue import apipath, autoapi
 from helper.pluginHelper import run_plugins, load_plugins
 
@@ -40,7 +40,7 @@ if cfg.debug_card.value:
         print("Debug模式：禁用")
     print("使用的NeteaseCloudMusicApi：" + api)
     print("使用的QQMusicApi：" + q_api)
-    print("选择的API："+cfg.apicard.value)
+    print("选择的API："+pfg.apicard.value)
     print(f"显示语言：{cfg.language.value}")
 
 class Window(MSFluentWindow):
