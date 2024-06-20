@@ -9,9 +9,8 @@ from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 from sys import platform, getwindowsversion
-from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL,verdetail
+from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL, verdetail, apilists
 from helper.inital import delfin, get_update, showup, setSettingsQss
-from helper import SettingHelper
 
 class SettingInterface(ScrollArea):
     micaEnableChanged = pyqtSignal(bool)
@@ -120,41 +119,19 @@ class SettingInterface(ScrollArea):
             configItem=cfg.hotcard,
             parent=self.searchGroup
         )
-        texts = SettingHelper.get_all_api()
-        print(texts)
         self.apiCard = ComboBoxSettingCard(
             cfg.apicard,
             FIF.GLOBE,
             self.tr('第三方音乐API'),
             self.tr('仅会修改搜索下载页使用的API。由于QQMA需要账号COOKIE才能进行调用，请自行部署。'),
-            texts=texts,
+            texts=apilists,
             parent=self.searchGroup
         )
         
         #BetaOnly
         self.BetaOnlyGroup = SettingCardGroup(self.tr('Beta Only'), self.scrollWidget)
         if cfg.beta.value:
-            self.debug_Card = SwitchSettingCard(
-                FIF.DEVELOPER_TOOLS,
-                self.tr('Debug Mode'),
-                self.tr('The global exception capture will be disabled, and there will be outputs in the commandline.'),
-                configItem=cfg.debug_card,
-                parent=self.BetaOnlyGroup
-            )
-            self.plugin_Card = SwitchSettingCard(
-                FIF.DICTIONARY_ADD,
-                self.tr('Enable Plugins'),
-                self.tr('You can use more APIs or other features through using plugins.'),
-                configItem=cfg.PluginEnable,
-                parent=self.BetaOnlyGroup
-            )
-            self.toast_Card = SwitchSettingCard(
-                FIF.MEGAPHONE,
-                self.tr('Enable Windows Toast'),
-                self.tr('Use System Notification to notice you when the process is finished. ( Windows 10.0.17134 or later)'),
-                configItem=cfg.toast,
-                parent=self.BetaOnlyGroup
-            )
+            self.betaonly()
 
         # About
         self.aboutGroup = SettingCardGroup(self.tr('关于'), self.scrollWidget)
@@ -187,31 +164,33 @@ class SettingInterface(ScrollArea):
             self.toast_Card.setEnabled(platform == 'win32' and getwindowsversion().build >= 17134)
         self.__initWidget()
 
-
-    def beta_enable(self):
-        if cfg.beta.value:
-            self.debug_Card = SwitchSettingCard(
-                FIF.DEVELOPER_TOOLS,
+    def betaonly(self):
+        self.debug_Card = SwitchSettingCard(
+                FIF.CODE,
                 self.tr('Debug Mode'),
                 self.tr('The global exception capture will be disabled, and there will be outputs in the commandline.(Code Running Only)'),
                 configItem=cfg.debug_card,
                 parent=self.BetaOnlyGroup
-            )
-            self.plugin_Card = SwitchSettingCard(
+        )
+        self.plugin_Card = SwitchSettingCard(
                 FIF.DICTIONARY_ADD,
                 self.tr('Enable Plugins'),
                 self.tr('You can use more APIs or other features through using plugins.'),
                 configItem=cfg.PluginEnable,
                 parent=self.BetaOnlyGroup
-            )
-            self.toast_Card = SwitchSettingCard(
+        )
+        self.toast_Card = SwitchSettingCard(
                 FIF.MEGAPHONE,
                 self.tr('Enable Windows Toast'),
                 self.tr(
                     'Use System Notification to notice you when the process is finished. ( Windows 10.0.17134 or later)'),
                 configItem=cfg.toast,
                 parent=self.BetaOnlyGroup
-            )
+        )
+
+    def beta_enable(self):
+        if cfg.beta.value:
+            self.betaonly()
             self.toast_Card.setEnabled(platform == 'win32' and getwindowsversion().build >= 17134)
             self.expandLayout.addWidget(self.BetaOnlyGroup)
             self.BetaOnlyGroup.addSettingCard(self.debug_Card)

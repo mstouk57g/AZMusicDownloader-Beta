@@ -53,7 +53,7 @@ class Window(MSFluentWindow):
         self.initWindow()
 
     def initNavigation(self):
-        self.addSubInterface(searchmusic(), FIF.CARE_RIGHT_SOLID, '搜索下载')
+        self.addSubInterface(searchmusic(), FIF.SEARCH, '搜索下载')
         self.addSubInterface(localmusics(), FIF.MUSIC_FOLDER, '我的音乐库')
         if cfg.beta.value:
             self.addSubInterface(playlist(), FIF.EXPRESSIVE_INPUT_ENTRY, '歌单')
