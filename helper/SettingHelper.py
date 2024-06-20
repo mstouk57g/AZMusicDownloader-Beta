@@ -2,7 +2,6 @@ import json, os
 from helper.getvalue import apilists
 
 def get_all_api(folders_arg):
-    print(folders_arg)
     global apilists
     for folder in folders_arg:
         for filename in os.listdir(folder):
@@ -15,5 +14,4 @@ def get_all_api(folders_arg):
                 u.close()
                 if data["type"] == "api":
                     apilists.append(filename.replace(".py", ""))
-    print(apilists)
     return apilists
