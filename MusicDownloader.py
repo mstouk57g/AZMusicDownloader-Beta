@@ -6,7 +6,6 @@ import sys
 from PyQt5.QtCore import Qt, QTranslator
 from PyQt5.QtGui import QPixmap
 from helper.inital import mkf
-from helper.config import cfg
 
 if not cfg.debug_card.value:
     def global_exception_handler(exc_type, exc_value, exc_traceback):

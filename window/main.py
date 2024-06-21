@@ -16,6 +16,7 @@ from Interface.plugin import plugins
 from helper.config import cfg,pfg
 from helper.getvalue import apipath, autoapi
 from helper.pluginHelper import run_plugins, load_plugins
+from helper.loggerHelper import logger
 
 try:
     u = open(apipath, "r")
@@ -28,20 +29,20 @@ except:
     q_api = ""
 
 # Print logs | 日志输出
-if cfg.debug_card.value:
-    print("————————日志信息————————")
-    if cfg.beta.value:
-        print("Beta实验功能：启用")
-    else:
-        print("Beta实验功能：禁用")
+logger.info("欢迎使用AZMusicDownloader")
+if cfg.beta.value:
+    logger.warning("Beta实验功能：启用")
+else:
+    logger.warning("Beta实验功能：禁用")
+logger.debug("Debug模式：启用")
+logger.debug("使用的NeteaseCloudMusicApi：" + api)
+if q_api:
+    logger.debug("使用的QQMusicApi：" + q_api)
+else:
     if cfg.debug_card.value:
-        print("Debug模式：启用")
-    else:
-        print("Debug模式：禁用")
-    print("使用的NeteaseCloudMusicApi：" + api)
-    print("使用的QQMusicApi：" + q_api)
-    print("选择的API："+pfg.apicard.value)
-    print(f"显示语言：{cfg.language.value}")
+        logger.warning("使用的QQMusicApi：" + "没有配置")
+logger.debug("选择的API："+pfg.apicard.value)
+logger.debug(f"显示语言：{cfg.language.value}")
 
 class Window(MSFluentWindow):
 

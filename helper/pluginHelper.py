@@ -6,6 +6,7 @@ from qfluentwidgets import SwitchSettingCard, PushSettingCard
 from helper.config import cfg
 from helper.flyoutmsg import dlerr
 from helper.getvalue import apilists
+from helper.loggerHelper import logger
 
 plugins_items = {}
 folders = cfg.PluginFolders.value
@@ -23,7 +24,7 @@ def load_plugins(parent):
     # 遍历插件目录中的文件
     num = 0
     if cfg.debug_card.value:
-        print("————————插件导入————————")
+        logger.info("开始导入插件")
     for dirname in folders:
         sys.path.append(dirname)
         for filename in os.listdir(dirname):
@@ -36,16 +37,15 @@ def load_plugins(parent):
                     plugin_class = getattr(module, plugin_name)
                     plugins_items[plugin_name] = plugin_class()
                     if cfg.debug_card.value:
-                        print(f"导入插件: {plugin_name}")
+                        logger.info(f"导入插件: {plugin_name}")
                     num = num + 1
                 except Exception as e:
-                    if cfg.debug_card.value:
-                        print(f"导入{plugin_name}插件错误: {e}")
+                    logger.error(f"导入{plugin_name}插件错误: {e}")
     #if cfg.debug_card.value:
     #    print("添加Plugins中的API")
     #get_all_api()
     if cfg.debug_card.value:
-        print(f"成功导入了{str(num)}个插件")
+        logger.info(f"成功导入了{str(num)}个插件")
 
 
 def run_plugins(parent):
@@ -62,8 +62,7 @@ def run_plugins(parent):
             icon = data["show_icon"]
             #icon = "resource/logo.png"
             name = data["name"]
-            if cfg.debug_card.value:
-                print(f"将插件添加至导航栏: {plugin_name}")
+            logger.debug(f"将插件添加至导航栏: {plugin_name}")
             exec(f"parent.addSubInterface(plugin_instance, {icon}, '{name}')")
 
 
