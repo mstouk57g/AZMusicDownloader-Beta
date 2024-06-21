@@ -147,7 +147,6 @@ class searchmusic(QWidget, QObject):
         # self.tableView.setItemDelegate(CustomTableItemDelegate(self.tableView))
 
         self.tableView.setWordWrap(False)
-        self.tableView.setRowCount(25)
         self.tableView.setColumnCount(4)
         # songInfos = []
         # songInfos += songInfos
