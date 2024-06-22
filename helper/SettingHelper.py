@@ -24,11 +24,12 @@ class DeleteAllData(MessageBoxBase):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.titleLabel = SubtitleLabel('重置应用', self)
-        self.contentLabel = QLabel("""你确定要重置应用吗？\n重置应用将会删除你的设置等数据，\n同时你将会回到初始化时的状态。\n重置后将会直接关闭应用""", self)
+        self.contentLabel = QLabel("""你确定要重置应用吗？\n重置应用将会删除你的设置等数据，\n同时你将会回到初始化时的状态。\n重置后将会直接关闭应用，\n请确保没有任何正在执行的下载任务。""", self)
         self.contentLabel.setStyleSheet("QLabel{color:rgb(225,0,0);font-size:17px;font-weight:normal;font-family:SimHei;}")
 
         self.PrimiseCheckBox = CheckBox('我已悉知以上影响', self)
         self.DataCheckBox = CheckBox('同时删除下载的音乐', self)
+        self.DataCheckBox.setDisabled(True)
 
         # add widget to view layout
         self.viewLayout.addWidget(self.titleLabel)

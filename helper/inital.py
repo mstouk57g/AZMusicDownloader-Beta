@@ -52,7 +52,6 @@ def delfin(IfMusicPath=False):
         remove(search_log)
     if IfMusicPath:
         downloadFolder = cfg.get(cfg.downloadFolder)
-        print(downloadFolder)
         if path.exists(downloadFolder):
             remove(downloadFolder)
     if path.exists(apipath):
