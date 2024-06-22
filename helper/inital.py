@@ -39,7 +39,7 @@ def mkf():
 
 
 # 删除用户数据
-def delfin():
+def delfin(IfMusicPath=False):
     if path.exists(configpath):
         remove(configpath)
     if path.exists(playlist_download_log):
@@ -48,10 +48,15 @@ def delfin():
         remove(playlist_search_log)
     if path.exists(download_log):
         remove(download_log)
-    if path.exists(apipath):
-        remove(apipath)
     if path.exists(search_log):
         remove(search_log)
+    if IfMusicPath:
+        downloadFolder = cfg.get(cfg.downloadFolder)
+        print(downloadFolder)
+        if path.exists(downloadFolder):
+            remove(downloadFolder)
+    if path.exists(apipath):
+        remove(apipath)
 
 
 # 检查更新

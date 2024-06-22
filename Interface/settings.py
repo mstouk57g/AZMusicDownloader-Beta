@@ -12,6 +12,8 @@ from sys import platform, getwindowsversion
 from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL, verdetail, apilists
 from helper.inital import delfin, get_update, showup, setSettingsQss
 from helper.localmusicsHelper import ref
+from helper.SettingHelper import DeleteAllData
+from sys import exit
 
 class SettingInterface(ScrollArea):
     micaEnableChanged = pyqtSignal(bool)
@@ -130,7 +132,6 @@ class SettingInterface(ScrollArea):
         )
         
         #BetaOnly
-        self.BetaOnlyGroup = SettingCardGroup(self.tr('Beta Only'), self.scrollWidget)
         if cfg.beta.value:
             self.betaonly()
 
@@ -166,6 +167,7 @@ class SettingInterface(ScrollArea):
         self.__initWidget()
 
     def betaonly(self):
+        self.BetaOnlyGroup = SettingCardGroup(self.tr('Beta Only'), self.scrollWidget)
         self.debug_Card = SwitchSettingCard(
                 FIF.CODE,
                 self.tr('Debug Mode'),
@@ -289,8 +291,10 @@ class SettingInterface(ScrollArea):
         ref(musicpath=autopath)
         
     def __backtoinitClicked(self):
-        delfin()
-        self.__showRestartTooltip()
+        w = DeleteAllData(self)
+        if not w.exec():
+            delfin(IfMusicPath=w.DataCheckBox.isChecked())
+            exit(0)
 
     def __onThemeChanged(self, theme: Theme):
         """ theme changed slot """
