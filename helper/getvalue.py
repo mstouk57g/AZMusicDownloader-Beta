@@ -17,6 +17,7 @@ playlist_search_log = "{}\\playlist_search_log.json".format(logpath)
 
 music_path_value = QStandardPaths.writableLocation(QStandardPaths.MusicLocation)
 autopath = "{}\\AZMusicDownload".format(music_path_value)
+localView = None
 
 autoapi = "https://ncma.azprod.cn/"  # API为ncma的克隆项目
 apilists = ['NCMA', 'QQMA']

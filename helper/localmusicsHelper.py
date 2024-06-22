@@ -1,9 +1,10 @@
 from helper.inital import mkf
+from helper.getvalue import localView
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3NoHeaderError
 from PyQt5.QtWidgets import QTableWidgetItem
 from os import listdir
-from os.path import basename, join
+from os.path import join
 
 mkf()
 
@@ -14,7 +15,12 @@ def get_all_music(path):
             all_music.append(file_name)
     return all_music
 
-def ref(local_view, musicpath):
+def ref(musicpath, local_view = None):
+    global localView
+    if local_view:
+        localView = local_view
+    if not local_view:
+        local_view = localView
     local_view.clear()
     local_view.setHorizontalHeaderLabels(['文件名', '歌曲名', '艺术家', '专辑'])
 

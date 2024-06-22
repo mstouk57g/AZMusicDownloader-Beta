@@ -1,8 +1,8 @@
 # coding:utf-8
 from helper.config import cfg, pfg
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
-                            OptionsSettingCard, PushSettingCard, setTheme, isDarkTheme,
-                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea, PushButton, PrimaryPushButton,
+                            OptionsSettingCard, PushSettingCard, setTheme, PrimaryPushButton,
+                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea, PushButton, 
                             ComboBoxSettingCard, ExpandLayout, Theme, InfoBar, FlyoutView, Flyout)
 from qfluentwidgets import FluentIcon as FIF
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 from sys import platform, getwindowsversion
 from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL, verdetail, apilists
 from helper.inital import delfin, get_update, showup, setSettingsQss
+from helper.localmusicsHelper import ref
 
 class SettingInterface(ScrollArea):
     micaEnableChanged = pyqtSignal(bool)
@@ -280,10 +281,12 @@ class SettingInterface(ScrollArea):
             return
         cfg.set(cfg.downloadFolder, folder)
         self.downloadFolderCard.setContent(folder)
+        ref(musicpath=folder)
         
     def __FolederAutoCardClicked(self):
         cfg.set(cfg.downloadFolder, autopath)
         self.downloadFolderCard.setContent(cfg.get(cfg.downloadFolder))
+        ref(musicpath=autopath)
         
     def __backtoinitClicked(self):
         delfin()

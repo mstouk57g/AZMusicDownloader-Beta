@@ -34,14 +34,8 @@ class localmusics(QWidget):
         self.openmusic.setEnabled(False)
         self.openmusic.released.connect(self.openthemusic)
 
-        self.refmusics = ToolButton(FIF.SYNC, self)
-        self.refmusics.setEnabled(True)
-        self.refmusics.clicked.connect(lambda: ref(local_view=self.local_view, musicpath=musicpath))
-
         self.vBoxLayout.addStretch(1)
         self.vBoxLayout.addWidget(self.openmusic)
-        self.vBoxLayout.addStretch(1)
-        self.vBoxLayout.addWidget(self.refmusics)
         self.vBoxLayout.addStretch(20)
 
         self.hBoxLayout.addWidget(self.local_view)
