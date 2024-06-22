@@ -1,20 +1,17 @@
 # coding: utf-8
 import os
 
-from PyQt5.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QVBoxLayout, QHeaderView
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QHeaderView
 
 from qfluentwidgets import TableWidget
 from qfluentwidgets import ToolButton, PrimaryToolButton
 from qfluentwidgets import FluentIcon as FIF
 
-from mutagen.easyid3 import EasyID3
-from mutagen.id3 import ID3NoHeaderError
 import subprocess
-
-from helper.localmusicsHelper import get_all_music
 from helper.config import cfg
-from helper.inital import mkf
+from helper.localmusicsHelper import ref, get_all_music
 
+musicpath = cfg.get(cfg.downloadFolder)
 
 class localmusics(QWidget):
 
@@ -28,7 +25,7 @@ class localmusics(QWidget):
         self.local_view.verticalHeader().hide()
         self.local_view.setHorizontalHeaderLabels(['路径', '歌曲名', '艺术家', '专辑'])
 
-        self.ref()
+        ref(local_view=self.local_view, musicpath=musicpath)
 
         self.hBoxLayout.setContentsMargins(0, 0, 0, 0)
         self.local_view.clicked.connect(self.openbutton)
@@ -39,7 +36,7 @@ class localmusics(QWidget):
 
         self.refmusics = ToolButton(FIF.SYNC, self)
         self.refmusics.setEnabled(True)
-        self.refmusics.clicked.connect(self.ref)
+        self.refmusics.clicked.connect(lambda: ref(local_view=self.local_view, musicpath=musicpath))
 
         self.vBoxLayout.addStretch(1)
         self.vBoxLayout.addWidget(self.openmusic)
@@ -55,41 +52,10 @@ class localmusics(QWidget):
 
     def openthemusic(self):
         row = self.local_view.currentIndex().row()
+        self.data = get_all_music(path=musicpath)
         name = self.data[row]
         file_path = os.path.join(cfg.get(cfg.downloadFolder), name)
         cmd = f'start "" "{file_path}"'
         subprocess.Popen(cmd, shell=True)
 
-    def ref(self):
-        self.local_view.clear()
-        self.local_view.setHorizontalHeaderLabels(['路径', '歌曲名', '艺术家', '专辑'])
-
-        self.data = get_all_music()
-        songInfos = []
-        for stand in self.data:
-            path = os.path.join(cfg.get(cfg.downloadFolder), stand)
-            try:
-                audio = EasyID3(path)
-            except ID3NoHeaderError:
-                continue
-            songinfo = [path]
-            try:
-                songinfo.append(audio['title'][0])
-            except KeyError:
-                songinfo.append("Unknown")
-            try:
-                songinfo.append(audio['artist'][0])
-            except KeyError:
-                songinfo.append("Unknown")
-            try:
-                songinfo.append(audio['album'][0])
-            except KeyError:
-                songinfo.append("Unknown")
-            songInfos.append(songinfo)
-
-        self.local_view.setRowCount(len(songInfos))
-
-        for i, songInfo in enumerate(songInfos):
-            for j, info in enumerate(songInfo):
-                self.local_view.setItem(i, j, QTableWidgetItem(info))
-
+    
