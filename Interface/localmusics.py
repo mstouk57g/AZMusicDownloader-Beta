@@ -7,11 +7,9 @@ from qfluentwidgets import TableWidget
 from qfluentwidgets import ToolButton, PrimaryToolButton
 from qfluentwidgets import FluentIcon as FIF
 
-import subprocess
 from helper.config import cfg
-from helper.localmusicsHelper import ref, get_all_music
+from helper.localmusicsHelper import ref, openthemusic
 
-musicpath = cfg.get(cfg.downloadFolder)
 
 class localmusics(QWidget):
 
@@ -25,14 +23,14 @@ class localmusics(QWidget):
         self.local_view.verticalHeader().hide()
         self.local_view.setHorizontalHeaderLabels(['路径', '歌曲名', '艺术家', '专辑'])
 
-        ref(local_view=self.local_view, musicpath=musicpath)
+        ref(local_view=self.local_view, musicpath=cfg.get(cfg.downloadFolder))
 
         self.hBoxLayout.setContentsMargins(0, 0, 0, 0)
         self.local_view.clicked.connect(self.openbutton)
         self.resize(300, 400)
         self.openmusic = PrimaryToolButton(FIF.EMBED, self)
         self.openmusic.setEnabled(False)
-        self.openmusic.released.connect(self.openthemusic)
+        self.openmusic.released.connect(lambda: openthemusic(filepath=cfg.get(cfg.downloadFolder)))
 
         self.vBoxLayout.addStretch(1)
         self.vBoxLayout.addWidget(self.openmusic)
@@ -44,12 +42,5 @@ class localmusics(QWidget):
     def openbutton(self):
         self.openmusic.setEnabled(True)
 
-    def openthemusic(self):
-        row = self.local_view.currentIndex().row()
-        self.data = get_all_music(path=musicpath)
-        name = self.data[row]
-        file_path = os.path.join(cfg.get(cfg.downloadFolder), name)
-        cmd = f'start "" "{file_path}"'
-        subprocess.Popen(cmd, shell=True)
 
     

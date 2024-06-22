@@ -3,6 +3,7 @@ from helper.getvalue import localView
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3NoHeaderError
 from PyQt5.QtWidgets import QTableWidgetItem
+import subprocess
 from os import listdir
 from os.path import join
 
@@ -52,3 +53,14 @@ def ref(musicpath, local_view = None):
     for i, songInfo in enumerate(songInfos):
         for j, info in enumerate(songInfo):
             local_view.setItem(i, j, QTableWidgetItem(info))
+            
+def openthemusic(filepath):
+    global localView
+    row = localView.currentIndex().row()
+    data = get_all_music(path=filepath)
+    name = data[row]
+    file_path = join(filepath, name)
+    cmd = f'start "" "{file_path}"'
+    localView.clearSelection()
+    subprocess.Popen(cmd, shell=True)
+
