@@ -14,7 +14,7 @@ from Interface.localmusics import localmusics
 from Interface.playlist import playlist
 from Interface.plugin import plugins
 from helper.config import cfg,pfg
-from helper.getvalue import apipath, autoapi
+from helper.getvalue import apipath, autoncmaapi
 from helper.pluginHelper import run_plugins, load_plugins
 from helper.loggerHelper import logger
 
@@ -25,7 +25,7 @@ try:
     q_api = data["q_api"]
     u.close()
 except:
-    api = autoapi
+    api = autoncmaapi
     q_api = ""
 
 # Print logs | 日志输出

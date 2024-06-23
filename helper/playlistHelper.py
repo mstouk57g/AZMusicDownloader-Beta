@@ -5,7 +5,7 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import os
 import requests
 from helper.config import cfg
-from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoapi, playlistpath
+from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoncmaapi, playlistpath
 from helper.flyoutmsg import dlerr, dlwar
 
 try:
@@ -14,7 +14,7 @@ try:
     api = data["api"]
     u.close()
 except:
-    api = autoapi
+    api = autoncmaapi
 
 
 class getlist(QThread):

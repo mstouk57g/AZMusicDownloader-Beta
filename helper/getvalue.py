@@ -19,7 +19,8 @@ music_path_value = QStandardPaths.writableLocation(QStandardPaths.MusicLocation)
 autopath = "{}\\AZMusicDownload".format(music_path_value)
 localView = None
 
-autoapi = "https://ncma.azprod.cn/"  # API为ncma的克隆项目
+autoncmaapi = "https://ncma.azprod.cn/"  # API为ncma的克隆项目
+autoqqmaapi = ""
 apilists = ['NCMA', 'QQMA']
 upurl = "https://json.zenglingkun.cn/update/md/index.json"
 

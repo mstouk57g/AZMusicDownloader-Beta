@@ -12,7 +12,7 @@ from sys import platform, getwindowsversion
 from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, autopath, apilists
 from helper.inital import delfin, get_update, showup, setSettingsQss
 from helper.localmusicsHelper import ref
-from helper.SettingHelper import DeleteAllData
+from helper.SettingHelper import DeleteAllData, editapi
 from sys import exit
 from helper.flyoutmsg import changelog, restart
 
@@ -78,6 +78,13 @@ class SettingInterface(ScrollArea):
             FIF.CLEAR_SELECTION,
             self.tr("恢复下载目录默认值"),
             self.tr('下载目录默认值为：') + autopath + self.tr('（即用户音乐文件夹）'),
+            self.DownloadSettings
+        )
+        self.ApiUrlCard = PushSettingCard(
+            self.tr('修改'),
+            FIF.FOLDER,
+            self.tr("自定义API地址"),
+            self.tr("修改NCMA或QQMA的API地址"),
             self.DownloadSettings
         )
 
@@ -234,6 +241,7 @@ class SettingInterface(ScrollArea):
         # add cards to group
         self.DownloadSettings.addSettingCard(self.downloadFolderCard)
         self.DownloadSettings.addSettingCard(self.FolderAuto)
+        self.DownloadSettings.addSettingCard(self.ApiUrlCard)
 
         self.personalGroup.addSettingCard(self.themeCard)
         self.personalGroup.addSettingCard(self.themeColorCard)
@@ -283,6 +291,12 @@ class SettingInterface(ScrollArea):
         self.downloadFolderCard.setContent(cfg.get(cfg.downloadFolder))
         ref(musicpath=autopath)
         
+    def __customapis(self):
+        w = editapi(parent=self.window(), ncmaapi=cfg.ncma_api.value, qqmaapi=cfg.qqma_api.value)
+        if w:
+            cfg.set(cfg.ncma_api, w[0])
+            cfg.set(cfg.qqma_api, w[1])
+        
     def __backtoinitClicked(self):
         w = DeleteAllData(self.window())
         if not w.exec():
@@ -321,3 +335,4 @@ class SettingInterface(ScrollArea):
         self.beta.checkedChanged.connect(self.beta_not)
         self.aboutCard.clicked.connect(lambda: changelog(parent=self))
         self.feedbackCard.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
+        self.ApiUrlCard.clicked.connect(self.__customapis)

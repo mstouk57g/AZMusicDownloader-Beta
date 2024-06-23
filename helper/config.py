@@ -1,7 +1,7 @@
 # coding:utf-8
 from enum import Enum
 from sys import platform, getwindowsversion
-from helper.getvalue import configpath, autopath
+from helper.getvalue import configpath, autopath, autoncmaapi, autoqqmaapi
 from helper.SettingHelper import get_all_api
 from PyQt5.QtCore import QLocale
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
@@ -27,9 +27,13 @@ class LanguageSerializer(ConfigSerializer):
 
 
 class Config(QConfig):
-    # Folders
+    # Download
     downloadFolder = ConfigItem(
-        "Folders", "Download", autopath, FolderValidator())
+        "Download", "Folder", autopath, FolderValidator())
+    ncma_api = ConfigItem(
+        "Download", "ncma_api", autoncmaapi, None)
+    qqma_api = ConfigItem(
+        "Download", "qqma_api", autoqqmaapi, None)
 
     # Application
     beta = ConfigItem(

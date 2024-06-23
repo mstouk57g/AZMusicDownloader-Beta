@@ -7,7 +7,7 @@ from helper.getvalue import outapoem
 from PyQt5.QtCore import QThread
 from helper.config import cfg
 from qfluentwidgets import isDarkTheme
-from helper.getvalue import (apipath, download_log, search_log, autoapi, configpath, upurl, VERSION,
+from helper.getvalue import (apipath, download_log, search_log, autoncmaapi, configpath, upurl, VERSION,
                              playlistpath, logpath, playlist_download_log, playlist_search_log)
 
 
@@ -30,7 +30,7 @@ def mkf():
         d.close()
     if not path.exists(apipath):
         u = open(apipath, "w")
-        u.write(json.dumps({"api": autoapi, "q_api": ""}))
+        u.write(json.dumps({"api": autoncmaapi, "q_api": ""}))
         u.close()
     if not path.exists(dlpath):
         makedirs(dlpath)
