@@ -119,7 +119,7 @@ class searchmusic(QWidget, QObject):
                         tableView=self.tableView, spinBox=self.spinBox))
         self.dworker.finished.connect(lambda Progress: download(progress = Progress, table = self.tableView, progressbar=self.ProgressBar, 
                             songdata=self.lworker.songInfos, dworker=self.dworker, button=self.primaryButton1, parent=self, howto = "search"))
-        self.upworker.finished.connect(self.showupupgrade)
+        self.upworker.finished.connect(lambda updata: showup(parent = self.window(), updata = updata, upworker = self.upworker))
         # self.worker.finished.connect(self.on_worker_finished)
 
         self.primaryButton1 = PrimaryPushButton('下载', self)
@@ -189,9 +189,6 @@ class searchmusic(QWidget, QObject):
         
     def openbutton(self):
         self.primaryButton1.setEnabled(True)
-
-    def showupupgrade(self, updata):
-        showup(parent = self, updata = updata, upworker = self.upworker)
 
     # @pyqtSlot()
     # def keys(self):

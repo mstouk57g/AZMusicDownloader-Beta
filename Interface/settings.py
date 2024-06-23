@@ -12,8 +12,9 @@ from sys import platform, getwindowsversion
 from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, autopath, apilists
 from helper.inital import delfin, get_update, showup, setSettingsQss
 from helper.localmusicsHelper import ref
-from helper.SettingHelper import DeleteAllData, changelog
+from helper.SettingHelper import DeleteAllData
 from sys import exit
+from helper.flyoutmsg import changelog, restart
 
 class SettingInterface(ScrollArea):
     micaEnableChanged = pyqtSignal(bool)
@@ -267,14 +268,6 @@ class SettingInterface(ScrollArea):
         self.expandLayout.addWidget(self.appGroup)
         self.expandLayout.addWidget(self.aboutGroup)
 
-    def __showRestartTooltip(self):
-        """ show restart tooltip """
-        InfoBar.warning(
-            '',
-            self.tr('设置需要重启程序后生效'),
-            parent=self.window()
-        )
-
     def __onDownloadFolderCardClicked(self):
         """ download folder card clicked slot """
         folder = QFileDialog.getExistingDirectory(
@@ -313,13 +306,13 @@ class SettingInterface(ScrollArea):
             self.plugin_Card.setVisible(False)
             self.toast_Card.setVisible(False)
             self.BetaOnlyGroup.setVisible(False)
-        
-
 
     def __connectSignalToSlot(self):
         """ connect signal to slot """
-        cfg.appRestartSig.connect(self.__showRestartTooltip)
+        cfg.appRestartSig.connect(lambda: restart(parent=self.window()))
+        pfg.appRestartSig.connect(lambda: restart(parent=self.window()))
         cfg.themeChanged.connect(self.__onThemeChanged)
+        pfg.themeChanged.connect(self.__onThemeChanged)
         self.micaCard.checkedChanged.connect(self.micaEnableChanged)
 
         self.downloadFolderCard.clicked.connect(self.__onDownloadFolderCardClicked)
