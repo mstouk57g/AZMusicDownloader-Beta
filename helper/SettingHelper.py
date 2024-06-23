@@ -1,7 +1,10 @@
 import json, os
-from helper.getvalue import apilists
-from qfluentwidgets import MessageBoxBase, SubtitleLabel, CheckBox
+from helper.getvalue import apilists, verdetail, VERSION, RELEASE_URL, AZ_URL
+from qfluentwidgets import MessageBoxBase, SubtitleLabel, CheckBox, PushButton, PrimaryPushButton, FlyoutView, Flyout
 from PyQt5.QtWidgets import QLabel
+from PyQt5.QtCore import Qt, QUrl
+from qfluentwidgets import FluentIcon as FIF
+from PyQt5.QtGui import QDesktopServices
 
 def get_all_api(folders_arg):
     global apilists
@@ -48,3 +51,35 @@ class DeleteAllData(MessageBoxBase):
     
     def IfPrimise(self):
         self.cancelButton.setEnabled(self.PrimiseCheckBox.isChecked())
+
+def changelog(parent):
+    view = FlyoutView(
+        title=f'AZMusicDownloader {VERSION}更新日志 ',
+        content=verdetail,
+        #image='resource/splash.png',
+        isClosable=True
+    )
+        
+    # add button to view
+    button1 = PushButton(FIF.GITHUB, 'GitHub')
+    button1.setFixedWidth(120)
+    button1.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(RELEASE_URL)))
+    view.addWidget(button1, align=Qt.AlignRight)
+
+    button2 = PushButton('AZ Studio')
+    button2.setFixedWidth(120)
+    button2.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(AZ_URL)))
+    view.addWidget(button2, align=Qt.AlignRight)
+
+    button3 = PrimaryPushButton('检查更新')
+    button3.setFixedWidth(120)
+    button3.clicked.connect(parent.upworker.start)
+    view.addWidget(button3, align=Qt.AlignRight)
+
+    # adjust layout (optional)
+    view.widgetLayout.insertSpacing(1, 5)
+    view.widgetLayout.addSpacing(5)
+
+    # show view
+    w = Flyout.make(view, parent.aboutCard, parent)
+    view.closed.connect(w.close)

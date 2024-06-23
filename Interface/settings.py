@@ -1,18 +1,18 @@
 # coding:utf-8
 from helper.config import cfg, pfg
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
-                            OptionsSettingCard, PushSettingCard, setTheme, PrimaryPushButton,
-                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea, PushButton, 
-                            ComboBoxSettingCard, ExpandLayout, Theme, InfoBar, FlyoutView, Flyout)
+                            OptionsSettingCard, PushSettingCard, setTheme, 
+                            HyperlinkCard, ScrollArea,
+                            ComboBoxSettingCard, ExpandLayout, Theme, InfoBar)
 from qfluentwidgets import FluentIcon as FIF
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 from sys import platform, getwindowsversion
-from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, RELEASE_URL, autopath, AZ_URL, verdetail, apilists
+from helper.getvalue import YEAR, AUTHOR, VERSION, HELP_URL, FEEDBACK_URL, autopath, apilists
 from helper.inital import delfin, get_update, showup, setSettingsQss
 from helper.localmusicsHelper import ref
-from helper.SettingHelper import DeleteAllData
+from helper.SettingHelper import DeleteAllData, changelog
 from sys import exit
 
 class SettingInterface(ScrollArea):
@@ -25,7 +25,7 @@ class SettingInterface(ScrollArea):
         self.setObjectName('settings')
         self.settingLabel = QLabel(self.tr("设置"), self)
         self.upworker = get_update()
-        self.upworker.finished.connect(self.showupupgrade)
+        self.upworker.finished.connect(lambda updata: showup(parent = self, updata = updata, upworker = self.upworker))
         
         # Personalize
         self.personalGroup = SettingCardGroup(self.tr('个性化'), self.scrollWidget)
@@ -145,17 +145,17 @@ class SettingInterface(ScrollArea):
             self.tr('从帮助页面上获取帮助与支持'),
             self.aboutGroup
         )
-        self.feedbackCard = PrimaryPushSettingCard(
+        self.feedbackCard = PushSettingCard(
             self.tr('提供反馈'),
             FIF.FEEDBACK,
             self.tr('提供反馈'),
             self.tr('通过提供反馈来帮助我们打造更好的应用'),
             self.aboutGroup
         )
-        self.aboutCard = PrimaryPushSettingCard(
-            self.tr('Changelog'),
-            FIF.INFO,
+        self.aboutCard = PushSettingCard(
             self.tr('更新日志'),
+            FIF.INFO,
+            self.tr('关于'),
             '© ' + self.tr(' ') + f" {YEAR}, {AUTHOR}. " +
             self.tr('Version') + f" {VERSION}",
             self.aboutGroup
@@ -304,15 +304,6 @@ class SettingInterface(ScrollArea):
         # chang the theme of setting interface
         setSettingsQss(parent=self)
         
-    def opengithub(self):
-        QDesktopServices.openUrl(QUrl(RELEASE_URL))
-    def openaz(self):
-        QDesktopServices.openUrl(QUrl(AZ_URL))
-    def showupupgrade(self, updata):
-        showup(parent = self, updata = updata, upworker = self.upworker)
-    def upupgrade(self):
-        self.upworker.start()
-        
     def beta_not(self):
         if not cfg.beta.value:
             self.debug_Card.setValue(False)
@@ -323,37 +314,7 @@ class SettingInterface(ScrollArea):
             self.toast_Card.setVisible(False)
             self.BetaOnlyGroup.setVisible(False)
         
-    def __changelog(self):
-        view = FlyoutView(
-            title=f'AZMusicDownloader {VERSION}更新日志 ',
-            content=verdetail,
-            #image='resource/splash.png',
-            isClosable=True
-        )
-        
-        # add button to view
-        button1 = PushButton(FIF.GITHUB, 'GitHub')
-        button1.setFixedWidth(120)
-        button1.clicked.connect(self.opengithub)
-        view.addWidget(button1, align=Qt.AlignRight)
-        
-        button2 = PushButton('AZ Studio')
-        button2.setFixedWidth(120)
-        button2.clicked.connect(self.openaz)
-        view.addWidget(button2, align=Qt.AlignRight)
-        
-        button3 = PrimaryPushButton('检查更新')
-        button3.setFixedWidth(120)
-        button3.clicked.connect(self.upupgrade)
-        view.addWidget(button3, align=Qt.AlignRight)
 
-        # adjust layout (optional)
-        view.widgetLayout.insertSpacing(1, 5)
-        view.widgetLayout.addSpacing(5)
-
-        # show view
-        w = Flyout.make(view, self.aboutCard, self)
-        view.closed.connect(w.close)
 
     def __connectSignalToSlot(self):
         """ connect signal to slot """
@@ -365,5 +326,5 @@ class SettingInterface(ScrollArea):
         self.FolderAuto.clicked.connect(self.__FolederAutoCardClicked)
         self.backtoinit.clicked.connect(self.__backtoinitClicked)
         self.beta.checkedChanged.connect(self.beta_not)
-        self.aboutCard.clicked.connect(self.__changelog)
+        self.aboutCard.clicked.connect(lambda: changelog(parent=self))
         self.feedbackCard.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
