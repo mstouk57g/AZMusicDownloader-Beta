@@ -5,17 +5,11 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import os
 import requests
 from helper.config import cfg
-from helper.getvalue import playlist_search_log, apipath, playlist_download_log, autoncmaapi, playlistpath
+from helper.getvalue import playlist_search_log, playlist_download_log, autoncmaapi, playlistpath
 from helper.flyoutmsg import dlerr, dlwar
 
-try:
-    u = open(apipath, "r")
-    data = json.loads(u.read())
-    api = data["api"]
-    u.close()
-except:
-    api = autoncmaapi
-
+api = cfg.ncma_api.value
+print(api)
 
 class getlist(QThread):
     finished = pyqtSignal()

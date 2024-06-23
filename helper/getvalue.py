@@ -8,7 +8,7 @@ logpath = "{}\\log".format(allpath)
 playlistpath = "{}\\playlist".format(allpath)
 
 configpath = "{}\\config.json".format(allpath)
-apipath = "{}\\api.json".format(allpath)
+upurl = "https://json.zenglingkun.cn/update/md/index.json"
 
 download_log = "{}\\download_log.json".format(logpath)
 search_log = "{}\\search_log.json".format(logpath)
@@ -22,7 +22,6 @@ localView = None
 autoncmaapi = "https://ncma.azprod.cn/"  # API为ncma的克隆项目
 autoqqmaapi = ""
 apilists = ['NCMA', 'QQMA']
-upurl = "https://json.zenglingkun.cn/update/md/index.json"
 
 # 古诗
 poem =  ["天阶夜色凉如水，卧看牵牛织女星。", 

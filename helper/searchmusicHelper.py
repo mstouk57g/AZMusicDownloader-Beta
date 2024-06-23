@@ -6,20 +6,13 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import helper.config
 import requests, os
 from helper.config import cfg, pfg
-from helper.getvalue import apipath, download_log, search_log, autoncmaapi
+from helper.getvalue import download_log, search_log, autoncmaapi
 from helper.inital import mkf
 from helper.flyoutmsg import dlerr, dlwar
 from helper.pluginHelper import plugins_items
 
-try:
-    u = open(apipath, "r")
-    data = json.loads(u.read())
-    api = data["api"]
-    q_api = data["q_api"]
-    u.close()
-except:
-    api = autoncmaapi
-    q_api = ""
+api = cfg.ncma_api.value
+q_api = cfg.qqma_api.value
 mkf()
 
 

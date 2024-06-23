@@ -14,19 +14,11 @@ from Interface.localmusics import localmusics
 from Interface.playlist import playlist
 from Interface.plugin import plugins
 from helper.config import cfg,pfg
-from helper.getvalue import apipath, autoncmaapi
 from helper.pluginHelper import run_plugins, load_plugins
 from helper.loggerHelper import logger
 
-try:
-    u = open(apipath, "r")
-    data = json.loads(u.read())
-    api = data["api"]
-    q_api = data["q_api"]
-    u.close()
-except:
-    api = autoncmaapi
-    q_api = ""
+api = cfg.ncma_api.value
+q_api = cfg.qqma_api.value
 
 # Print logs | 日志输出
 logger.info("欢迎使用AZMusicDownloader")

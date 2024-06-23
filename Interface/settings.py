@@ -82,7 +82,7 @@ class SettingInterface(ScrollArea):
         )
         self.ApiUrlCard = PushSettingCard(
             self.tr('修改'),
-            FIF.FOLDER,
+            FIF.EDIT,
             self.tr("自定义API地址"),
             self.tr("修改NCMA或QQMA的API地址"),
             self.DownloadSettings
