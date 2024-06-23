@@ -284,7 +284,7 @@ class SettingInterface(ScrollArea):
         ref(musicpath=autopath)
         
     def __backtoinitClicked(self):
-        w = DeleteAllData(self)
+        w = DeleteAllData(self.window())
         if not w.exec():
             delfin(IfMusicPath=w.DataCheckBox.isChecked())
             exit(0)

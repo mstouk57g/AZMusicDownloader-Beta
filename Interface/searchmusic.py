@@ -118,7 +118,7 @@ class searchmusic(QWidget, QObject):
         self.lworker.finished.connect(lambda: search(lworker=self.lworker, parent=self,
                         tableView=self.tableView, spinBox=self.spinBox))
         self.dworker.finished.connect(lambda Progress: download(progress = Progress, table = self.tableView, progressbar=self.ProgressBar, 
-                            songdata=self.lworker.songInfos, dworker=self.dworker, button=self.primaryButton1, parent=self, howto = "search"))
+                            songdata=self.lworker.songInfos, dworker=self.dworker, button=self.primaryButton1, parent=self.window(), howto = "search"))
         self.upworker.finished.connect(lambda updata: showup(parent = self.window(), updata = updata, upworker = self.upworker))
         # self.worker.finished.connect(self.on_worker_finished)
 

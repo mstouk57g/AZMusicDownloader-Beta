@@ -73,7 +73,7 @@ class playlist(QWidget):
         self.lworker.finished.connect(lambda: search(PushButton=self.PushButton, lworker=self.lworker, TableWidget=self.TableWidget))
         self.dworker = downloading(howto = "playlist")
         self.dworker.finished.connect(lambda Progress: download(progress = Progress, table = self.TableWidget_2, progressbar=self.pro_bar, 
-                            songdata=None, dworker=self.dworker, button=self.PushButton_2, parent=self, howto = "lists"))
+                            songdata=None, dworker=self.dworker, button=self.PushButton_2, parent=self.window(), howto = "lists"))
         
         self.retranslateUi()
         FindLists(TableWidget=self.TableWidget)
