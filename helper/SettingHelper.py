@@ -133,6 +133,7 @@ class CustomAPIs(MessageBoxBase):
         global qqma_edited_api
         ncma_edited_api = self.NCMAedit.text()
         qqma_edited_api = self.QQMAedit.text()
+        
 def editapi(parent, ncmaapi, qqmaapi):
     w = CustomAPIs(parent=parent, ncmaapi=ncmaapi, qqmaapi=qqmaapi)
     w.show()

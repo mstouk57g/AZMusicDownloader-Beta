@@ -14,7 +14,7 @@ from helper.inital import delfin, get_update, showup, setSettingsQss
 from helper.localmusicsHelper import ref
 from helper.SettingHelper import DeleteAllData, editapi
 from sys import exit
-from helper.flyoutmsg import changelog, restart
+from helper.flyoutmsg import changelog, restart,setOK
 
 class SettingInterface(ScrollArea):
     micaEnableChanged = pyqtSignal(bool)
@@ -52,7 +52,7 @@ class SettingInterface(ScrollArea):
             cfg.language,
             FIF.LANGUAGE,
             self.tr('语言'),
-            self.tr('选择应用显示语言'),
+            self.tr('当前仅支持中文'),
             texts=['简体中文', self.tr('使用系统设置')],
             parent=self.personalGroup
         )
@@ -285,17 +285,20 @@ class SettingInterface(ScrollArea):
         cfg.set(cfg.downloadFolder, folder)
         self.downloadFolderCard.setContent(folder)
         ref(musicpath=folder)
+        setOK(parent=self.window())
         
     def __FolederAutoCardClicked(self):
         cfg.set(cfg.downloadFolder, autopath)
         self.downloadFolderCard.setContent(cfg.get(cfg.downloadFolder))
         ref(musicpath=autopath)
+        setOK(parent=self.window())
         
     def __customapis(self):
         w = editapi(parent=self.window(), ncmaapi=cfg.ncma_api.value, qqmaapi=cfg.qqma_api.value)
         if w:
             cfg.set(cfg.ncma_api, w[0])
             cfg.set(cfg.qqma_api, w[1])
+            setOK(parent=self.window())
         
     def __backtoinitClicked(self):
         w = DeleteAllData(self.window())
@@ -310,6 +313,7 @@ class SettingInterface(ScrollArea):
 
         # chang the theme of setting interface
         setSettingsQss(parent=self)
+        setOK(parent=self.window())
         
     def beta_not(self):
         if not cfg.beta.value:

@@ -110,3 +110,10 @@ def restart(parent):
     w.addWidget(s)
     s.clicked.connect(lambda: exit(0))
     w.show()
+
+def setOK(parent):
+    InfoBar.warning(
+        '',
+        '设置已保存',
+        parent=parent
+    )
