@@ -14,7 +14,7 @@ from helper.inital import delfin, get_update, showup, setSettingsQss
 from helper.localmusicsHelper import ref
 from helper.SettingHelper import DeleteAllData, editapi
 from sys import exit
-from helper.flyoutmsg import changelog, restart,setOK
+from helper.flyoutmsg import changelog, restart,setOK, changeFolder
 
 class SettingInterface(ScrollArea):
     micaEnableChanged = pyqtSignal(bool)
@@ -52,7 +52,7 @@ class SettingInterface(ScrollArea):
             cfg.language,
             FIF.LANGUAGE,
             self.tr('语言'),
-            self.tr('当前仅支持中文'),
+            self.tr('当前仅支持简体中文'),
             texts=['简体中文', self.tr('使用系统设置')],
             parent=self.personalGroup
         )
@@ -71,13 +71,6 @@ class SettingInterface(ScrollArea):
             FIF.FOLDER,
             self.tr("下载目录"),
             cfg.get(cfg.downloadFolder),
-            self.DownloadSettings
-        )
-        self.FolderAuto = PushSettingCard(
-            self.tr('恢复默认'),
-            FIF.CLEAR_SELECTION,
-            self.tr("恢复下载目录默认值"),
-            self.tr('下载目录默认值为：') + autopath + self.tr('（即用户音乐文件夹）'),
             self.DownloadSettings
         )
         self.ApiUrlCard = PushSettingCard(
@@ -240,7 +233,6 @@ class SettingInterface(ScrollArea):
         
         # add cards to group
         self.DownloadSettings.addSettingCard(self.downloadFolderCard)
-        self.DownloadSettings.addSettingCard(self.FolderAuto)
         self.DownloadSettings.addSettingCard(self.ApiUrlCard)
 
         self.personalGroup.addSettingCard(self.themeCard)
@@ -333,8 +325,7 @@ class SettingInterface(ScrollArea):
         pfg.themeChanged.connect(self.__onThemeChanged)
         self.micaCard.checkedChanged.connect(self.micaEnableChanged)
 
-        self.downloadFolderCard.clicked.connect(self.__onDownloadFolderCardClicked)
-        self.FolderAuto.clicked.connect(self.__FolederAutoCardClicked)
+        self.downloadFolderCard.clicked.connect(lambda: changeFolder(parent=self, change_action=self.__onDownloadFolderCardClicked, init_action=self.__FolederAutoCardClicked))
         self.backtoinit.clicked.connect(self.__backtoinitClicked)
         self.beta.checkedChanged.connect(self.beta_not)
         self.aboutCard.clicked.connect(lambda: changelog(parent=self))
