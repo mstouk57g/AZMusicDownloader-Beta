@@ -9,7 +9,6 @@ from helper.getvalue import playlist_search_log, playlist_download_log, autoncma
 from helper.flyoutmsg import dlerr, dlwar
 
 api = cfg.ncma_api.value
-print(api)
 
 class getlist(QThread):
     finished = pyqtSignal()
