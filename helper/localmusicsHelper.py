@@ -5,15 +5,20 @@ from mutagen.id3 import ID3NoHeaderError
 from PyQt5.QtWidgets import QTableWidgetItem
 import subprocess
 from os import listdir
-from os.path import join
+from os.path import join, isfile
+from fleep import get as CheckIfMusic
 
 mkf()
 
 def get_all_music(path):
     all_music = []
     for file_name in listdir(path):
-        if file_name.endswith(".mp3"):
-            all_music.append(file_name)
+        file_path = f"{path}\{file_name}"
+        if isfile(file_path):
+            with open(file_path, "rb") as file:
+                info = CheckIfMusic(file.read(128))
+                if info.type_matches("audio"):
+                    all_music.append(file_name)
     return all_music
 
 def ref(musicpath, local_view = None):
