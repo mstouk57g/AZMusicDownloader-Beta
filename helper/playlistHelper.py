@@ -1,6 +1,9 @@
 import json
 from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QWidget, QAbstractItemView, QStyleOptionViewItem, QHBoxLayout, QVBoxLayout, QLabel, QHeaderView
+from qfluentwidgets import ComboBox, LineEdit, PushButton, SubtitleLabel, TableWidget, ProgressBar, PrimaryPushButton, MessageBoxBase, ProgressRing
+
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import os
 import requests
@@ -144,7 +147,7 @@ def music(TableWidget, TableWidget_2, parent):
         dlerr(erid=2, parent=parent)
 
 
-def search(PushButton, lworker, TableWidget):
+def search(lworker, TableWidget):
     data = get_folders(playlistpath)
     TableWidget.setRowCount(len(data))
     TableWidget.clearContents()
@@ -157,7 +160,6 @@ def search(PushButton, lworker, TableWidget):
             TableWidget.setItem(i, j, QTableWidgetItem(data_v[j]))
 
     TableWidget.resizeColumnsToContents()
-    PushButton.setEnabled(True)
     lworker.quit()
 
 
@@ -210,3 +212,4 @@ def get_folders(folder_path):
             folders.append(item)
 
     return folders
+

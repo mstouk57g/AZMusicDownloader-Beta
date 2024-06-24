@@ -4,6 +4,7 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from helper.downloadHelper import downloading, download
 from helper.playlistHelper import getlist, FindLists, searchstart, music, search, rundownload
+from helper.flyoutmsg import setOK
 
 class playlist(QWidget):
     def __init__(self):
@@ -61,14 +62,12 @@ class playlist(QWidget):
 
     def openbutton(self):
         self.StartDownload.setEnabled(True)
-    
     def StartPutIn(self):
         w = PutIn(parent=self)
         if w.exec():
             k = ChoosePlayList(parent=self)
             if k.exec():
-                pass
-
+                setOK(parent=self, howto="playlists")
 
 class PutIn(MessageBoxBase):
     """ Custom message box """
@@ -101,16 +100,26 @@ class PutIn(MessageBoxBase):
         
         # change the text of button
         self.yesButton.setText('下一步')
+        self.yesButton.setDisabled(True)
         self.cancelButton.setText('取消')
         self.yesButton.clicked.connect(lambda: searchstart(PushButton=self.yesButton, lworker=parent.lworker,
                                                             ComboBox=self.ComboBox, LineEdit=self.LineEdit, parent=parent))
         self.widget.setMinimumWidth(350)
+        self.LineEdit.textChanged.connect(self._validateText)
+
+        # self.hideYesButton()
+
+    def _validateText(self, text):
+        if text == None:
+            self.yesButton.setDisabled(True)
+        else:
+            self.yesButton.setEnabled(True)
 
 class ChoosePlayList(MessageBoxBase):
     """ Custom message box """
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(parent.window())
         self.titleLabel = SubtitleLabel('选择歌单', self)
         
         self.TableWidget = TableWidget(self)
@@ -124,6 +133,8 @@ class ChoosePlayList(MessageBoxBase):
         self.TableWidget.resizeColumnsToContents()
         self.TableWidget.resizeColumnsToContents()
         self.TableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        
+        self.TableWidget.itemSelectionChanged.connect(lambda: self.yesButton.setEnabled(True))
         FindLists(TableWidget=self.TableWidget)
 
         # add widget to view layout
@@ -132,8 +143,9 @@ class ChoosePlayList(MessageBoxBase):
 
         # change the text of button
         self.yesButton.setText('确定')
+        self.yesButton.setDisabled(True)
         self.cancelButton.setText('取消')
         self.yesButton.clicked.connect(lambda: music(TableWidget=self.TableWidget, TableWidget_2=parent.TableWidget_2, parent=parent))
-        parent.lworker.finished.connect(lambda: search(PushButton=parent.StartDownload, lworker=parent.lworker, TableWidget=self.TableWidget))
+        parent.lworker.finished.connect(lambda: search(lworker=parent.lworker, TableWidget=self.TableWidget))
 
         self.widget.setMinimumWidth(350)

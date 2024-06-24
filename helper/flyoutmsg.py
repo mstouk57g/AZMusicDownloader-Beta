@@ -111,10 +111,14 @@ def restart(parent):
     s.clicked.connect(lambda: exit(0))
     w.show()
 
-def setOK(parent):
-    InfoBar.warning(
+def setOK(parent, howto="settings"):
+    if howto == "settings":
+        content = '设置已保存'
+    elif howto == "playlists":
+        content = "导入成功"
+    InfoBar.success(
         '',
-        '设置已保存',
+        content,
         parent=parent
     )
 
