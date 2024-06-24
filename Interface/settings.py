@@ -2,8 +2,7 @@
 from helper.config import cfg, pfg
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
                             OptionsSettingCard, PushSettingCard, setTheme, 
-                            HyperlinkCard, ScrollArea,
-                            ComboBoxSettingCard, ExpandLayout, Theme, InfoBar)
+                            HyperlinkCard, ScrollArea, ComboBoxSettingCard, ExpandLayout, Theme)
 from qfluentwidgets import FluentIcon as FIF
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QDesktopServices
@@ -325,7 +324,9 @@ class SettingInterface(ScrollArea):
         pfg.themeChanged.connect(self.__onThemeChanged)
         self.micaCard.checkedChanged.connect(self.micaEnableChanged)
 
-        self.downloadFolderCard.clicked.connect(lambda: changeFolder(parent=self, change_action=self.__onDownloadFolderCardClicked, init_action=self.__FolederAutoCardClicked))
+        self.downloadFolderCard.clicked.connect(lambda: changeFolder(parent=self, 
+                                                                     change_action=self.__onDownloadFolderCardClicked, 
+                                                                     init_action=self.__FolederAutoCardClicked))
         self.backtoinit.clicked.connect(self.__backtoinitClicked)
         self.beta.checkedChanged.connect(self.beta_not)
         self.aboutCard.clicked.connect(lambda: changelog(parent=self))
