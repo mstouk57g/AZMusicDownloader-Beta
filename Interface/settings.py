@@ -163,9 +163,9 @@ class SettingInterface(ScrollArea):
             self.aboutGroup
         )
         
-        self.micaCard.setEnabled(platform == 'win32' and getwindowsversion().build >= 22000)
+        self.micaCard.setEnabled(False)
         if cfg.beta.value:
-            self.toast_Card.setEnabled(platform == 'win32' and getwindowsversion().build >= 17134)
+            self.toast_Card.setEnabled(platform == 'win32' and getwindowsversion().build >= 17763)
         self.__initWidget()
 
     def betaonly(self):
@@ -188,7 +188,7 @@ class SettingInterface(ScrollArea):
                 FIF.MEGAPHONE,
                 self.tr('Enable Windows Toast'),
                 self.tr(
-                    'Use System Notification to notice you when the process is finished. ( Windows 10.0.17134 or later)'),
+                    'Use System Notification to notice you when the process is finished. ( Windows 10.0.17763 or later)'),
                 configItem=cfg.toast,
                 parent=self.BetaOnlyGroup
         )
@@ -196,7 +196,7 @@ class SettingInterface(ScrollArea):
     def beta_enable(self):
         if cfg.beta.value:
             self.betaonly()
-            self.toast_Card.setEnabled(platform == 'win32' and getwindowsversion().build >= 17134)
+            self.toast_Card.setEnabled(platform == 'win32' and getwindowsversion().build >= 17763)
             self.expandLayout.addWidget(self.BetaOnlyGroup)
             self.BetaOnlyGroup.addSettingCard(self.debug_Card)
             self.BetaOnlyGroup.addSettingCard(self.plugin_Card)

@@ -13,7 +13,7 @@ if not cfg.debug_card.value:
         QMessageBox.critical(w, "There's an error ! ! !", msesg, QMessageBox.Yes)
     sys.excepthook = global_exception_handler
 
-if __name__ == '__main__' and sys.platform == 'win32' and sys.getwindowsversion().build >= 10240:
+if __name__ == '__main__' and sys.platform == 'win32' and sys.getwindowsversion().build >= 17763:
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
