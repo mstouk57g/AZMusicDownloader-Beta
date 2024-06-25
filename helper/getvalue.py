@@ -1,6 +1,7 @@
 from datetime import date
 from random import randint
 from PyQt5.QtCore import QStandardPaths
+import ctypes
 
 config_path_value = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
 allpath = "{}\\AZMusicDownload".format(config_path_value)
@@ -47,6 +48,27 @@ poem =  ["天阶夜色凉如水，卧看牵牛织女星。",
 def outapoem():
     outpoem = poem[randint(0, len(poem) - 1)]
     return outpoem
+
+def GetDefaultThemeColor():
+    dwmapi = ctypes.windll.dwmapi
+    color = ctypes.c_ulong()
+    opaque = ctypes.c_bool()
+    
+    # Call DwmGetColorizationColor
+    result = dwmapi.DwmGetColorizationColor(ctypes.byref(color), ctypes.byref(opaque))
+    
+    if result == 0:  # S_OK
+        # Extract the color components (ARGB format)
+        alpha = (color.value >> 24) & 0xFF
+        red = (color.value >> 16) & 0xFF
+        green = (color.value >> 8) & 0xFF
+        blue = color.value & 0xFF
+        
+        return(f"#{red:02X}{green:02X}{blue:02X}")
+    else:
+        return("#0078D4")
+
+
 
 # 错误内容列表
 outputlist = ['未搜索到相关的歌曲，换个关键词试试吧',

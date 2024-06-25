@@ -1,11 +1,11 @@
 # coding:utf-8
 from enum import Enum
 from sys import platform, getwindowsversion
-from helper.getvalue import configpath, autopath, autoncmaapi, autoqqmaapi
+from helper.getvalue import configpath, autopath, autoncmaapi, autoqqmaapi, GetDefaultThemeColor
 from helper.SettingHelper import get_all_api
 from PyQt5.QtCore import QLocale
-from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
-                            OptionsValidator,  FolderValidator, ConfigSerializer, FolderListValidator)
+from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,ColorConfigItem, EnumSerializer,
+                            OptionsValidator,  FolderValidator, ConfigSerializer, FolderListValidator, Theme)
 
 class Language(Enum):
     """ Language enumeration """
@@ -55,6 +55,9 @@ class Config(QConfig):
     language = OptionsConfigItem(
         "Personalize", "Language", Language.CHINESE_SIMPLIFIED, OptionsValidator(Language), LanguageSerializer(), restart=True)
     micaEnabled = ConfigItem("Personalize", "MicaEnabled", platform == 'win32' and getwindowsversion().build >= 22000, BoolValidator())
+    themeMode = OptionsConfigItem(
+        "Personalize", "ThemeMode", Theme.LIGHT, OptionsValidator(Theme), EnumSerializer(Theme))
+    themeColor = ColorConfigItem("Personalize", "ThemeColor", GetDefaultThemeColor())
     
     #BetaOnly
     toast = ConfigItem(
