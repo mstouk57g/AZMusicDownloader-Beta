@@ -1,8 +1,6 @@
 # coding:utf-8
 from helper.config import cfg, pfg
-from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, CustomColorSettingCard,
-                            OptionsSettingCard, PushSettingCard, setTheme, 
-                            HyperlinkCard, ScrollArea, ComboBoxSettingCard, ExpandLayout, Theme)
+from qfluentwidgets import *
 from qfluentwidgets import FluentIcon as FIF
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl
 from PyQt5.QtGui import QDesktopServices
@@ -13,7 +11,7 @@ from helper.inital import delfin, get_update, showup, setSettingsQss
 from helper.localmusicsHelper import ref
 from helper.SettingHelper import DeleteAllData, editapi
 from sys import exit
-from helper.flyoutmsg import changelog, restart,setOK, changeFolder
+from helper.flyoutmsg import changelog, restart,setOK
 
 class SettingInterface(ScrollArea):
     micaEnableChanged = pyqtSignal(bool)
@@ -65,13 +63,17 @@ class SettingInterface(ScrollArea):
 
         # Folders
         self.DownloadSettings = SettingCardGroup(self.tr("下载设置"), self.scrollWidget)
-        self.downloadFolderCard = PushSettingCard(
-            self.tr('选择目录'),
+        
+        self.downloadFolderCard = ExpandGroupSettingCard(
             FIF.FOLDER,
-            self.tr("下载目录"),
-            cfg.get(cfg.downloadFolder),
-            self.DownloadSettings
+            self.tr('修改目录'),
+            self.tr("修改下载目录"),
+            self.personalGroup
         )
+        self.LabelFolder = SubtitleLabel(f"\n    当前路径为：{cfg.downloadFolder.value}\n", self)
+        self.LabelAuto = SubtitleLabel(f"\n    默认路径为：{autopath}\n", self)
+        self.changeFolder = PrimaryPushButton("选择目录", self)
+        self.AutoFolder = PushButton("恢复默认", self)
         self.ApiUrlCard = PushSettingCard(
             self.tr('修改'),
             FIF.EDIT,
@@ -230,6 +232,12 @@ class SettingInterface(ScrollArea):
     def __initLayout(self):
         self.settingLabel.move(60, 63)
         
+        # ExpandCard
+        self.downloadFolderCard.addGroupWidget(self.LabelFolder)
+        self.downloadFolderCard.addGroupWidget(self.LabelAuto)
+        self.downloadFolderCard.addWidget(self.changeFolder)
+        self.downloadFolderCard.addWidget(self.AutoFolder)
+        
         # add cards to group
         self.DownloadSettings.addSettingCard(self.downloadFolderCard)
         self.DownloadSettings.addSettingCard(self.ApiUrlCard)
@@ -323,10 +331,8 @@ class SettingInterface(ScrollArea):
         cfg.themeChanged.connect(self.__onThemeChanged)
         pfg.themeChanged.connect(self.__onThemeChanged)
         self.micaCard.checkedChanged.connect(self.micaEnableChanged)
-
-        self.downloadFolderCard.clicked.connect(lambda: changeFolder(parent=self, 
-                                                                     change_action=self.__onDownloadFolderCardClicked, 
-                                                                     init_action=self.__FolederAutoCardClicked))
+        self.AutoFolder.clicked.connect(self.__FolederAutoCardClicked)
+        self.changeFolder.clicked.connect(self.__onDownloadFolderCardClicked)
         self.backtoinit.clicked.connect(self.__backtoinitClicked)
         self.beta.checkedChanged.connect(self.beta_not)
         self.aboutCard.clicked.connect(lambda: changelog(parent=self))

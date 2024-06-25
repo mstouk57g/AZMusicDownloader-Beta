@@ -121,30 +121,3 @@ def setOK(parent, howto="settings"):
         content,
         parent=parent
     )
-
-def changeFolder(parent, change_action, init_action):
-    view = FlyoutView(
-        title='修改下载地址：',
-        content="请选择你要进行的操作",
-        isClosable=True
-    )
-
-    # add button to view
-    change = PushButton('选择目录')
-    change.setFixedWidth(120)
-    change.clicked.connect(change_action)
-    view.addWidget(change, align=Qt.AlignRight)
-    
-    init = PushButton('恢复默认值')
-    init.setFixedWidth(120)
-    init.clicked.connect(init_action)
-    view.addWidget(init, align=Qt.AlignRight)
-
-    # adjust layout (optional)
-    view.widgetLayout.insertSpacing(1, 5)
-    view.widgetLayout.addSpacing(5)
-
-    # show view
-    w = Flyout.make(view, parent.downloadFolderCard, parent)
-    view.closed.connect(w.close)
-    return w
