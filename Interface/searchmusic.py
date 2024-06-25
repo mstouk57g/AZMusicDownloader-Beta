@@ -65,12 +65,7 @@ class searchmusic(QWidget, QObject):
         self.numLabel = QLabel('显示数量', self)
         self.spinBox = SpinBox(self)
         self.spinBox.setValue(15)
-        # self.empty0 = QLabel('第几页', self)
-        # self.spinBox0 = SpinBox(self)
-        
-        # self.layout1.addWidget(self.empty0)
-        # self.layout1.addWidget(self.spinBox0)
-        
+
         # self.worker_thread = QThread()
         # self.worker = Worker()
         # self.worker.moveToThread(self.worker_thread)
@@ -128,7 +123,6 @@ class searchmusic(QWidget, QObject):
         self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         # self.tableView.setSortingEnabled(True)
         # self.tableView.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        # self.tableView.selectionChanged(self.nm)
 
         self.setStyleSheet("Demo{background: rgb(249, 249, 249)} ")
         self.hBoxLayout.setContentsMargins(30, 20, 60, 20)

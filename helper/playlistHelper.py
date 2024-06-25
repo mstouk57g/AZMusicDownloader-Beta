@@ -124,23 +124,22 @@ def music(TableWidget, TableWidget_2, Button, parent):
         u.close()
         data = data["content"]
         TableWidget_2.clearContents()
+        TableWidget_2.setRowCount(len(data))
 
+        #All = []
         for i in range(len(data)):
-            add = []
+            #add = []
             id_v = str(data[i]["id"])
             name_v = str(data[i]["name"])
             artists_v = str(data[i]["artists"])
             album_v = str(data[i]["album"])
-
-            add.append(id_v)
-            add.append(name_v)
-            add.append(artists_v)
-            add.append(album_v)
-            for j in range(4):
-                TableWidget_2.setItem(i, j, QTableWidgetItem(add[j]))
-
+            
+            TableWidget_2.setItem(i, 0, QTableWidgetItem(id_v))
+            TableWidget_2.setItem(i, 1, QTableWidgetItem(name_v))
+            TableWidget_2.setItem(i, 2, QTableWidgetItem(artists_v))
+            TableWidget_2.setItem(i, 3, QTableWidgetItem(album_v))
+            
         TableWidget_2.resizeColumnsToContents()
-        TableWidget_2.setRowCount(len(data))
         Button.setText(name)
     except:
         dlerr(erid=2, parent=parent)
