@@ -1,8 +1,6 @@
 import json
 from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QTableWidgetItem
-from PyQt5.QtWidgets import QWidget, QAbstractItemView, QStyleOptionViewItem, QHBoxLayout, QVBoxLayout, QLabel, QHeaderView
-from qfluentwidgets import ComboBox, LineEdit, PushButton, SubtitleLabel, TableWidget, ProgressBar, PrimaryPushButton, MessageBoxBase, ProgressRing
 
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import os
@@ -118,7 +116,7 @@ def searchstart(PushButton, lworker, ComboBox, LineEdit, parent):
         dlerr(outid=1, parent=parent)
 
 
-def music(TableWidget, TableWidget_2, parent):
+def music(TableWidget, TableWidget_2, Button, parent):
     try:
         name = get_folders(playlistpath)[TableWidget.currentIndex().row()]
         u = open("{}\\{}\\index.json".format(playlistpath, name), "r")
@@ -143,6 +141,7 @@ def music(TableWidget, TableWidget_2, parent):
 
         TableWidget_2.resizeColumnsToContents()
         TableWidget_2.setRowCount(len(data))
+        Button.setText(name)
     except:
         dlerr(erid=2, parent=parent)
 

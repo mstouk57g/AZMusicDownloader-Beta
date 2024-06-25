@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QAbstractItemView, QStyleOptionViewItem, QH
 from qfluentwidgets import ComboBox, LineEdit, PushButton, SubtitleLabel, TableWidget, ProgressBar, PrimaryPushButton, MessageBoxBase, ProgressRing
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
+from qfluentwidgets import FluentIcon as FIF
 from helper.downloadHelper import downloading, download
 from helper.playlistHelper import getlist, FindLists, searchstart, music, search, rundownload
 from helper.flyoutmsg import setOK
@@ -18,6 +19,8 @@ class playlist(QWidget):
         self.SubtitleLabel.setObjectName("SubtitleLabel")
         self.SubtitleLabel.setText("导入歌单（当前仅支持NCMA）")
         
+        self.ChooseBox = PushButton(FIF.ALBUM, "选择歌单", self)
+        self.ChooseBox.clicked.connect(self.ChangePlaylist)
         self.StartBox = PushButton("开始导入", self)
         self.StartBox.clicked.connect(self.StartPutIn)
         self.StartDownload = PrimaryPushButton("下载", self)
@@ -34,6 +37,8 @@ class playlist(QWidget):
         self.hBoxLayout.addWidget(self.SubtitleLabel, Qt.AlignLeft)
         self.hBoxLayout.addStretch(100)
         self.hBoxLayout.addWidget(self.pro_bar, Qt.AlignRight)
+        self.hBoxLayout.addStretch(5)
+        self.hBoxLayout.addWidget(self.ChooseBox, Qt.AlignRight)
         self.hBoxLayout.addStretch(5)
         self.hBoxLayout.addWidget(self.StartBox, Qt.AlignRight)
         self.hBoxLayout.addStretch(5)
@@ -65,9 +70,11 @@ class playlist(QWidget):
     def StartPutIn(self):
         w = PutIn(parent=self)
         if w.exec():
-            k = ChoosePlayList(parent=self)
-            if k.exec():
-                setOK(parent=self, howto="playlists")
+            setOK(parent=self, howto="playlists")
+    def ChangePlaylist(self):
+        w = ChoosePlayList(parent=self)
+        if w.exec():
+            setOK(parent=self, howto="playlists")
 
 class PutIn(MessageBoxBase):
     """ Custom message box """
@@ -99,7 +106,7 @@ class PutIn(MessageBoxBase):
         self.viewLayout.addLayout(self.inUID)
         
         # change the text of button
-        self.yesButton.setText('下一步')
+        self.yesButton.setText('导入')
         self.yesButton.setDisabled(True)
         self.cancelButton.setText('取消')
         self.yesButton.clicked.connect(lambda: searchstart(PushButton=self.yesButton, lworker=parent.lworker,
@@ -145,7 +152,7 @@ class ChoosePlayList(MessageBoxBase):
         self.yesButton.setText('确定')
         self.yesButton.setDisabled(True)
         self.cancelButton.setText('取消')
-        self.yesButton.clicked.connect(lambda: music(TableWidget=self.TableWidget, TableWidget_2=parent.TableWidget_2, parent=parent))
+        self.yesButton.clicked.connect(lambda: music(TableWidget=self.TableWidget, TableWidget_2=parent.TableWidget_2, Button=parent.ChooseBox, parent=parent))
         parent.lworker.finished.connect(lambda: search(lworker=parent.lworker, TableWidget=self.TableWidget))
 
         self.widget.setMinimumWidth(350)
