@@ -25,10 +25,10 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
 
-    - name: Install MinGW64 and PyQt5
+    - name: Install MinGW64 and nuitka
       run: |
         choco install mingw -y
-        pip install PyQt5
+        pip install nutika
 
     - name: Compile with Nuitka
       run: |
