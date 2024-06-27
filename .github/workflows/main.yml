@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # 添加手动触发器
+    # 指定一个可选的输入参数，例如版本号
+    inputs:
+      version:
+        description: 'Version number for the build'
+        required: true
+        default: '2.6.0'  # 默认版本号
 
 jobs:
   build:
@@ -33,7 +40,11 @@ jobs:
         WINDOWS_FILE_VERSION=$(echo $COMMIT_MSG | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
         WINDOWS_PRODUCT_VERSION=$(echo $COMMIT_MSG | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
 
-        # Compile with Nuitka
-        nuitka --standalone --windows-console-mode=disable  --mingw64 --plugin-enable=pyqt5 --windows-icon-from-ico=icon.ico --windows-company-name="AZ Studio" --windows-product-name=AZMusicDownloader --windows-file-version=2.6.0 --windows-product-version=2.6.0 --windows-file-description=AZMusicDownloader MusicDownloader.py
+        # Use input version number or default to 2.6.0
+        VERSION_NUMBER=${{ github.event.inputs.version }}
 
+        # Compile with Nuitka
+        nuitka --standalone --windows-console-mode=disable  --mingw64 --plugin-enable=pyqt5 --windows-icon-from-ico=icon.ico --windows-company-name="AZ Studio" --windows-product-name=AZMusicDownloader --windows-file-version=$VERSION_NUMBER --windows-product-version=$VERSION_NUMBER --windows-file-description=AZMusicDownloader MusicDownloader.py
+        mkdir -p MusicDownloader.dist/resource  # 创建目标目录
+        cp -r resource/. MusicDownloader.dist/resource  # 复制 resource 文件夹及其内容到目标目录
     # You can add more steps here as needed, such as deploying the compiled binary
