@@ -45,6 +45,8 @@ class downloading(QThread):
                 url = api_plugin.geturl(id=id)
             except:
                 url = "PluginAPIImportError"
+        else:
+            url = AZMusicAPI.geturl(id=id, api=api)
         if url == "Error 3":
             self.show_error = "Error 3"
             self.finished.emit("Error")

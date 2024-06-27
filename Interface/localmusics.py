@@ -1,5 +1,5 @@
 # coding: utf-8
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QHeaderView
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QHeaderView, QAbstractItemView
 from qfluentwidgets import TableWidget
 from helper.config import cfg
 from helper.localmusicsHelper import ref, openthemusic
@@ -17,6 +17,7 @@ class localmusics(QWidget):
         self.local_view.setHorizontalHeaderLabels(['路径', '歌曲名', '艺术家', '专辑'])
         self.local_view.resizeColumnsToContents()
         self.local_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.local_view.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         ref(local_view=self.local_view, musicpath=cfg.get(cfg.downloadFolder))
 

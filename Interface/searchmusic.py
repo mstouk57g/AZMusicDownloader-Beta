@@ -1,7 +1,8 @@
 # coding: utf-8
 from PyQt5.QtCore import QModelIndex, Qt
 from PyQt5.QtGui import QPalette
-from PyQt5.QtWidgets import QStyleOptionViewItem, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QHeaderView
+from PyQt5.QtWidgets import QStyleOptionViewItem, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QHeaderView, \
+    QAbstractItemView
 from qfluentwidgets import TableWidget, isDarkTheme, TableItemDelegate, SearchLineEdit, \
     PrimaryPushButton, SpinBox, ProgressBar
 from PyQt5.QtCore import QObject
@@ -121,6 +122,7 @@ class searchmusic(QWidget, QObject):
         self.tableView.resizeColumnsToContents()
         self.tableView.itemSelectionChanged.connect(self.openbutton)
         self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
         # self.tableView.setSortingEnabled(True)
         # self.tableView.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 

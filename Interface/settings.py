@@ -282,13 +282,13 @@ class SettingInterface(ScrollArea):
         if not folder or cfg.get(cfg.downloadFolder) == folder:
             return
         cfg.set(cfg.downloadFolder, folder)
-        self.downloadFolderCard.setContent(folder)
+        self.LabelFolder.setText(folder)
         ref(musicpath=folder)
         setOK(parent=self.window())
         
     def __FolederAutoCardClicked(self):
         cfg.set(cfg.downloadFolder, autopath)
-        self.downloadFolderCard.setContent(cfg.get(cfg.downloadFolder))
+        self.LabelFolder.setText(cfg.get(cfg.downloadFolder))
         ref(musicpath=autopath)
         setOK(parent=self.window())
         

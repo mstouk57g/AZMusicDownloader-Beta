@@ -17,7 +17,7 @@ class playlist(QWidget):
         
         self.SubtitleLabel = SubtitleLabel("导入歌单", self)
         self.SubtitleLabel.setObjectName("SubtitleLabel")
-        self.SubtitleLabel.setText("导入歌单（当前仅支持NCMA）")
+        self.SubtitleLabel.setText("歌单")
         
         self.ChooseBox = PushButton(FIF.ALBUM, "选择歌单", self)
         self.ChooseBox.clicked.connect(self.ChangePlaylist)
@@ -82,14 +82,18 @@ class PutIn(MessageBoxBase):
     def __init__(self, parent=None):
         super().__init__(parent.window())
         self.titleLabel = SubtitleLabel('导入歌单', self)
+        self.api_type = QHBoxLayout(self)
         self.howtoin = QHBoxLayout(self)
         self.inUID = QHBoxLayout(self)
-
+        self.Api_Tips = SubtitleLabel("API：", self)
+        self.Api_Tips.setObjectName("Api_Tips")
         self.SubtitleLabel_2 = SubtitleLabel("导入方式：", self)
         self.SubtitleLabel_2.setObjectName("SubtitleLabel_2")
         self.SubtitleLabel_3 = SubtitleLabel("ID/UID：", self)
         self.SubtitleLabel_3.setObjectName("SubtitleLabel_3")
-        
+
+        self.apiBox = ComboBox(self)
+        self.apiBox.addItems(["NCMA"])
         self.ComboBox = ComboBox(self)
         self.ComboBox.setObjectName("ComboBox")
         self.ComboBox.addItems(["用户", "歌单"])
@@ -97,11 +101,14 @@ class PutIn(MessageBoxBase):
         self.LineEdit.setObjectName("LineEdit")
         
         # add widget to view layout
+        self.api_type.addWidget(self.Api_Tips)
+        self.api_type.addWidget(self.apiBox)
         self.howtoin.addWidget(self.SubtitleLabel_2)
         self.howtoin.addWidget(self.ComboBox)
         self.inUID.addWidget(self.SubtitleLabel_3)
         self.inUID.addWidget(self.LineEdit)
         self.viewLayout.addWidget(self.titleLabel)
+        self.viewLayout.addLayout(self.api_type)
         self.viewLayout.addLayout(self.howtoin)
         self.viewLayout.addLayout(self.inUID)
         
