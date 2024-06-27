@@ -8,13 +8,13 @@ on:
     # 指定一个可选的输入参数，例如版本号
     inputs:
       version:
-        description: 'Version number for the build'
+        description: '编译版本号'
         required: true
         default: '2.6.0'  # 默认版本号
 
 jobs:
   build:
-    runs-on: windows-11
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
