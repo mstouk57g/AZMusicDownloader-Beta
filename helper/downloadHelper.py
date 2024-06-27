@@ -85,8 +85,8 @@ class show_toast(QThread):
 
     def run(self):
         buttons = [
-            {'activationType': 'protocol', 'arguments': self.path, 'content': 'Play'},
-            {'activationType': 'protocol', 'arguments': self.musicpath, 'content': 'Open Folder'}]
+            {'activationType': 'protocol', 'arguments': self.path, 'content': '播放'},
+            {'activationType': 'protocol', 'arguments': self.musicpath, 'content': '打开文件夹'}]
 
         toast('AZMusicDownloader', self.content, buttons=buttons)
 

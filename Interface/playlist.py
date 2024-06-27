@@ -15,13 +15,12 @@ class playlist(QWidget):
         self.vBoxLayout = QVBoxLayout(self)
         self.hBoxLayout = QHBoxLayout(self)
         
-        self.SubtitleLabel = SubtitleLabel("导入歌单", self)
+        self.SubtitleLabel = SubtitleLabel("歌单", self)
         self.SubtitleLabel.setObjectName("SubtitleLabel")
-        self.SubtitleLabel.setText("歌单")
         
         self.ChooseBox = PushButton(FIF.ALBUM, "选择歌单", self)
         self.ChooseBox.clicked.connect(self.ChangePlaylist)
-        self.StartBox = PushButton("开始导入", self)
+        self.StartBox = PushButton("从第三方平台导入", self)
         self.StartBox.clicked.connect(self.StartPutIn)
         self.StartDownload = PrimaryPushButton("下载", self)
         self.StartDownload.setDisabled(True)
@@ -73,8 +72,7 @@ class playlist(QWidget):
             setOK(parent=self, howto="playlists")
     def ChangePlaylist(self):
         w = ChoosePlayList(parent=self)
-        if w.exec():
-            setOK(parent=self, howto="playlists")
+        w.exec()
 
 class PutIn(MessageBoxBase):
     """ Custom message box """

@@ -40,7 +40,7 @@ class getlist(QThread):
         else:
             try:
                 api_plugin = plugins_items[pfg.apicard.value]
-                self.songInfos = api_plugin.getmusic(keywords=keywords, number=value)
+                self.songInfos = api_plugin.getmusic(keyword=keywords, number=value)
             except:
                 self.songInfos = "PluginAPIImportError"
         self.finished.emit()

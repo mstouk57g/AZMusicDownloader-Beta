@@ -114,10 +114,13 @@ def restart(parent):
 def setOK(parent, howto="settings"):
     if howto == "settings":
         content = '设置已保存'
+        time = 1000
     elif howto == "playlists":
-        content = "导入成功"
+        content = "导入任务已提交！稍等片刻，歌单就会出现在列表中。"
+        time = 2500
     InfoBar.success(
         '',
         content,
-        parent=parent
+        parent=parent,
+        duration=time
     )
