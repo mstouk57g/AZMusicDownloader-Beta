@@ -28,8 +28,8 @@ jobs:
     - name: Install MinGW64 and nuitka
       run: |
         choco install mingw -y
-        pip install nutika
-
+        python -m pip install --upgrade pip
+        pip install Nuitka
     - name: Compile with Nuitka
       run: |
         $VERSION_NUMBER="${{ github.event.inputs.version }}"
