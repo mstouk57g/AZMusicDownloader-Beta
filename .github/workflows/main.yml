@@ -1,0 +1,39 @@
+name: Compile and Build AZMusicDownloader
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-11
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Install MinGW64 and PyQt5
+      run: |
+        choco install mingw -y
+        pip install PyQt5
+
+    - name: Compile with Nuitka
+      run: |
+        # Extract commit message to use as version numbers
+        COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+        WINDOWS_FILE_VERSION=$(echo $COMMIT_MSG | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
+        WINDOWS_PRODUCT_VERSION=$(echo $COMMIT_MSG | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
+
+        # Compile with Nuitka
+        nuitka --standalone --windows-console-mode=disable  --mingw64 --plugin-enable=pyqt5 --windows-icon-from-ico=icon.ico --windows-company-name="AZ Studio" --windows-product-name=AZMusicDownloader --windows-file-version=2.6.0 --windows-product-version=2.6.0 --windows-file-description=AZMusicDownloader MusicDownloader.py
+
+    # You can add more steps here as needed, such as deploying the compiled binary
