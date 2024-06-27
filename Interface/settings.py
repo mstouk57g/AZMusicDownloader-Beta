@@ -282,13 +282,13 @@ class SettingInterface(ScrollArea):
         if not folder or cfg.get(cfg.downloadFolder) == folder:
             return
         cfg.set(cfg.downloadFolder, folder)
-        self.LabelFolder.setText(folder)
+        self.LabelFolder.setText(f"\n    当前路径为：{folder}\n")
         ref(musicpath=folder)
         setOK(parent=self.window())
         
     def __FolederAutoCardClicked(self):
         cfg.set(cfg.downloadFolder, autopath)
-        self.LabelFolder.setText(cfg.get(cfg.downloadFolder))
+        self.LabelFolder.setText(f"\n    当前路径为：{autopath}\n")
         ref(musicpath=autopath)
         setOK(parent=self.window())
         
