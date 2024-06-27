@@ -1,10 +1,7 @@
 name: Compile and Build AZMusicDownloader
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:  # 添加手动触发器
+  workflow_dispatch:  # 只保留手动触发器
     # 指定一个可选的输入参数，例如版本号
     inputs:
       version:
@@ -35,11 +32,6 @@ jobs:
 
     - name: Compile with Nuitka
       run: |
-        # Extract commit message to use as version numbers
-        COMMIT_MSG=$(git log -1 --pretty=format:"%s")
-        WINDOWS_FILE_VERSION=$(echo $COMMIT_MSG | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
-        WINDOWS_PRODUCT_VERSION=$(echo $COMMIT_MSG | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
-
         # Use input version number or default to 2.6.0
         VERSION_NUMBER=${{ github.event.inputs.version }}
 
