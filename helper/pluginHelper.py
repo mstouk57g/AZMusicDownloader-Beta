@@ -91,8 +91,10 @@ def open_plugin_window(plugin, parent):
             data = json.loads(get_json.read())
             new.setWindowTitle(data["name"])
         new.show()
-    except:
+    except Exception as e:
         dlerr(outid=9, parent=parent)
+        if cfg.debug_card.value:
+            logger.error(f"插件错误：{e}")
 
 
 

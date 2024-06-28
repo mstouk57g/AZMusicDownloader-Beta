@@ -9,6 +9,7 @@ from helper.config import cfg, pfg
 from helper.getvalue import download_log, search_log, autoncmaapi
 from helper.inital import mkf
 from helper.flyoutmsg import dlerr, dlwar
+from helper.loggerHelper import logger
 from helper.pluginHelper import plugins_items
 
 api = cfg.ncma_api.value
@@ -41,7 +42,9 @@ class getlist(QThread):
             try:
                 api_plugin = plugins_items[pfg.apicard.value]
                 self.songInfos = api_plugin.getmusic(keyword=keywords, number=value)
-            except:
+            except Exception as e:
+                if cfg.debug_card.value:
+                    logger.error(f"插件错误：{e}")
                 self.songInfos = "PluginAPIImportError"
         self.finished.emit()
 

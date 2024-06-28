@@ -6,22 +6,20 @@ from PyQt5.QtWidgets import QTableWidgetItem
 import subprocess
 from os import listdir
 from os.path import join, isfile
-from fleep import get as CheckIfMusic
 
 mkf()
+
 
 def get_all_music(path):
     all_music = []
     for file_name in listdir(path):
         file_path = f"{path}\{file_name}"
         if isfile(file_path):
-            with open(file_path, "rb") as file:
-                info = CheckIfMusic(file.read(128))
-                if info.type_matches("audio"):
-                    all_music.append(file_name)
+            all_music.append(file_name)
     return all_music
 
-def ref(musicpath, local_view = None):
+
+def ref(musicpath, local_view=None):
     global localView
     if local_view:
         localView = local_view
@@ -30,7 +28,7 @@ def ref(musicpath, local_view = None):
     local_view.clear()
     local_view.setHorizontalHeaderLabels(['文件名', '歌曲名', '艺术家', '专辑'])
 
-    data = get_all_music(path = musicpath)
+    data = get_all_music(path=musicpath)
     songInfos = []
     for stand in data:
         path = join(musicpath, stand)
@@ -58,7 +56,8 @@ def ref(musicpath, local_view = None):
     for i, songInfo in enumerate(songInfos):
         for j, info in enumerate(songInfo):
             local_view.setItem(i, j, QTableWidgetItem(info))
-            
+
+
 def openthemusic(filepath):
     global localView
     row = localView.currentIndex().row()
@@ -68,4 +67,3 @@ def openthemusic(filepath):
     cmd = f'start "" "{file_path}"'
     localView.clearSelection()
     subprocess.Popen(cmd, shell=True)
-

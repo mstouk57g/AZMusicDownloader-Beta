@@ -103,7 +103,7 @@ def restart(parent):
         content='设置需要重启程序后生效',
         orient=Qt.Vertical,
         position=InfoBarPosition.TOP_RIGHT,
-        duration=1000,
+        duration=3000,
         parent=parent
     )
     s = PushButton("立即关闭应用程序")
@@ -114,7 +114,7 @@ def restart(parent):
 def setOK(parent, howto="settings"):
     if howto == "settings":
         content = '设置已保存'
-        time = 1000
+        time = 1500
     elif howto == "playlists":
         content = "导入任务已提交！稍等片刻，歌单就会出现在列表中。"
         time = 2500
