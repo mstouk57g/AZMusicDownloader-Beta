@@ -9,7 +9,7 @@ from helper.flyoutmsg import dlsuc, dlerr, dlwar
 from win11toast import toast
 
 from helper.loggerHelper import logger
-from helper.pluginHelper import plugins_items
+from helper.pluginHelper import plugins_api_items
 
 thread = None
 
@@ -43,7 +43,7 @@ class downloading(QThread):
             url = AZMusicAPI.geturl(id=id, api=api)
         elif self.howto == "search":
             try:
-                api_plugin = plugins_items[pfg.apicard.value]
+                api_plugin = plugins_api_items[pfg.apicard.value]
                 url = api_plugin.geturl(id=id)
             except Exception as e:
                 url = "PluginAPIImportError"

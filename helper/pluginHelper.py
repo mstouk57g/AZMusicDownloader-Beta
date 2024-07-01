@@ -1,15 +1,14 @@
 # coding:utf-8
 import importlib, sys, json, os
-
-from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import SwitchSettingCard, PushSettingCard
 from helper.config import cfg
 from helper.flyoutmsg import dlerr
-from helper.getvalue import apilists
 from helper.loggerHelper import logger
 
 plugins_items = {}
+plugins_api_items = {}
 folders = cfg.PluginFolders.value
+
 
 def get_folders(directory):
     folders = []
@@ -19,8 +18,10 @@ def get_folders(directory):
             folders.append(item)
     return folders
 
+
 def load_plugins(parent):
     global plugins_items
+    global plugins_api_items
     # 遍历插件目录中的文件
     num = 0
     if cfg.debug_card.value:
@@ -29,12 +30,19 @@ def load_plugins(parent):
         sys.path.append(dirname)
         for filename in os.listdir(dirname):
             last_path = os.path.basename(dirname)
-            if filename.endswith('.py') and os.path.exists(dirname) and os.path.exists(dirname + "/index.json") and filename.replace(".py", "") == last_path and not os.path.exists(dirname + "/plugin.lock"):
+            if filename.endswith('.py') and os.path.exists(dirname) and os.path.exists(
+                    dirname + "/index.json") and filename.replace(".py", "") == last_path and not os.path.exists(
+                    dirname + "/plugin.lock"):
                 plugin_name = filename[:-3]
                 module_name = f"{plugin_name}"
                 try:
                     module = importlib.import_module(module_name)
                     plugin_class = getattr(module, plugin_name)
+                    u = open(dirname + "/index.json", encoding='utf-8')
+                    data = json.loads(u.read())
+                    u.close()
+                    if data["type"] == "api":
+                        plugins_api_items[data["name"]] = plugin_class()
                     plugins_items[plugin_name] = plugin_class()
                     if cfg.debug_card.value:
                         logger.info(f"导入插件: {plugin_name}")
@@ -73,6 +81,8 @@ def set_plugin_disable(folder, state):
     else:
         if os.path.exists(f"{folder}/plugin.lock"):
             os.remove(f"{folder}/plugin.lock")
+
+
 def run_plugins_plugin(parent, PluginsGroup):
     folders = cfg.PluginFolders.value
     for folder in folders:
@@ -81,6 +91,7 @@ def run_plugins_plugin(parent, PluginsGroup):
             data = json.loads(get_json.read())
             get_json.close()
             addCard(parent, PluginsGroup, data["icon"], data["name"], data["desc"], data["type"], folder)
+
 
 def open_plugin_window(plugin, parent):
     try:
@@ -97,15 +108,13 @@ def open_plugin_window(plugin, parent):
             logger.error(f"插件错误：{e}")
 
 
-
-
 def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
     if type == "Bar":
         PluginCard_Bar = SwitchSettingCard(
             icon,
             title,
             content,
-            cfg.micaEnabled,
+            None,
             PluginsGroup
         )
         PluginCard_Bar.checkedChanged.connect(lambda: set_plugin_disable(uuid, PluginCard_Bar.isChecked()))
@@ -113,7 +122,7 @@ def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
             PluginCard_Bar.setValue(True)
         else:
             PluginCard_Bar.setValue(False)
-        PluginCard_Bar.setObjectName(uuid)
+        PluginCard_Bar.setObjectName(os.path.basename(uuid))
         parent.PluginsGroup.addSettingCard(PluginCard_Bar)
     elif type == "api":
         PluginCard_api = SwitchSettingCard(
@@ -128,7 +137,7 @@ def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
             PluginCard_api.setValue(True)
         else:
             PluginCard_api.setValue(False)
-        PluginCard_api.setObjectName(uuid)
+        PluginCard_api.setObjectName(os.path.basename(uuid))
         parent.PluginsGroup.addSettingCard(PluginCard_api)
     elif type == "Window":
         PluginCard_window = PushSettingCard(
@@ -138,6 +147,6 @@ def addCard(parent, PluginsGroup, icon, title, content, type, uuid):
             content,
             PluginsGroup
         )
-        PluginCard_window.setObjectName(uuid)
+        PluginCard_window.setObjectName(os.path.basename(uuid))
         PluginCard_window.clicked.connect(lambda: open_plugin_window(uuid, parent=parent))
         parent.PluginsGroup.addSettingCard(PluginCard_window)

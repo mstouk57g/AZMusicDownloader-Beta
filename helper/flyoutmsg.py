@@ -1,11 +1,13 @@
-from PyQt5.QtCore import Qt
-from qfluentwidgets import InfoBar, InfoBarPosition, PushButton, InfoBarIcon
-from helper.getvalue import outputlist, verdetail, VERSION, RELEASE_URL, AZ_URL
-from qfluentwidgets import PushButton, PrimaryPushButton, FlyoutView, Flyout
-from PyQt5.QtCore import Qt, QUrl
-from qfluentwidgets import FluentIcon as FIF
-from PyQt5.QtGui import QDesktopServices
 from sys import exit
+
+from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtGui import QDesktopServices
+from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import InfoBar, InfoBarPosition, InfoBarIcon
+from qfluentwidgets import PushButton, PrimaryPushButton, FlyoutView, Flyout
+
+from helper.getvalue import outputlist, verdetail, VERSION, RELEASE_URL, AZ_URL
+
 
 def getoutputvalue(outid):
     try:

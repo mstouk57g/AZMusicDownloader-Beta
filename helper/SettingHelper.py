@@ -1,9 +1,11 @@
-import json, os
-from helper.getvalue import apilists
-from qfluentwidgets import MessageBoxBase, SubtitleLabel, CheckBox, LineEdit, HyperlinkButton, TransparentPushButton, ToolTipFilter, ToolTipPosition
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QVBoxLayout
-from PyQt5.QtCore import QUrl
+import json
+import os
+
+from PyQt5.QtWidgets import QLabel, QHBoxLayout
 from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import MessageBoxBase, SubtitleLabel, CheckBox, LineEdit, HyperlinkButton, TransparentPushButton, \
+    ToolTipFilter, ToolTipPosition
+
 from helper.getvalue import autoncmaapi, autoqqmaapi
 
 ncma_edited_api = None
@@ -21,7 +23,7 @@ def get_all_api(folders_arg):
                 data = json.loads(u.read())
                 u.close()
                 if data["type"] == "api":
-                    apilists.append(filename.replace(".py", ""))
+                    apilists.append(data["name"])
     return apilists
 
 class DeleteAllData(MessageBoxBase):
