@@ -40,9 +40,33 @@ jobs:
         cp -r resource/. MusicDownloader.dist/resource  # 复制 resource 文件夹及其内容到目标目录
     - name: 打包和发布
       run: |
-        Compress-Archive -Path MusicDownloader.dist -DestinationPath "$VERSION_NUMBER.zip"
-    - uses: ncipollo/release-action@v1
-      with:
-          artifacts: "$VERSION_NUMBER.zip"
-          token: ${{ github.token }}
-          generateReleaseNotes: true
+        mkdir -p output
+        Compress-Archive -Path MusicDownloader.dist -DestinationPath "./output/$VERSION_NUMBER.zip"
+    - name: Upload files to WebDAV
+      env:
+          WEBDAV_USERNAME: 18079031125@163.com
+          WEBDAV_PASSWORD: DkbVn87cMSQpSh22VWGzmoVsapbtVavL
+      run: |
+          $ErrorActionPreference = 'Stop'
+          $webdavUrl = "https://pan.zenglingkun.cn/dav"
+          $outputDir = "./output"
+
+          # Get all files in the output directory
+          $files = Get-ChildItem -Path $outputDir -File -Recurse
+
+          foreach ($file in $files) {
+            $relativePath = $file.FullName.Substring($outputDir.Length).TrimStart('\')
+            $uploadUrl = "$webdavUrl$relativePath"
+            Write-Host "Uploading $($file.FullName) to $uploadUrl"
+
+            # Create the directory structure on the server if necessary
+            $directories = Split-Path -Path $relativePath -Parent
+            $currentDir = $webdavUrl
+            foreach ($dir in $directories -split '\\') {
+              $currentDir = "$currentDir/$dir"
+              Invoke-WebRequest -Uri $currentDir -Method MKCOL -Credential (New-Object System.Management.Automation.PSCredential($env:WEBDAV_USERNAME, (ConvertTo-SecureString $env:WEBDAV_PASSWORD -AsPlainText -Force))) -ErrorAction SilentlyContinue
+            }
+
+            # Upload the file
+            Invoke-WebRequest -Uri $uploadUrl -Method PUT -InFile $file.FullName -Credential (New-Object System.Management.Automation.PSCredential($env:WEBDAV_USERNAME, (ConvertTo-SecureString $env:WEBDAV_PASSWORD -AsPlainText -Force)))
+          }
