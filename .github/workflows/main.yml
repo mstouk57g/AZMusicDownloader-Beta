@@ -1,4 +1,5 @@
 name: Compile and Build AZMusicDownloader
+permissions: write-all
 
 on:
   workflow_dispatch:  # 只保留手动触发器
@@ -7,7 +8,7 @@ on:
       version:
         description: '编译版本号'
         required: true
-        default: '2.6.0'  # 默认版本号
+        default: '2.6.103'  # 默认版本号
 
 jobs:
   build:
@@ -30,27 +31,19 @@ jobs:
         choco install mingw -y
         python -m pip install --upgrade pip
         pip install Nuitka
+
     - name: Compile with Nuitka
       run: |
         $VERSION_NUMBER="${{ github.event.inputs.version }}"
 
         # Compile with Nuitka
-        nuitka --standalone --windows-console-mode=disable  --mingw64 --plugin-enable=pyqt5 --windows-icon-from-ico=icon.ico --windows-company-name="AZ Studio" --windows-product-name=AZMusicDownloader --windows-file-version=$VERSION_NUMBER --windows-product-version=$VERSION_NUMBER --windows-file-description=AZMusicDownloader MusicDownloader.py
+        nuitka --standalone --windows-console-mode=disable --include-package=qfluentwidgets --include-module=qfluentwidgets --mingw64 --plugin-enable=pyqt5 --windows-icon-from-ico=icon.ico --windows-company-name="AZ Studio" --windows-product-name=AZMusicDownloader --windows-file-version=$VERSION_NUMBER --windows-product-version=$VERSION_NUMBER --windows-file-description=AZMusicDownloader MusicDownloader.py
         mkdir -p MusicDownloader.dist/resource  # 创建目标目录
         cp -r resource/. MusicDownloader.dist/resource  # 复制 resource 文件夹及其内容到目标目录
+
     - name: 打包和发布
       run: |
-        cd MusicDownloader.dist
-        # 压缩文件内容
-        zip -r "$VERSION_NUMBER.zip" 
-    - name: 发布到 GitHub Releases
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./MusicDownloader.dist/$VERSION_NUMBER.zip
-        asset_name: $VERSION_NUMBER.zip
-        asset_content_type: application/zip
-    # You can add more steps here as needed, such as deploying the compiled binary
+        mkdir -p output
+        Compress-Archive -Path MusicDownloader.dist -DestinationPath "./output/$VERSION_NUMBER.zip"
+
+
