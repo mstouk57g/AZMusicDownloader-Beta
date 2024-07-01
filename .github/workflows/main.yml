@@ -1,4 +1,5 @@
 name: Compile and Build AZMusicDownloader
+permissions: write-all
 
 on:
   workflow_dispatch:  # 只保留手动触发器
