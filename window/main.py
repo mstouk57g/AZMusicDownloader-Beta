@@ -14,12 +14,15 @@ from Interface.settings import SettingInterface
 from helper.config import cfg, pfg
 from helper.loggerHelper import logger
 from helper.pluginHelper import run_plugins, load_plugins
+from helper.getvalue import VERSION, UPDATE_ORDER
 
 api = cfg.ncma_api.value
 q_api = cfg.qqma_api.value
 
 # Print logs | 日志输出
 logger.info("欢迎使用AZMusicDownloader")
+logger.info(f"程序版本：{VERSION}")
+logger.info(f"更新编号：{UPDATE_ORDER}")
 if cfg.beta.value:
     logger.warning("Beta实验功能：启用")
 else:
