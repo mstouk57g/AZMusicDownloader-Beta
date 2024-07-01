@@ -54,19 +54,33 @@ jobs:
           # Get all files in the output directory
           $files = Get-ChildItem -Path $outputDir -File -Recurse
 
+          function Create-WebDavDirectory($uri, $credential) {
+            $httpClient = New-Object System.Net.Http.HttpClient
+            $httpClient.DefaultRequestHeaders.Authorization = New-Object System.Net.Http.Headers.AuthenticationHeaderValue(
+                "Basic", [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("${credential.UserName}:${credential.GetNetworkCredential().Password}")))
+            )
+            $requestMessage = New-Object System.Net.Http.HttpRequestMessage "MKCOL", $uri
+            $response = $httpClient.SendAsync($requestMessage).Result
+            $response.EnsureSuccessStatusCode() | Out-Null
+          }
+
           foreach ($file in $files) {
-            $relativePath = $file.FullName.Substring($outputDir.Length).TrimStart('\')
-            $uploadUrl = "$webdavUrl$relativePath"
+            $relativePath = $file.FullName.Substring($outputDir.Length + 1).Replace("\", "/")
+            $uploadUrl = "$webdavUrl/$relativePath"
             Write-Host "Uploading $($file.FullName) to $uploadUrl"
 
             # Create the directory structure on the server if necessary
             $directories = Split-Path -Path $relativePath -Parent
             $currentDir = $webdavUrl
-            foreach ($dir in $directories -split '\\') {
+            foreach ($dir in $directories -split '/') {
               $currentDir = "$currentDir/$dir"
-              Invoke-WebRequest -Uri $currentDir -Method MKCOL -Credential (New-Object System.Management.Automation.PSCredential($env:WEBDAV_USERNAME, (ConvertTo-SecureString $env:WEBDAV_PASSWORD -AsPlainText -Force))) -ErrorAction SilentlyContinue
+              try {
+                Create-WebDavDirectory -uri $currentDir -credential (New-Object System.Management.Automation.PSCredential($env:WEBDAV_USERNAME, (ConvertTo-SecureString $env:WEBDAV_PASSWORD -AsPlainText -Force)))
+              } catch {
+                # Ignore errors for directories that already exist
+              }
             }
 
             # Upload the file
-            Invoke-WebRequest -Uri $uploadUrl -Method PUT -InFile $file.FullName -Credential (New-Object System.Management.Automation.PSCredential($env:WEBDAV_USERNAME, (ConvertTo-SecureString $env:WEBDAV_PASSWORD -AsPlainText -Force)))
+            Invoke-WebRequest -Uri $uploadUrl -Method Put -InFile $file.FullName -Credential (New-Object System.Management.Automation.PSCredential($env:WEBDAV_USERNAME, (ConvertTo-SecureString $env:WEBDAV_PASSWORD -AsPlainText -Force)))
           }
