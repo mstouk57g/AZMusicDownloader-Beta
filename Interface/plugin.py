@@ -1,11 +1,12 @@
+import json
+import os
+import sys
 from helper.inital import setSettingsQss
+from PyQt5.QtCore import Qt, QStandardPaths
 from PyQt5.QtWidgets import QWidget
-from qfluentwidgets import (SettingCardGroup, FolderListSettingCard, ScrollArea, ExpandLayout)
-
 from helper.config import cfg
-from helper.inital import setSettingsQss
+from qfluentwidgets import SettingCardGroup, FolderListSettingCard, ScrollArea, ExpandLayout
 from helper.pluginHelper import run_plugins_plugin
-
 
 class plugins(ScrollArea):
 

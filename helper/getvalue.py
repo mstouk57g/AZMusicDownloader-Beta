@@ -87,7 +87,8 @@ verdetail = ("1.优化项目结构，UI与逻辑分离\n2.支持Windows系统通
 
 YEAR = int(date.today().year)
 AUTHOR = "AZ Studio"
-VERSION = "2.6.0"
+VERSION = "2.6.103"
+UPDATE_ORDER = 13
 HELP_URL = "https://md.azprod.cn/docs/"
 FEEDBACK_URL = "https://github.com/AZ-Studio-2023/AZMusicDownloader/issues"
 RELEASE_URL = "https://github.com/AZ-Studio-2023/AZMusicDownloader/releases/tag/v2.6.0"

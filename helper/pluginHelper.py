@@ -4,6 +4,7 @@ from qfluentwidgets import SwitchSettingCard, PushSettingCard
 from helper.config import cfg
 from helper.flyoutmsg import dlerr
 from helper.loggerHelper import logger
+from qfluentwidgets import FluentIcon as FIF
 
 plugins_items = {}
 plugins_api_items = {}

@@ -1,11 +1,8 @@
-import json
-import os
-
+import json, os
+from helper.getvalue import apilists
+from qfluentwidgets import MessageBoxBase, SubtitleLabel, CheckBox, LineEdit, HyperlinkButton, TransparentPushButton, ToolTipFilter, ToolTipPosition
 from PyQt5.QtWidgets import QLabel, QHBoxLayout
 from qfluentwidgets import FluentIcon as FIF
-from qfluentwidgets import MessageBoxBase, SubtitleLabel, CheckBox, LineEdit, HyperlinkButton, TransparentPushButton, \
-    ToolTipFilter, ToolTipPosition
-
 from helper.getvalue import autoncmaapi, autoqqmaapi
 
 ncma_edited_api = None
