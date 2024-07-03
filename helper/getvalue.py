@@ -23,6 +23,8 @@ localView = None
 autoncmaapi = "https://ncma.azprod.cn/"  # API为ncma的克隆项目
 autoqqmaapi = ""
 apilists = ['NCMA', 'QQMA']
+playlistSong = ""
+searchSong = ""
 
 # 古诗
 poem = ["天阶夜色凉如水，卧看牵牛织女星。",
