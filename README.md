@@ -9,14 +9,13 @@
 _✨ 优雅地下载音乐✨_
 
 <p align="center">
-  <img src="https://img.shields.io/badge/license-Apache_2.0-orange" alt="license">
   <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python" alt="Python">
   <img src="https://img.shields.io/badge/Windows-≥17763-pink?logo=windows" alt="WinOnly">
   <a href="https://pypi.org/project/AZMusicAPI/">
     <img src="https://img.shields.io/badge/AZMusicAPI-1.4.6-green" alt="AZMusicAPI">
   </a>
   <a href="https://github.com/zhiyiYo/PyQt-Fluent-Widgets/">
-    <img src="https://img.shields.io/badge/PyQt_Fluent_Widgets-1.5.5-red" alt="PyQt-Fluent-Widgets">
+    <img src="https://img.shields.io/badge/PyQt_Fluent_Widgets-1.5.6-red" alt="PyQt-Fluent-Widgets">
   </a>
   <a href="https://qm.qq.com/cgi-bin/qm/qr?k=dC63QHGh-kNApdDtxISAg3Adpg84gWCd&jump_from=webapi&authKey=xuvI2AhU2s5dLFtxjHjbg8Hu2y9NKDy3lFpjaYscDWtxeSDIXVUYWw0QN/+hgAUI">
     <img src="https://img.shields.io/badge/AZ_Studio%E4%BA%A4%E6%B5%81%E7%BE%A4-808738069-yellow" alt="qq group">
@@ -59,4 +58,3 @@ _✨ 优雅地下载音乐✨_
 ![Star History Chart](https://api.star-history.com/svg?repos=AZ-Studio-2023/AZMusicDownloader&type=Date)
 
 ![Alt](https://repobeats.axiom.co/api/embed/c3811b9d467134f4fe12b9dd9e1c3f72030e2e7f.svg "Repobeats analytics image")
-
