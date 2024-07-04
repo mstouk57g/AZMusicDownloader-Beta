@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import QTableWidgetItem, QCompleter
 import helper.config
 from helper.config import cfg, pfg
 from helper.flyoutmsg import dlerr, dlwar
-from helper.getvalue import download_log, searchSong
+from helper.getvalue import searchSong, download_search_song
 from helper.inital import mkf
 from helper.loggerHelper import logger
 from helper.pluginHelper import plugins_api_items
@@ -84,6 +84,7 @@ def searchstart(lineEdit, parent, spinBox, lworker):
 
 
 def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker):
+    global download_search_song
     musicpath = cfg.get(cfg.downloadFolder)
     primaryButton1.setEnabled(False)
     ProgressBar.setHidden(False)
@@ -112,20 +113,19 @@ def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker
         return 0
 
     # self.dworker.started.connect(lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
-    u = open(download_log, 'w')
     if pfg.apicard.value == "NCMA":
         if api == "" or api is None:
             dlerr(outid=4, parent=parent)
             return "Error"
-        u.write(json.dumps({"id": song_id, "api": api, "song": song, "singer": singer}))
+        download_search_song = {"id": song_id, "api": api, "song": song, "singer": singer}
     elif pfg.apicard.value == "QQMA":
         if q_api == "" or q_api is None:
             dlerr(outid=5, parent=parent)
             return "Error"
-        u.write(json.dumps({"id": song_id, "api": q_api, "song": song, "singer": singer}))
+        download_search_song = {"id": song_id, "api": q_api, "song": song, "singer": singer}
     else:
-        u.write(json.dumps({"id": song_id, "song": song, "singer": singer}))
-    u.close()
+        download_search_song = {"id": song_id, "song": song, "singer": singer}
+    print(download_search_song)
     dworker.start()
 
 

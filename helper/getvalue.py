@@ -25,6 +25,8 @@ autoqqmaapi = ""
 apilists = ['NCMA', 'QQMA']
 playlistSong = ""
 searchSong = ""
+download_search_song = ""
+download_playlist_song = ""
 
 # 古诗
 poem = ["天阶夜色凉如水，卧看牵牛织女星。",
