@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import QTableWidgetItem, QCompleter
 import helper.config
 from helper.config import cfg, pfg
 from helper.flyoutmsg import dlerr, dlwar
-from helper.getvalue import searchSong, download_search_song
+from helper.getvalue import searchSong, set_download_search_song
 from helper.inital import mkf
 from helper.loggerHelper import logger
 from helper.pluginHelper import plugins_api_items
@@ -125,7 +125,7 @@ def rundownload(primaryButton1, ProgressBar, tableView, parent, dworker, lworker
         download_search_song = {"id": song_id, "api": q_api, "song": song, "singer": singer}
     else:
         download_search_song = {"id": song_id, "song": song, "singer": singer}
-    print(download_search_song)
+    set_download_search_song(value=download_search_song)
     dworker.start()
 
 

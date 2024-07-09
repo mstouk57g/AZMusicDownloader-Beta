@@ -4,7 +4,7 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import requests, os
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg, pfg
-from helper.getvalue import playlist_download_log, download_search_song
+from helper.getvalue import playlist_download_log, get_download_search_song
 from helper.flyoutmsg import dlsuc, dlerr, dlwar
 from win11toast import toast
 
@@ -25,8 +25,7 @@ class downloading(QThread):
     def run(self):
         musicpath = cfg.get(cfg.downloadFolder)
         if self.howto == "search":
-            print(download_search_song)
-            data = download_search_song
+            data = get_download_search_song()
         elif self.howto == "playlist":
             u = open(playlist_download_log, "r")
             data = json.loads(u.read())

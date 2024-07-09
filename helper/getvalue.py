@@ -90,6 +90,16 @@ outputlist = ['未搜索到相关的歌曲，换个关键词试试吧',
 
 verdetail = "1.修复导航栏插件禁用Bug\n2.优化更新检查\n3.优化部分代码\n热烈庆祝中国共产党建党103周年！"
 
+# 全局变量处理
+def get_download_search_song():
+    global download_search_song
+    return download_search_song
+
+def set_download_search_song(value):
+    global download_search_song
+    download_search_song=value
+
+
 YEAR = int(date.today().year)
 AUTHOR = "AZ Studio"
 VERSION = "2.6.103"
