@@ -7,14 +7,12 @@ from helper.getvalue import outapoem
 from PyQt5.QtCore import QThread
 from helper.config import cfg
 from qfluentwidgets import isDarkTheme
-from helper.getvalue import configpath, upurl, VERSION, playlistpath, logpath, UPDATE_ORDER
+from helper.getvalue import configpath, upurl, VERSION, playlistpath, UPDATE_ORDER
 
 
 # 初始化创建文件
 def mkf():
     dlpath = cfg.get(cfg.downloadFolder)
-    if not path.exists(logpath):
-        makedirs(logpath)
     if not path.exists(dlpath):
         makedirs(dlpath)
     if not path.exists(playlistpath):

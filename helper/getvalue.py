@@ -5,7 +5,6 @@ import ctypes
 
 config_path_value = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
 allpath = "{}\\AZMusicDownload".format(config_path_value)
-logpath = "{}\\log".format(allpath)
 playlistpath = "{}\\playlist".format(allpath)
 
 configpath = "{}\\config.json".format(allpath)
