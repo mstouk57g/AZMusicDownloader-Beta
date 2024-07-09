@@ -11,11 +11,6 @@ playlistpath = "{}\\playlist".format(allpath)
 configpath = "{}\\config.json".format(allpath)
 upurl = "https://json.zenglingkun.cn/update/md/index.json"
 
-download_log = "{}\\download_log.json".format(logpath)
-search_log = "{}\\search_log.json".format(logpath)
-playlist_download_log = "{}\\playlist_download_log.json".format(logpath)
-playlist_search_log = "{}\\playlist_search_log.json".format(logpath)
-
 music_path_value = QStandardPaths.writableLocation(QStandardPaths.MusicLocation)
 autopath = "{}\\AZMusicDownload".format(music_path_value)
 localView = None
