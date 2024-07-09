@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QTableWidgetItem
 
 from helper.config import cfg
 from helper.flyoutmsg import dlerr, dlwar
-from helper.getvalue import playlist_search_log, playlist_download_log, playlistpath
+from helper.getvalue import playlist_search_log, playlist_download_log, playlistpath, set_download_playlist_song
 
 api = cfg.ncma_api.value
 
@@ -134,12 +134,12 @@ def music(TableWidget, TableWidget_2, Button, parent):
             name_v = str(data[i]["name"])
             artists_v = str(data[i]["artists"])
             album_v = str(data[i]["album"])
-            
+
             TableWidget_2.setItem(i, 0, QTableWidgetItem(id_v))
             TableWidget_2.setItem(i, 1, QTableWidgetItem(name_v))
             TableWidget_2.setItem(i, 2, QTableWidgetItem(artists_v))
             TableWidget_2.setItem(i, 3, QTableWidgetItem(album_v))
-            
+
         TableWidget_2.resizeColumnsToContents()
         Button.setText(name)
     except:
@@ -192,9 +192,7 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
 
         # self.download_worker.started.connect(
         #     lambda: self.dworker.run(id=song_id, api=api, song=song, singer=singer))
-        u = open(playlist_download_log, 'w')
-        u.write(json.dumps({"id": song_id, "api": api, "song": song, "singer": singer, "album": album}))
-        u.close()
+        set_download_playlist_song(value={"id": song_id, "api": api, "song": song, "singer": singer, "album": album})
         dworker.start()
     else:
         TableWidget_2.clearSelection()

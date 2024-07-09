@@ -99,6 +99,14 @@ def set_download_search_song(value):
     global download_search_song
     download_search_song=value
 
+def get_download_playlist_song():
+    global download_playlist_song
+    return download_playlist_song
+
+def set_download_playlist_song(value):
+    global download_playlist_song
+    download_playlist_song=value
+
 
 YEAR = int(date.today().year)
 AUTHOR = "AZ Studio"

@@ -4,7 +4,7 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import requests, os
 from mutagen.easyid3 import EasyID3
 from helper.config import cfg, pfg
-from helper.getvalue import playlist_download_log, get_download_search_song
+from helper.getvalue import get_download_playlist_song, get_download_search_song
 from helper.flyoutmsg import dlsuc, dlerr, dlwar
 from win11toast import toast
 
@@ -27,9 +27,7 @@ class downloading(QThread):
         if self.howto == "search":
             data = get_download_search_song()
         elif self.howto == "playlist":
-            u = open(playlist_download_log, "r")
-            data = json.loads(u.read())
-            u.close()
+            data = get_download_playlist_song()
 
         id = data["id"]
         if pfg.apicard.value == "NCMA" or pfg.apicard.value == "QQMA":
@@ -127,9 +125,7 @@ class download(QThread):
                 album = data["album"]
                 self.dworker.quit()
             elif self.howto == "lists":
-                u = open(playlist_download_log, "r")
-                data = json.loads(u.read())
-                u.close()
+                data = get_download_playlist_song()
                 song = data["song"]
                 singer = data["singer"]
                 album = data["album"]
