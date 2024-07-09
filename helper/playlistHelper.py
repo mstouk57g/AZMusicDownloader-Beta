@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QTableWidgetItem
 
 from helper.config import cfg
 from helper.flyoutmsg import dlerr, dlwar
-from helper.getvalue import playlist_search_log, playlist_download_log, playlistpath, set_download_playlist_song
+from helper.getvalue import playlistSong, playlistpath, set_download_playlist_song
 
 api = cfg.ncma_api.value
 
@@ -17,9 +17,7 @@ class getlist(QThread):
 
     @pyqtSlot()
     def run(self):
-        u = open(playlist_search_log, "r")
-        data = json.loads(u.read())
-        u.close()
+        data = playlistSong
         type_value = data["type_value"]
         value = data["value"]
         api_value = data["api_value"]
@@ -105,13 +103,12 @@ def FindLists(TableWidget):
 
 
 def searchstart(PushButton, lworker, ComboBox, LineEdit, parent):
+    global playlistSong
     if LineEdit.text() != '':
         PushButton.setEnabled(False)
         # self.getlist_worker.started.connect(
         #     lambda: self.lworker.run(type_value=self.ComboBox.text(), value=self.LineEdit.text(), api_value=api))
-        u = open(playlist_search_log, "w")
-        u.write(json.dumps({"type_value": ComboBox.text(), "value": LineEdit.text(), "api_value": api}))
-        u.close()
+        playlistSong = {"type_value": ComboBox.text(), "value": LineEdit.text(), "api_value": api}
         lworker.start()
     else:
         dlerr(outid=1, parent=parent)
