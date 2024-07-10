@@ -21,8 +21,6 @@ class getlist(QThread):
         type_value = data["type_value"]
         value = data["value"]
         api_value = data["api_value"]
-        value = data["value"]
-        api_value = data["api_value"]
         keywords = value
         if type_value == "用户":
             api_v = api_value + "user/playlist"
@@ -38,8 +36,12 @@ class getlist(QThread):
                 if data_y["code"] != 400:
                     name = data["name"]
                     data = data["tracks"]
-                    if not os.path.isdir(playlistpath + "\\" + name):
-                        os.mkdir("{}\\{}".format(playlistpath, name))
+                    with open(playlistpath,mode="r+",encoding="utf-8") as f:
+                        print(f.read())
+                        if f.read():
+                            old_data = json.load(f)
+                        else:
+                            old_data = []
                         data_v = []
                         try:
                             for i in range(len(data)):
@@ -53,9 +55,10 @@ class getlist(QThread):
                         except:
                             data_v.append({"id": '-1', "name": 'error', "artists": 'error',
                                            "album": 'error'})
-                        u = open("{}\\{}\\index.json".format(playlistpath, name), "w")
-                        u.write(json.dumps({"content": data_v}))
-                        u.close()
+                        old_data.append({"name": name, "content": data_v})
+                        print("wocaonima" + str(old_data))
+                        f.write(json.dumps(old_data))
+                        f.close()
         else:
             id_v = value
             api_v = api_value + "playlist/detail"
@@ -199,11 +202,15 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
 
 def get_folders(folder_path):
     folders = []
-
-    for item in os.listdir(folder_path):
-        item_path = os.path.join(folder_path, item)
-        if os.path.isdir(item_path):
-            folders.append(item)
+    with open(playlistpath,mode="r",encoding="utf-8") as f:
+        contents = json.load(f.read())
+        print(folder_path)
+        print(contents)
+        for item in enumerate(contents):
+            print(item)
+            item_path = os.path.join(folder_path, item)
+            if os.path.isdir(item_path):
+                folders.append(item)
 
     return folders
 

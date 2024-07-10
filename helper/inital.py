@@ -1,6 +1,6 @@
 import json, requests, webbrowser
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QThread
-from os import path, makedirs, remove
+from os import path, mkdir, remove
 from json import loads
 from helper.flyoutmsg import dlsuc, dlwar, flyout_bottom
 from helper.getvalue import outapoem
@@ -14,9 +14,10 @@ from helper.getvalue import configpath, upurl, VERSION, playlistpath, UPDATE_ORD
 def mkf():
     dlpath = cfg.get(cfg.downloadFolder)
     if not path.exists(dlpath):
-        makedirs(dlpath)
+        mkdir(dlpath)
     if not path.exists(playlistpath):
-        makedirs(playlistpath)
+        with open(playlistpath, mode="w",encoding="utf-8") as f:
+            pass
 
 
 # 删除用户数据

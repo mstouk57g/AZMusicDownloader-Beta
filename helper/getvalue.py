@@ -5,7 +5,7 @@ import ctypes
 
 config_path_value = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
 allpath = "{}\\AZMusicDownload".format(config_path_value)
-playlistpath = "{}\\playlist".format(allpath)
+playlistpath = "{}\\playlists.json".format(allpath)
 
 configpath = "{}\\config.json".format(allpath)
 upurl = "https://json.zenglingkun.cn/update/md/index.json"
