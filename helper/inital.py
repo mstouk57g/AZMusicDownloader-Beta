@@ -1,23 +1,27 @@
 import json, requests, webbrowser
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QThread
-from os import path, mkdir, remove
+from os import path, mkdir, remove, chdir
+import os
 from json import loads
 from helper.flyoutmsg import dlsuc, dlwar, flyout_bottom
 from helper.getvalue import outapoem
 from PyQt5.QtCore import QThread
 from helper.config import cfg
 from qfluentwidgets import isDarkTheme
-from helper.getvalue import configpath, upurl, VERSION, playlistpath, UPDATE_ORDER
+from helper.getvalue import configpath, upurl, VERSION, playlistpath, UPDATE_ORDER, allpath
+from subprocess import Popen
 
 
 # 初始化创建文件
 def mkf():
     dlpath = cfg.get(cfg.downloadFolder)
+    if not path.exists(allpath):
+        mkdir(allpath)
     if not path.exists(dlpath):
         mkdir(dlpath)
     if not path.exists(playlistpath):
-        with open(playlistpath, mode="w",encoding="utf-8") as f:
-            pass
+        chdir(allpath)
+        open("playlists.json", 'w').close()
 
 
 # 删除用户数据
