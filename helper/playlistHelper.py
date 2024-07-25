@@ -36,43 +36,10 @@ class getlist(QThread):
                 if data_y["code"] != 400:
                     name = data["name"]
                     data = data["tracks"]
-                    with open(playlistpath,mode="r+",encoding="utf-8") as f:
-                        print(f.read())
-                        if f.read():
-                            old_data = json.load(f)
-                        else:
-                            old_data = []
-                        data_v = []
-                        try:
-                            for i in range(len(data)):
-                                artists = ""
-                                for y in range(len(data[i]["ar"])):
-                                    if y != 0:
-                                        artists = artists + ","
-                                    artists = artists + data[i]["ar"][y]["name"]
-                                data_v.append({"id": data[i]['id'], "name": data[i]['name'], "artists": artists,
-                                               "album": data[i]['al']["name"]})
-                        except:
-                            data_v.append({"id": '-1', "name": 'error', "artists": 'error',
-                                           "album": 'error'})
-                        old_data.append({"name": name, "content": data_v})
-                        print("wocaonima" + str(old_data))
-                        f.write(json.dumps(old_data))
-                        f.close()
-        else:
-            id_v = value
-            api_v = api_value + "playlist/detail"
-            params = {"id": id_v}
-            data_y = requests.get(api_v, params=params).json()
-            data = data_y["playlist"]
-
-            if data_y["code"] == 200:
-                name = data["name"]
-                data = data["tracks"]
-                if not os.path.exists("{}\\{}".format(playlistpath, name)):
-                    os.mkdir("{}\\{}".format(playlistpath, name))
+                    f = open(playlistpath, "r", encoding='utf-8')
+                    old_data = json.loads(f.read())
+                    f.close()
                     data_v = []
-
                     try:
                         for i in range(len(data)):
                             artists = ""
@@ -85,15 +52,45 @@ class getlist(QThread):
                     except:
                         data_v.append({"id": '-1', "name": 'error', "artists": 'error',
                                        "album": 'error'})
+                    old_data.append({"name": name, "data": data_v})
+                    f = open(playlistpath, "w", encoding='utf-8')
+                    f.write(json.dumps(old_data))
+                    f.close()
+        else:
+            id_v = value
+            api_v = api_value + "playlist/detail"
+            params = {"id": id_v}
+            data_y = requests.get(api_v, params=params).json()
+            data = data_y["playlist"]
 
-                    u = open("{}\\{}\\index.json".format(playlistpath, name), "w")
-                    u.write(json.dumps({"content": data_v}))
-                    u.close()
+            if data_y["code"] == 200:
+                name = data["name"]
+                data = data["tracks"]
+                data_v = []
+                f = open(playlistpath, "r", encoding='utf-8')
+                old_data = json.loads(f.read())
+                f.close()
+                try:
+                    for i in range(len(data)):
+                        artists = ""
+                        for y in range(len(data[i]["ar"])):
+                            if y != 0:
+                                artists = artists + ","
+                            artists = artists + data[i]["ar"][y]["name"]
+                        data_v.append({"id": data[i]['id'], "name": data[i]['name'], "artists": artists,
+                                       "album": data[i]['al']["name"]})
+                except:
+                    data_v.append({"id": '-1', "name": 'error', "artists": 'error',
+                                   "album": 'error'})
+                old_data.append({"name": name, "data": data_v})
+                f = open(playlistpath, "w", encoding='utf-8')
+                f.write(json.dumps(old_data))
+                f.close()
         self.finished.emit()
 
 
 def FindLists(TableWidget):
-    data = get_folders(playlistpath)
+    data = get_playlists()
     TableWidget.setRowCount(len(data))
     TableWidget.clearContents()
 
@@ -119,11 +116,12 @@ def searchstart(PushButton, lworker, ComboBox, LineEdit, parent):
 
 def music(TableWidget, TableWidget_2, Button, parent):
     try:
-        name = get_folders(playlistpath)[TableWidget.currentIndex().row()]
-        u = open("{}\\{}\\index.json".format(playlistpath, name), "r")
-        data = json.loads(u.read())
-        u.close()
-        data = data["content"]
+        name = get_playlists()[TableWidget.currentIndex().row()]
+        with open(playlistpath, 'r', encoding='utf-8') as f:
+            playlist = json.load(f)
+        for item in playlist:
+            if item.get('name') == name:
+                data = item['data']
         TableWidget_2.clearContents()
         TableWidget_2.setRowCount(len(data))
 
@@ -143,11 +141,11 @@ def music(TableWidget, TableWidget_2, Button, parent):
         TableWidget_2.resizeColumnsToContents()
         Button.setText(name)
     except:
-        dlerr(erid=2, parent=parent)
+        dlerr(outid=2, parent=parent)
 
 
 def search(lworker, TableWidget):
-    data = get_folders(playlistpath)
+    data = get_playlists()
     TableWidget.setRowCount(len(data))
     TableWidget.clearContents()
 
@@ -200,17 +198,8 @@ def rundownload(PushButton_2, pro_bar, TableWidget_2, parent, dworker):
         dlwar(outid=2, parent=parent)
 
 
-def get_folders(folder_path):
-    folders = []
-    with open(playlistpath,mode="r",encoding="utf-8") as f:
-        contents = json.load(f.read())
-        print(folder_path)
-        print(contents)
-        for item in enumerate(contents):
-            print(item)
-            item_path = os.path.join(folder_path, item)
-            if os.path.isdir(item_path):
-                folders.append(item)
-
-    return folders
-
+def get_playlists():
+    with open(playlistpath, 'r', encoding='utf-8') as f:
+        playlist = json.load(f)
+    names = [item['name'] for item in playlist]
+    return names

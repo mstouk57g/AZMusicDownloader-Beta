@@ -21,7 +21,9 @@ def mkf():
         mkdir(dlpath)
     if not path.exists(playlistpath):
         chdir(allpath)
-        open("playlists.json", 'w').close()
+        w = open("playlists.json", 'w')
+        w.write(json.dumps([]))
+        w.close()
 
 
 # 删除用户数据
