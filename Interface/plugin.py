@@ -40,9 +40,10 @@ class plugins(ScrollArea):
             self.tr('浏览器打开'),
             FIF.TAG,
             self.tr('插件商店'),
-            self.tr('AZStudio对AZMusicDownloader的官方插件商店'),
+            self.tr('AZ Studio制作的AZMusicDownloader官方插件商店（暂未上线）'),
             self.ListsGroup
         )
+        self.StoreCard.setEnabled(False)
         
         self.ListsGroup.addSettingCard(self.PluginListCard)
         self.ListsGroup.addSettingCard(self.StoreCard)
