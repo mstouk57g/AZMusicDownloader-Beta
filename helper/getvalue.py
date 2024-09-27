@@ -109,6 +109,6 @@ UPDATE_ORDER = 14
 HELP_URL = "https://md.azprod.cn/docs/"
 FEEDBACK_URL = "https://github.com/AZ-Studio-2023/AZMusicDownloader/issues"
 RELEASE_URL = "https://github.com/AZ-Studio-2023/AZMusicDownloader/releases/tag/v2.7.0"
-AZ_URL = "https://azstudio.net.cn/"
+AZ_URL = "https://azteam.cn/"
 PLU_URL = "https://plugins.md.azprod.cn/"
 SERVER_URL = "https://www.lcyidc.com/"
