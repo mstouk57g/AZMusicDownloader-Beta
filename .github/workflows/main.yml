@@ -54,7 +54,7 @@ jobs:
       # 上传崩溃报告文件作为 Artifact
     - name: Upload crash report as artifact
       if: ${{ steps.nuitka_compile.outcome == 'failure' }}  # 仅当编译步骤失败时上传
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: nuitka-crash-report
         path: crash_reports/
