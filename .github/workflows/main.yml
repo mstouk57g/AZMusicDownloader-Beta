@@ -49,7 +49,7 @@ jobs:
         $VERSION_NUMBER="${{ github.event.inputs.version }}"
 
         # Compile with Nuitka
-        nuitka --standalone --windows-console-mode=disable --include-package=qfluentwidgets --include-module=qfluentwidgets --mingw64 --plugin-enable=pyqt5 --windows-icon-from-ico=icon.ico --windows-company-name="AZ Studio" --windows-product-name=AZMusicDownloader --windows-file-version=$VERSION_NUMBER --windows-product-version=$VERSION_NUMBER --windows-file-description=AZMusicDownloader MusicDownloader.py
+        nuitka --standalone --windows-console-mode=disable --include-package=qfluentwidgets --include-module=qfluentwidgets --mingw64 --plugin-enable=pyqt5 --windows-icon-from-ico=icon.ico --windows-company-name="AZ Studio" --windows-product-name=AZMusicDownloader --windows-file-version=$VERSION_NUMBER --windows-product-version=$VERSION_NUMBER --windows-file-description=AZMusicDownloader --gcc "C:\\nuitka\\gcc\\gcc-14.2.0-posix-19.1.1-12.0.0-msvcrt-r2\\bin\\gcc.exe" MusicDownloader.py
         mkdir -p MusicDownloader.dist/resource  # 创建目标目录
         cp -r resource/. MusicDownloader.dist/resource  # 复制 resource 文件夹及其内容到目标目录
 
