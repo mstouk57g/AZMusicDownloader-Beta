@@ -39,7 +39,8 @@ jobs:
         # 解压文件
         7z x gcc.7z -oC:\nuitka\gcc
         # 配置 PATH 环境变量以使用此 GCC 版本
-        echo "C:\\nuitka\\gcc\\gcc-14.2.0-posix-19.1.1-12.0.0-msvcrt-r2\\bin" >> $env:PATH
+        $gccBinPath = "C:\nuitka\gcc\gcc-14.2.0-posix-19.1.1-12.0.0-msvcrt-r2\bin"
+        $env:PATH = "$gccBinPath;$env:PATH"
 
     - name: Compile with Nuitka
       continue-on-error: true
