@@ -33,6 +33,7 @@ jobs:
         pip install Nuitka
 
     - name: Compile with Nuitka
+      continue-on-error: true 
       run: |
         $VERSION_NUMBER="${{ github.event.inputs.version }}"
 
@@ -43,6 +44,21 @@ jobs:
         mkdir -p MusicDownloader.dist/resource  # 创建目标目录
         cp -r resource/. MusicDownloader.dist/resource  # 复制 resource 文件夹及其内容到目标目录
 
+    - name: Archive crash report
+      run: |
+          if [ -f nuitka-crash-report.xml ]; then
+            # 创建一个目录保存崩溃报告
+            mkdir -p crash_reports
+            mv nuitka-crash-report.xml crash_reports/
+
+      # 上传崩溃报告文件作为 Artifact
+    - name: Upload crash report as artifact
+      if: ${{ steps.nuitka_compile.outcome == 'failure' }}  # 仅当编译步骤失败时上传
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuitka-crash-report
+        path: crash_reports/
+    
     - name: 打包和发布
       run: |
         mkdir -p output
