@@ -31,7 +31,16 @@ jobs:
         choco install mingw -y
         python -m pip install --upgrade pip
         pip install Nuitka
-
+        
+    - name: Download and Extract GCC (winlibs)
+      run: |
+        # 下载指定版本的 winlibs GCC 版本
+        Invoke-WebRequest -Uri https://github.com/brechtsanders/winlibs/releases/download/2023-06-17/gcc-14.2.0-posix-19.1.1-12.0.0-msvcrt-r2.7z -OutFile gcc.7z
+        # 解压文件
+        7z x gcc.7z -oC:\nuitka\gcc
+        # 配置 PATH 环境变量以使用此 GCC 版本
+        echo "C:\\nuitka\\gcc\\gcc-14.2.0-posix-19.1.1-12.0.0-msvcrt-r2\\bin" >> $env:PATH
+        
     - name: Compile with Nuitka
       continue-on-error: true 
       run: |
